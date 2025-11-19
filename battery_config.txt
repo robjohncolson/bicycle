@@ -1,0 +1,95 @@
+https://endless-sphere.com/sphere/threads/14s4p-in-linear-configuration-bms-balance-and-copper-nickle-sandwich.118426/
+
+Based on the text from the forum thread you provided, it appears you are looking at the photos shared by user TDA78 (specifically IMG_20220429_211442.jpg and subsequent photos). These show a 14s4p battery pack built for an E22 frame using a linear (long and narrow) configuration with a Bluetooth BMS.[1]
+
+Below is a guide to building a pack "near identical" to that picture, including how to hook up your JK BMS and how to incorporate the "Copper-Nickel Sandwich" method discussed in that thread.
+
+1. The Layout: 14S4P Linear "Snake"
+
+The "linear" configuration means your 14 groups (of 4 parallel cells each) are laid out end-to-end or in a long stick.
+
+Cells: You mentioned 18700 cells. (Note: This is an uncommon size, similar to 18650s but slightly taller. If you meant 21700 like in the thread, the method is the same, just larger dimensions).
+
+Groups: You will have 14 "blocks." Each block has 4 cells connected in parallel (all positives together, all negatives together).
+
+Flow: The blocks are connected in series (Negative of Block 1 to Positive of Block 2, etc.) in a "snake" pattern.
+
+Visualizing the Connections:
+If you lay the groups out in a line:
+[Group 1] - [Group 2] - [Group 3] ... - [Group 14]
+You must connect the Positive end of Group 1 to the Negative end of Group 2. This requires flipping every other group so the polarities align for short busbar connections.
+
+2. The "Copper-Nickel Sandwich" Busbars
+
+The thread discusses this technique to handle high current (30A+) with lower resistance than nickel alone.
+
+What it is: You place a strip of Copper sheet (0.1mm is common) directly onto the cell terminals, and then place a Nickel strip (0.15mm or 0.2mm) on top of the copper.
+
+Why: Copper conducts electricity much better than nickel, but it is very hard to spot weld. The nickel on top "traps" the heat from the spot welder, allowing the weld to penetrate through the copper and stick to the cell.
+
+How to do it:
+
+Cut your copper strip to bridge the 4 parallel cells + the series connection to the next group.
+
+Cut a matching nickel strip.
+
+Sandwich them: Cell -> Copper -> Nickel -> Welder Probes.
+
+High Power Required: You need a powerful spot welder (like a Kweld) to weld through copper. If your welder is weak, stick to pure nickel (0.2mm) like user TDA78 actually used in the photos.
+
+3. Wiring the JK BMS
+
+The JK BMS usually comes with two thick wires (B- and P-) and a connector with many thin balance wires.
+
+Step 1: Main Power Connections
+
+B- (Blue/Black thick wire): Connect this securely to the Main Negative terminal of your battery (The negative pole of Group 1).
+
+P- (Black thick wire): This goes to your load (Controller/Motor).
+
+Battery Positive: Connect your load's Positive wire directly to the Main Positive terminal of your battery (The positive pole of Group 14). The JK BMS does not have a separate B+ wire; it switches the negative side.
+
+Step 2: Balance Leads (The thin wires)
+Crucial: Do not plug the connector into the BMS until you have soldered all wires and verified voltages with a multimeter.
+
+Wire 0 (Black): Connect to Main Negative (Negative of Group 1). This is the same location as the thick B- wire.
+
+Wire 1: Connect to Positive of Group 1.
+
+Wire 2: Connect to Positive of Group 2.
+
+...
+
+Wire 13: Connect to Positive of Group 13.
+
+Wire 14 (Red): Connect to Positive of Group 14 (Main Positive).
+
+Note: In the linear layout shown in the thread, these connection points will "walk" down the length of the battery. You will need to route these wires neatly along the side.
+
+4. Safety & Insulation (Crucial for Linear Packs)
+
+The picture by TDA78 shows distinct safety measures you should replicate:
+
+Fish Paper / Barley Paper: You must put insulating rings on the positive terminal of every cell.
+
+Between Groups: Since the groups are in a line, if the casing flexes, Group 1 might touch Group 3. Use thin plastic spacers or layers of Fish Paper between the groups if they are physically touching.
+
+Wire Routing: Run the balance wires along the "valley" between the cells. Tape them down with Kapton tape (the orange/yellow see-through tape) so they don't rub against the nickel strips and short out.
+
+Final Wrap: The picture shows the pack wrapped in thick blue shrink wrap. Before shrinking, add a sheet of fiberglass board or thick fish paper on top of the BMS and wiring to protect them from physical impact.
+
+Summary Checklist for "Near Identical" Build:
+
+Configuration: 14 groups of 4, arranged linearly.
+
+Busbars: Use Copper/Nickel sandwich if you have a strong welder; otherwise use 0.2mm Pure Nickel (slotted).
+
+BMS: JK BMS mounted on the flat side of the cells.
+
+Insulation: Kapton tape over all busbars; Fish paper between BMS and cells.[1]
+
+Wiring Order: Black balance wire to Start (-), then count up 1-14 Positives.
+
+Sources
+help
+14S4P in linear configuration - BMS balance and Copper/Nickle ...
