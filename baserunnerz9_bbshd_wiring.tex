@@ -1,0 +1,461 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage{float}
+
+% Define colors for warnings and notes
+\definecolor{warningcolor}{RGB}{204,0,0}
+\definecolor{notecolor}{RGB}{0,102,204}
+\definecolor{tipcolor}{RGB}{0,153,0}
+
+% Setup code listing style
+\lstset{
+    basicstyle=\ttfamily\small,
+    frame=single,
+    breaklines=true
+}
+
+% Custom commands for special formatting
+\newcommand{\warning}[1]{\textcolor{warningcolor}{\textbf{WARNING:} #1}}
+\newcommand{\note}[1]{\textcolor{notecolor}{\textbf{Note:} #1}}
+\newcommand{\tip}[1]{\textcolor{tipcolor}{\textbf{Tip:} #1}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{BBSHD to Baserunner Z9 Wiring Guide}
+\lhead{\leftmark}
+\rfoot{Page \thepage}
+
+\title{\textbf{Rewiring a Grin Baserunner V6\_Z9 to a Bafang BBSHD Motor}\\
+\large Complete Installation and Configuration Guide}
+\author{Technical Reference Document}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Important Safety Notice}
+
+\warning{This modification involves cutting factory connectors and opening the motor/controller -- it voids all warranties. Always disconnect the battery and capacitors before working on wiring, and double-check all connections for correct polarity and insulation before applying power. Proceed only if you are comfortable with crimping and ebike electronics.}
+
+\section{Overview}
+
+The goal is to replace the BBSHD's internal controller with a Grin Baserunner V6 (Z9 model) external controller, creating a clean color-matched harness between the Baserunner and the BBSHD motor. The modification involves:
+
+\begin{enumerate}
+    \item Removing the stock BBSHD controller and its mating connector, exposing the motor's phase wires and sensor wires
+    \item Cutting off the Baserunner's Higo Z910 plug (the 9-pin motor connector) and terminating its wires with new connectors
+    \item Attaching Anderson Powerpole PP45 connectors to the three phase wires (Yellow, Green, Blue) for high-current connections
+    \item Attaching a 6-pin JST-SM connector to the small hall/temperature sensor wires (5V, GND, Hall A, Hall B, Hall C, Thermistor)
+\end{enumerate}
+
+This will allow the Baserunner to plug directly into the BBSHD motor leads via robust, serviceable connectors. The result is a harness with color-to-color wiring between controller and motor for clarity.
+
+\section{Wiring Pinout Mapping}
+
+Before cutting any wires, it is critical to understand the wire color mapping between the Baserunner V6\_Z9 motor cable and the BBSHD motor's leads. The Baserunner's ``Z9'' motor cable contains 3 large phase conductors and 6 smaller signal wires. The BBSHD's motor has a matching set of wires once the internal controller is removed.
+
+\subsection{Connection Mapping Table}
+
+\begin{table}[H]
+\centering
+\caption{Baserunner to BBSHD Wiring Connections}
+\label{tab:wiring}
+\begin{tabular}{p{2.5cm}p{3.5cm}p{3.5cm}p{3.5cm}}
+\toprule
+\textbf{Signal} & \textbf{Baserunner V6\_Z9 Wire} & \textbf{BBSHD Motor Wire} & \textbf{Connector Type} \\
+\midrule
+Phase U & Yellow (large) & Yellow & Anderson PP45 (Yellow) \\
+Phase V & Green (large) & Green & Anderson PP45 (Green) \\
+Phase W & Blue (large) & Blue & Anderson PP45 (Blue) \\
+Hall Sensor A & Yellow (small) & Gray & JST-SM 6-pin \\
+Hall Sensor B & Green (small) & White & JST-SM 6-pin \\
+Hall Sensor C & Blue (small) & Blue & JST-SM 6-pin \\
+Hall/Logic +5V & Red (small) & Red & JST-SM 6-pin \\
+Hall/Logic GND & Black (small) & Black & JST-SM 6-pin \\
+Motor Temp & White (small) & Thermistor lead & JST-SM 6-pin \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Important Wiring Notes}
+
+\begin{itemize}
+    \item The three phase wires match colors one-to-one (yellow--yellow, green--green, blue--blue)
+    \item The BBSHD's hall sensor outputs use Blue, White, and Gray wires (rather than yellow/green/blue) -- these correspond to the Baserunner's hall inputs Blue, Green, and Yellow respectively
+    \item The BBSHD's +5V (red) and ground (black) wires for the halls line up with the Baserunner's red and black
+    \item For motor temperature, the Baserunner's white signal wire is intended for a thermistor input
+    \item Bafang BBSHD motors typically include a 10k$\Omega$ NTC thermistor embedded in the windings
+\end{itemize}
+
+\section{Connectors and Wiring Harness}
+
+\subsection{Anderson Powerpole PP45}
+
+\begin{itemize}
+    \item \textbf{Purpose:} High-current phase connections
+    \item \textbf{Rating:} Up to 45A continuous
+    \item \textbf{Features:} Genderless, modular connector
+    \item \textbf{Color coding:} Yellow, green, and blue housings to match phase wire colors
+    \item \textbf{Assembly:} Can be dovetailed together into a 3-pin block
+\end{itemize}
+
+\subsection{JST-SM 6-pin}
+
+\begin{itemize}
+    \item \textbf{Purpose:} Hall sensors and temperature sensor connections
+    \item \textbf{Configuration:} 6 positions for 5 hall/therm signals plus ground and 5V
+    \item \textbf{Convention:} Controller side uses male JST housing (with female pins), motor side uses female JST housing (with male pins)
+    \item \textbf{Feature:} Female JST has a latch for secure connection
+\end{itemize}
+
+\section{Step-by-Step Wiring Assembly}
+
+\subsection{Step 1: Remove Original Components}
+
+\subsubsection{Detach the BBSHD Controller}
+\begin{enumerate}
+    \item Remove the stock Bafang BBSHD internal controller from the motor housing
+    \item Unscrew and gently unplug its connectors
+    \item Expose the internal wiring harness:
+    \begin{itemize}
+        \item Three thick phase wires (Yellow, Green, Blue)
+        \item Cluster of thinner wires for hall sensors (Red, Black, Blue, White, Gray)
+        \item Possible separate pair for temperature or PAS sensor
+    \end{itemize}
+    \item Disconnect or desolder the old controller from these wires as needed
+\end{enumerate}
+
+\subsubsection{Cut the Baserunner Z910 Plug}
+\begin{enumerate}
+    \item Ensure the controller is completely powered off
+    \item Cut off the Z910 plug, leaving maximum cable length attached to the controller
+    \item Strip back outer cable sheath to expose 9 individual wires:
+    \begin{itemize}
+        \item 3 larger gauge wires (Y, G, B for phases)
+        \item 6 smaller wires (Red, Black, Yellow, Green, Blue, White)
+    \end{itemize}
+    \item Strip 3--4 mm of insulation from each wire end
+    \item \tip{Do not tin wires that will be crimped as it can lead to a loose connection}
+\end{enumerate}
+
+\subsection{Step 2: Terminate Phase Wires with Anderson PP45}
+
+\subsubsection{Prepare the Phase Leads}
+\begin{enumerate}
+    \item Identify the six phase wire ends (three from BBSHD, three from Baserunner)
+    \item Strip approximately 5 mm of insulation from each wire
+    \item Ensure copper strands are neatly twisted (typical gauge: 12--14 AWG)
+\end{enumerate}
+
+\subsubsection{Crimp the Contacts}
+\begin{enumerate}
+    \item Insert each stripped phase wire into a PP45 contact pin
+    \item Use proper Anderson crimp tool to crimp the barrel tightly
+    \item Verify secure connection with a light tug test
+    \item Repeat for all six phase wire ends
+\end{enumerate}
+
+\subsubsection{Insert into Housings}
+\begin{enumerate}
+    \item Insert crimped contacts into color-matched PP45 housings:
+    \begin{itemize}
+        \item Yellow wire $\rightarrow$ Yellow housing
+        \item Green wire $\rightarrow$ Green housing
+        \item Blue wire $\rightarrow$ Blue housing
+    \end{itemize}
+    \item Ensure contact locks with audible click
+    \item \note{Maintain consistent contact orientation (open side facing up toward ``A'' marking)}
+\end{enumerate}
+
+\subsubsection{Form 3-Pin Blocks}
+\begin{enumerate}
+    \item Join individual PP45 housings using dovetail slide rails
+    \item Create two 3-position blocks (motor side and controller side)
+    \item Verify color sequence matches on both blocks
+    \item Test mating of blocks to confirm proper alignment
+\end{enumerate}
+
+\subsection{Step 3: Terminate Hall/Temp Wires with JST-SM 6-Pin}
+
+\subsubsection{Identify Motor Sensor Wires}
+\begin{enumerate}
+    \item Locate on BBSHD motor side:
+    \begin{itemize}
+        \item Red (+5V)
+        \item Black (Ground)
+        \item Three hall signal wires (Blue, White, Gray)
+        \item Thermistor lead (if present)
+    \end{itemize}
+    \item Plan for 6 total connections
+    \item Isolate and secure any unused PAS sensor wires
+\end{enumerate}
+
+\subsubsection{Strip and Prepare Wires}
+\begin{enumerate}
+    \item Strip 2--3 mm of insulation from each small wire
+    \item Handle carefully (typical gauge: 24--26 AWG)
+    \item Twist strands to ensure neat insertion into pins
+\end{enumerate}
+
+\subsubsection{Crimp JST Pins}
+\begin{enumerate}
+    \item Use precision crimp tool for JST-SM pins
+    \item Position wire with:
+    \begin{itemize}
+        \item Stripped conductor under smaller crimp wings
+        \item Insulation under larger wings for strain relief
+    \end{itemize}
+    \item Crimp until tool fully closes, creating ``B''-shaped wrap
+    \item Start with +5V (red) and GND (black) for easier tracking
+\end{enumerate}
+
+\subsubsection{Insert Wires into JST Housing}
+
+\begin{table}[H]
+\centering
+\caption{JST Pin Assignment (Example Configuration)}
+\begin{tabular}{cll}
+\toprule
+\textbf{Pin} & \textbf{Controller Side} & \textbf{Motor Side} \\
+\midrule
+1 & Red (+5V) & Red (+5V) \\
+2 & Yellow (Hall A) & Gray (Hall A) \\
+3 & Green (Hall B) & White (Hall B) \\
+4 & Blue (Hall C) & Blue (Hall C) \\
+5 & White (Temp) & Thermistor \\
+6 & Black (GND) & Black (GND) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{enumerate}
+    \item Motor side: Use female JST housing with male pins
+    \item Controller side: Use male JST housing with female pins
+    \item Insert pins until they click and lock
+    \item Verify proper order for color-to-color mapping
+\end{enumerate}
+
+\subsection{Step 4: Insulation and Strain Relief}
+
+\subsubsection{Insulate Exposed Conductors}
+\begin{itemize}
+    \item Verify Anderson housings fully cover phase contacts
+    \item Add heat-shrink tubing over wire-to-housing junctions if desired
+    \item Ensure no bare metal is exposed on JST connections
+\end{itemize}
+
+\subsubsection{Re-install Grommets/Seals}
+\begin{itemize}
+    \item Re-use or replace rubber grommet at motor wire exit
+    \item Feed new phase and hall wires through properly
+    \item Seat grommet securely to prevent water ingress
+\end{itemize}
+
+\subsubsection{Internal Strain Relief}
+\begin{itemize}
+    \item Secure wires inside motor with zip ties or original clamps
+    \item Keep wires away from moving parts (rotor, gears)
+    \item Bundle hall wires neatly
+    \item Consider wrapping JST connector in foam if housed internally
+\end{itemize}
+
+\subsubsection{Connector Positioning}
+\begin{itemize}
+    \item Position Anderson and JST connectors for accessibility
+    \item Allow sufficient slack for steering/suspension movement
+    \item Consider using split loom or braided sleeve for protection
+    \item Ensure connectors are not under tension
+\end{itemize}
+
+\section{Post-Install Configuration Checklist}
+
+\subsection{Hardware Connections}
+
+\subsubsection{Connect Main-9 SuperHarness}
+\begin{enumerate}
+    \item Plug SuperHarness 9-pin connector into Baserunner's Main9 cable
+    \item Secure with threaded connection
+    \item Connect SW102 display to SuperHarness Bafang display connector (green 5-pin Higo)
+    \item Connect additional peripherals:
+    \begin{itemize}
+        \item E-brake cutoff sensors
+        \item Throttle
+        \item PAS sensor (if using external)
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Software Configuration}
+
+\subsubsection{Load Default Profile}
+\begin{enumerate}
+    \item Launch Grin's Phaserunner/Baserunner Suite on PC
+    \item Connect to Baserunner via USB (TTL-USB programming cable)
+    \item Load profile: ``V6\_Baserunner\_w\_SuperH'' or similar
+    \item This enables:
+    \begin{itemize}
+        \item Digital third-party display support
+        \item TX/RX communication to SW102
+        \item Proper throttle/brake input mapping
+    \end{itemize}
+\end{enumerate}
+
+\subsubsection{Verify Display Communication}
+\begin{enumerate}
+    \item Power on system (battery connected, Baserunner keyed on)
+    \item Confirm SW102 display powers up
+    \item Test assist level changes via display buttons
+    \item Set initial assist to 0 or low level for safety
+\end{enumerate}
+
+\subsection{Motor Calibration}
+
+\subsubsection{Motor Hall Detection \& Autotune}
+\begin{enumerate}
+    \item Secure bike (wheel off ground or chain removed)
+    \item In software Motor tab, select ``Hall Sensor motor''
+    \item Click ``Start Autotune'' or ``Detect Motor Params''
+    \item Motor will emit pulses and rotate slowly
+    \item Process measures:
+    \begin{itemize}
+        \item Hall timing
+        \item Resistance (Rs)
+        \item Inductance (L)
+        \item EMF constant (Kv)
+    \end{itemize}
+\end{enumerate}
+
+\subsubsection{Expected Autotune Results}
+\begin{itemize}
+    \item Effective Pole Pairs: $\sim$88 (due to internal gearing)
+    \item No-load speed constant: $\sim$3.3 RPM/V
+    \item Motor should run smoothly after calibration
+\end{itemize}
+
+\subsection{Thermal Protection Setup}
+
+\subsubsection{Configure Thermal Rollback}
+\begin{enumerate}
+    \item Navigate to Temperature (Thermistor) settings tab
+    \item Select: ``NTC 10k Thermistor (Beta 3950)''
+    \item Set temperature thresholds:
+    \begin{itemize}
+        \item Start reduction: 100°C
+        \item Significant cutback: 120°C
+    \end{itemize}
+    \item Enable rollback feature
+\end{enumerate}
+
+\subsubsection{Verify Temperature Reading}
+\begin{itemize}
+    \item Check ambient temperature reading (should be 20--25°C when cool)
+    \item If reading is incorrect:
+    \begin{itemize}
+        \item Newer BBSHD units (2020+) may use different thermistor
+        \item Consider replacing with standard 10k$\Omega$ NTC if needed
+    \end{itemize}
+\end{itemize}
+
+\subsection{Final Parameter Adjustments}
+
+\subsubsection{Current Limits}
+\begin{itemize}
+    \item \textbf{Battery current:} 25--30A (based on battery capability)
+    \item \textbf{Phase current:} 60--80A (for strong performance)
+    \item \warning{Higher currents generate more heat}
+\end{itemize}
+
+\subsubsection{Control Settings}
+\begin{itemize}
+    \item \textbf{Throttle:} Configure input mapping and mode (torque/speed)
+    \item \textbf{E-brakes:} Set regen level or cutoff behavior
+    \item \textbf{PAS:} Configure if using external sensor (pulses, assist modes)
+    \item \textbf{Speed source:} Connect external wheel speed sensor to SW102 or CA3
+\end{itemize}
+
+\subsection{Testing and Validation}
+
+\subsubsection{Final System Checks}
+\begin{enumerate}
+    \item Review diagnostics in software with system powered
+    \item Rotate cranks by hand -- verify hall sensors toggle
+    \item Test throttle response (wheel free)
+    \item Confirm brake cutoffs function
+\end{enumerate}
+
+\subsubsection{Test Ride Protocol}
+\begin{enumerate}
+    \item Reassemble BBSHD motor cover
+    \item Secure all cables
+    \item Start with low assist level or minimal throttle
+    \item Monitor for:
+    \begin{itemize}
+        \item Smooth, quiet operation (FOC controller benefit)
+        \item Temperature readings during hill climbs
+        \item Thermal rollback engagement if needed
+    \end{itemize}
+    \item Check connectors for heat or loosening after first rides
+\end{enumerate}
+
+\section{Troubleshooting Guide}
+
+\subsection{Common Issues and Solutions}
+
+\begin{table}[H]
+\centering
+\caption{Troubleshooting Reference}
+\begin{tabular}{p{4cm}p{9cm}}
+\toprule
+\textbf{Issue} & \textbf{Solution} \\
+\midrule
+Motor stutters or fails to sync & Verify hall sensor wire mapping (Gray$\rightarrow$Yellow, White$\rightarrow$Green, Blue$\rightarrow$Blue) \\
+\midrule
+Display doesn't power on & Check Baserunner's orange ``Key'' wire connection to battery positive \\
+\midrule
+Incorrect temperature reading & Verify thermistor type (10k$\Omega$ NTC), check wiring, consider replacement if needed \\
+\midrule
+No speed reading & Connect external wheel speed sensor to SW102 or CA3 \\
+\midrule
+Motor runs rough & Re-run autotune procedure, verify phase connections \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Maintenance Notes}
+
+\begin{itemize}
+    \item Anderson and JST connections allow easy disconnection for service
+    \item Monitor connectors during first 100km for any issues
+    \item Keep JST connections protected from moisture
+    \item Periodically check temperature readings for system health
+    \item Save configuration files after any adjustments
+\end{itemize}
+
+\section{References}
+
+\begin{enumerate}
+    \item Grin Technologies, \textit{Baserunner V6 User Manual}, motor connector pinouts
+    \item Grin Technologies, \textit{Connectors Overview}, Anderson Powerpoles and JST-SM for ebike wiring
+    \item Endless-Sphere Forum, BBSHD hall/phase color mapping discussions
+    \item Endless-Sphere Forum, BBSHD temperature sensor specifications (10k thermistor vs newer sensors)
+    \item Reddit r/ebikes, BBSHD external controller experiences and profiles
+\end{enumerate}
+
+\vspace{1cm}
+\begin{center}
+\rule{0.5\textwidth}{0.4pt}\\[0.5cm]
+\textit{End of Document}
+\end{center}
+
+\end{document}
