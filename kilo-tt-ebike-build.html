@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kilo TT E-Bike Build — Complete Spec &amp; Checklist</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0e0f11;
+  --bg2: #141518;
+  --surface: #1a1b1f;
+  --surface2: #222329;
+  --surface3: #2a2b32;
+  --border: #333440;
+  --border-light: #444555;
+  --text: #c8c9d0;
+  --text-dim: #7a7b88;
+  --text-bright: #eaebf0;
+  --white: #ffffff;
+
+  /* Domain colors */
+  --mech: #c9a227;       /* mechanical — warm brass */
+  --mech-dim: #8a7020;
+  --mech-bg: rgba(201,162,39,0.06);
+  --elec: #2d8cf0;       /* electrical — cool blue */
+  --elec-dim: #1a5a9e;
+  --elec-bg: rgba(45,140,240,0.06);
+  --comm: #22b573;       /* commissioning — green */
+  --comm-dim: #167a4e;
+  --comm-bg: rgba(34,181,115,0.06);
+  --danger: #e04848;
+  --danger-bg: rgba(224,72,72,0.08);
+  --warn: #d4a030;
+  --warn-bg: rgba(212,160,48,0.08);
+  --info: #5a9fd4;
+  --info-bg: rgba(90,159,212,0.08);
+  --ok: #4aaa6a;
+  --ok-bg: rgba(74,170,106,0.08);
+
+  /* Wire colors */
+  --wy: #e8d44d; --wg: #5dbe6e; --wb: #5b9bd5;
+  --wr: #d94f4f; --wk: #555; --wgr: #999;
+  --ww: #ddd; --wp: #9966cc;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page { max-width: 980px; margin: 0 auto; padding: 2rem 2rem 4rem; }
+
+/* ─── HEADER ─── */
+header {
+  padding: 3rem 0 2rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2.5rem;
+}
+header h1 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--white);
+  margin-bottom: 0.3rem;
+}
+header .sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  letter-spacing: 0.02em;
+}
+.build-id {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.35rem 0.8rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--text-dim);
+}
+
+/* ─── PROGRESS BAR ─── */
+.overall-progress {
+  margin-top: 1.2rem;
+  padding: 0.8rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+.progress-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+}
+.progress-top .progress-label {
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.68rem;
+}
+.progress-top .progress-count {
+  color: var(--text-bright);
+  font-weight: 600;
+}
+.progress-rail {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--surface3);
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--ok), var(--elec));
+  transition: width 0.3s ease;
+}
+.progress-actions {
+  margin-top: 0.5rem;
+  text-align: right;
+}
+.btn-reset {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 0.25rem 0.6rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-reset:hover { color: var(--danger); border-color: var(--danger); }
+
+/* ─── CONSTRAINT CARDS ─── */
+.constraint-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  margin-top: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+.constraint-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.8rem;
+  border-top: 3px solid var(--border);
+}
+.constraint-card.danger { border-top-color: var(--danger); }
+.constraint-card.warn   { border-top-color: var(--warn); }
+.constraint-card.info   { border-top-color: var(--info); }
+.constraint-card.ok     { border-top-color: var(--ok); }
+.constraint-card .cc-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  margin-bottom: 0.3rem;
+}
+.constraint-card.danger .cc-label { color: var(--danger); }
+.constraint-card.warn   .cc-label { color: var(--warn); }
+.constraint-card.info   .cc-label { color: var(--info); }
+.constraint-card.ok     .cc-label { color: var(--ok); }
+.constraint-card .cc-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text-bright);
+  line-height: 1.2;
+  margin-bottom: 0.2rem;
+}
+.constraint-card .cc-note {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  line-height: 1.4;
+}
+
+@media (max-width: 800px) {
+  .constraint-cards { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px) {
+  .constraint-cards { grid-template-columns: 1fr; }
+}
+
+/* ─── NAV ─── */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 0.6rem 0;
+  margin: 0 -2rem 2rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  display: flex;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+  backdrop-filter: blur(8px);
+}
+nav a {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  text-decoration: none;
+  padding: 0.3rem 0.6rem;
+  border-radius: 3px;
+  transition: all 0.15s;
+}
+nav a:hover { color: var(--text-bright); background: var(--surface); }
+nav a.mech { border-left: 2px solid var(--mech); }
+nav a.elec { border-left: 2px solid var(--elec); }
+nav a.comm { border-left: 2px solid var(--comm); }
+
+/* ─── SECTIONS ─── */
+.section { margin-bottom: 3rem; }
+h2 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--white);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+h2 .domain-tag {
+  font-size: 0.6rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.15rem 0.5rem;
+  border-radius: 2px;
+}
+h2 .domain-tag.mech { background: var(--mech-bg); color: var(--mech); border: 1px solid var(--mech-dim); }
+h2 .domain-tag.elec { background: var(--elec-bg); color: var(--elec); border: 1px solid var(--elec-dim); }
+h2 .domain-tag.comm { background: var(--comm-bg); color: var(--comm); border: 1px solid var(--comm-dim); }
+
+h3 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-bright);
+  margin-top: 1.8rem;
+  margin-bottom: 0.6rem;
+}
+
+p { font-size: 0.88rem; margin-bottom: 0.7rem; }
+
+/* ─── SPEC TABLE ─── */
+.spec-group {
+  margin-bottom: 1.5rem;
+}
+.spec-group-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.5rem 0.8rem;
+  border-radius: 4px 4px 0 0;
+}
+.spec-group-title.mech { background: var(--mech-bg); color: var(--mech); border: 1px solid var(--mech-dim); border-bottom: none; }
+.spec-group-title.elec { background: var(--elec-bg); color: var(--elec); border: 1px solid var(--elec-dim); border-bottom: none; }
+
+table.spec {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  border: 1px solid var(--border);
+  border-radius: 0 0 4px 4px;
+  overflow: hidden;
+}
+table.spec th {
+  text-align: left;
+  padding: 0.45rem 0.8rem;
+  background: var(--surface2);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-dim);
+  border-bottom: 1px solid var(--border);
+}
+table.spec td {
+  padding: 0.45rem 0.8rem;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  vertical-align: top;
+}
+table.spec tr:last-child td { border-bottom: none; }
+table.spec td:first-child {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  white-space: nowrap;
+  width: 35%;
+}
+table.spec td:nth-child(2) { color: var(--text-bright); font-weight: 500; }
+table.spec td:nth-child(3) { color: var(--text-dim); font-size: 0.78rem; }
+
+/* ─── CHECKLIST ─── */
+.checklist-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin-bottom: 1.25rem;
+  overflow: hidden;
+}
+.checklist-header {
+  padding: 0.7rem 1rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-bright);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  user-select: none;
+}
+.checklist-header .step-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  font-size: 0.72rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.checklist-header .step-badge.mech { background: var(--mech); color: var(--bg); }
+.checklist-header .step-badge.elec { background: var(--elec); color: var(--bg); }
+.checklist-header .step-badge.comm { background: var(--comm); color: var(--bg); }
+
+.check-items { padding: 0.5rem 0; }
+
+.check-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  padding: 0.45rem 1rem 0.45rem 1rem;
+  font-size: 0.84rem;
+  transition: background 0.1s;
+}
+.check-item:hover { background: rgba(255,255,255,0.02); }
+
+.check-item input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  border: 1.5px solid var(--border-light);
+  border-radius: 3px;
+  background: transparent;
+  margin-top: 2px;
+  cursor: pointer;
+  transition: all 0.15s;
+  position: relative;
+}
+.check-item input[type="checkbox"]:checked {
+  background: var(--ok);
+  border-color: var(--ok);
+}
+.check-item input[type="checkbox"]:checked::after {
+  content: '\2713';
+  position: absolute;
+  top: -1px; left: 2px;
+  font-size: 11px;
+  color: white;
+  font-weight: 700;
+}
+.check-item label { cursor: pointer; flex: 1; }
+.check-item.sub { padding-left: 2.8rem; }
+.check-item.sub label { color: var(--text-dim); font-size: 0.8rem; }
+
+/* ─── CALLOUTS ─── */
+.callout {
+  border-radius: 4px;
+  padding: 0.8rem 1rem;
+  margin: 0.8rem 0;
+  font-size: 0.82rem;
+  line-height: 1.55;
+}
+.callout.danger { background: var(--danger-bg); border: 1px solid rgba(224,72,72,0.25); color: #f0a0a0; }
+.callout.warn   { background: var(--warn-bg);   border: 1px solid rgba(212,160,48,0.25); color: #e8cc80; }
+.callout.info   { background: var(--info-bg);    border: 1px solid rgba(90,159,212,0.25); color: #a0c8e8; }
+.callout.ok     { background: var(--ok-bg);      border: 1px solid rgba(74,170,106,0.25); color: #90d4a8; }
+.callout strong {
+  display: block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.2rem;
+}
+
+/* ─── WIRE TABLE ─── */
+.wire-dot {
+  display: inline-block;
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  margin-right: 0.35rem;
+  vertical-align: middle;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* ─── FLOW DIAGRAM ─── */
+.diagram {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1.2rem 1.5rem;
+  margin: 1.2rem 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  line-height: 1.9;
+  overflow-x: auto;
+  white-space: pre;
+  color: var(--text-dim);
+}
+.diagram .m { color: var(--mech); font-weight: 600; }
+.diagram .e { color: var(--elec); font-weight: 600; }
+.diagram .c { color: var(--comm); font-weight: 600; }
+.diagram .d { color: var(--danger); font-weight: 600; }
+
+/* ─── BADGES ─── */
+.badge {
+  display: inline-block;
+  padding: 0.08rem 0.4rem;
+  border-radius: 2px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+.badge.verify { background: var(--warn-bg); color: var(--warn); border: 1px solid rgba(212,160,48,0.3); }
+.badge.ok { background: var(--ok-bg); color: var(--ok); border: 1px solid rgba(74,170,106,0.3); }
+.badge.crit { background: var(--danger-bg); color: var(--danger); border: 1px solid rgba(224,72,72,0.3); }
+
+/* ─── GEOMETRY ─── */
+.geo-compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+.geo-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1rem;
+}
+.geo-card h4 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.6rem;
+}
+.geo-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.8rem;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 0.2rem;
+}
+.geo-label {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+}
+
+/* ─── PHOTO GALLERY ─── */
+.photo-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+.photo-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.photo-card img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
+  border-bottom: 1px solid var(--border);
+}
+.photo-card figcaption {
+  padding: 0.6rem 0.7rem;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  line-height: 1.45;
+}
+.photo-card figcaption strong {
+  display: block;
+  color: var(--text-bright);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  margin-bottom: 0.2rem;
+}
+
+/* ─── SECTION DIVIDER ─── */
+.divider {
+  border: none;
+  border-top: 1px dashed var(--border);
+  margin: 2.5rem 0;
+}
+
+/* ─── PRINT ─── */
+@media print {
+  body { background: white; color: #222; font-size: 10pt; }
+  .page { padding: 0.5in; max-width: none; }
+  nav { display: none; }
+  :root { --surface: #f4f4f4; --surface2: #eee; --border: #ccc; --text: #333; --text-dim: #666; --text-bright: #000; --white: #000; }
+  .checklist-section { break-inside: avoid; }
+  .check-item input[type="checkbox"] { border-color: #999; }
+}
+
+@media (max-width: 640px) {
+  .page { padding: 1rem; }
+  nav { margin: 0 -1rem 1.5rem; padding-left: 1rem; padding-right: 1rem; }
+  .geo-compare { grid-template-columns: 1fr; }
+  table.spec td:first-child { width: auto; white-space: normal; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header>
+  <h1>Kilo TT &rarr; E-Assist Build</h1>
+  <div class="sub">Complete Specification &amp; Build Checklist</div>
+  <div class="build-id">63cm Mercier Kilo TT &middot; BBSHD &rarr; Baserunner V6 Z9 &middot; Superharness + SW102 &middot; 14s4p 18650 + JK BMS</div>
+
+  <!-- Overall progress bar -->
+  <div class="overall-progress">
+    <div class="progress-top">
+      <span class="progress-label">Checklist completion</span>
+      <span class="progress-count" id="progress-text">0 / 0 complete</span>
+    </div>
+    <div class="progress-rail">
+      <div class="progress-fill" id="progress-fill"></div>
+    </div>
+    <div class="progress-actions">
+      <button class="btn-reset" type="button" id="reset-all">Reset all</button>
+    </div>
+  </div>
+</header>
+
+<!-- Key constraint summary cards -->
+<div class="constraint-cards">
+  <div class="constraint-card danger">
+    <div class="cc-label">Voltage margin</div>
+    <div class="cc-value">58.8V / 60V</div>
+    <div class="cc-note">Full charge is only 1.2V under controller max input. Regen and transients are first-order risks.</div>
+  </div>
+  <div class="constraint-card warn">
+    <div class="cc-label">Trail change</div>
+    <div class="cc-value">60.5 &rarr; 53.3mm</div>
+    <div class="cc-note">The Zephyr cuts ~7.25mm of trail. Loaded handling should be tested progressively.</div>
+  </div>
+  <div class="constraint-card info">
+    <div class="cc-label">Controller fit</div>
+    <div class="cc-value">Z9 small-motor class</div>
+    <div class="cc-note">Current-limit because this is outside the controller's usual small-motor use case.</div>
+  </div>
+  <div class="constraint-card ok">
+    <div class="cc-label">Speed truth</div>
+    <div class="cc-value">Wheel sensor needed</div>
+    <div class="cc-note">Motor RPM is not vehicle speed on this mid-drive. Do not trust display speed without wheel input.</div>
+  </div>
+</div>
+
+<nav>
+  <a href="#spec" class="mech">Spec Sheet</a>
+  <a href="#geometry" class="mech">Geometry</a>
+  <a href="#topology" class="elec">System Topology</a>
+  <a href="#mech-build" class="mech">Mechanical Build</a>
+  <a href="#elec-build" class="elec">Electrical Build</a>
+  <a href="#commission" class="comm">Commissioning</a>
+  <a href="#gotchas" class="comm">Gotchas</a>
+  <a href="#discrepancies" class="comm">Discrepancies</a>
+  <a href="#faults" class="comm">Fault Triage</a>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!--  SECTION 1: COMPLETE PARTS SPEC                     -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="section" id="spec">
+<h2>Complete Parts Specification</h2>
+
+<!-- Frame & Fork -->
+<div class="spec-group">
+<div class="spec-group-title mech">Frame &amp; Fork</div>
+<table class="spec">
+<tr><th>Component</th><th>Specification</th><th>Fit Notes</th></tr>
+<tr><td>Frame</td><td>Mercier Kilo TT, 63cm (c-to-c)</td><td>Reynolds 520 CrMo, track geometry</td></tr>
+<tr><td>BB shell</td><td>68mm English/BSA threaded</td><td>Correct for BBSHD 68-73mm variant</td></tr>
+<tr><td>Headset standard</td><td>1&Prime; threadless, 26.4mm crown race (ISO)</td><td>Verify headset matches ISO, not JIS 27.0mm</td></tr>
+<tr><td>Rear spacing</td><td>120mm (track standard)</td><td>Horizontal dropouts, track nuts</td></tr>
+<tr><td>Seatpost dia.</td><td>26.8mm</td><td>Confirmed across multiple sources</td></tr>
+<tr><td>Seat clamp</td><td>30.0mm (included with frame)</td><td>&mdash;</td></tr>
+<tr><td>Brake mounts</td><td>Drilled front &amp; rear for caliper brakes</td><td>Rack braze-ons &amp; fender eyes present</td></tr>
+<tr><td>Fork</td><td>Wound Up Zephyr 1&Prime;, 450mm steel steerer (threadless)</td><td>Carbon legs, steel steerer, reversed dropouts</td></tr>
+<tr><td>Fork rake</td><td>35mm (stock Kilo TT = 28mm)</td><td>Reduces trail ~7mm &rarr; quicker steering</td></tr>
+<tr><td>Fork A-to-C</td><td>368mm</td><td>&mdash;</td></tr>
+<tr><td>Fork crown race</td><td>26.4mm (ISO) &mdash; matches frame</td><td><span class="badge ok">matched</span></td></tr>
+<tr><td>Fork tire clearance</td><td>700&times;28c max</td><td>23mm Paselas clear easily</td></tr>
+<tr><td>Fork brake type</td><td>Caliper (drilled)</td><td>&mdash;</td></tr>
+<tr><td>Max spacer stack</td><td>44mm (Wound Up spec)</td><td>Do not exceed</td></tr>
+</table>
+</div>
+
+<!-- Cockpit -->
+<div class="spec-group">
+<div class="spec-group-title mech">Cockpit</div>
+<table class="spec">
+<tr><th>Component</th><th>Specification</th><th>Fit Notes</th></tr>
+<tr><td>Handlebar</td><td>Nitto B263AA (short bullhorn / pursuit)</td><td>TT-style, intended for clip-on extensions</td></tr>
+<tr><td>Bar stem clamp</td><td>25.4mm</td><td>Needs 25.4mm stem or 31.8&rarr;25.4 shim</td></tr>
+<tr><td>Bar lever area OD</td><td>22.2mm</td><td>Compatible with most e-bike throttles/accessories</td></tr>
+<tr><td>Bar inner dia. (tips)</td><td>~17mm</td><td>Limits bar-end lever options (most TT levers need &ge;19mm)</td></tr>
+<tr><td>Brake levers</td><td>GIRACHA / Dreamworks CNC single-finger</td><td>Listed as 23mm clamp &mdash; <span class="badge verify">verify fit on 22.2mm bar</span></td></tr>
+<tr><td>Saddle</td><td>Berthoud Galibier</td><td>~345&ndash;365g (varies by hide and version), titanium rails (7mm round), narrow performance shape</td></tr>
+<tr><td>Seatpost</td><td>Nitto S-83, 26.8mm (Blue Lug variant)</td><td>44mm rail width, two-bolt clamp. <span class="badge ok">correct dia.</span></td></tr>
+</table>
+</div>
+
+<!-- Brakes -->
+<div class="spec-group">
+<div class="spec-group-title mech">Brakes</div>
+<table class="spec">
+<tr><th>Component</th><th>Specification</th><th>Fit Notes</th></tr>
+<tr><td>Calipers</td><td>Dia-Compe 9000Ti (Gran Compe)</td><td>Mono-pivot, short-pull caliper</td></tr>
+<tr><td>Caliper reach</td><td>39&ndash;49mm (conservative) / 39&ndash;51mm (some listings)</td><td><span class="badge verify">measure actual frame+fork reach</span></td></tr>
+<tr><td>Lever pull type</td><td>Short-pull (road caliper compatible)</td><td>Do NOT use V-brake / long-pull levers</td></tr>
+</table>
+</div>
+
+<!-- Wheels & Tires -->
+<div class="spec-group">
+<div class="spec-group-title mech">Wheels &amp; Tires</div>
+<table class="spec">
+<tr><th>Component</th><th>Specification</th><th>Fit Notes</th></tr>
+<tr><td>Rear hub</td><td>Shimano Dura-Ace 7600 (track), 36h, fixed/fixed</td><td>120mm spacing. Drive side: 1.37&Prime;&times;24 TPI (main cog thread). Non-drive side: 1.29&Prime;&times;24 TPI <strong>left-hand</strong> (lockring thread).</td></tr>
+<tr><td>Rims</td><td>H Plus Son TB14</td><td>490g, 14.1mm deep, 23mm wide, 17.5mm internal, ERD 610mm</td></tr>
+<tr><td>Tires</td><td>Panaracer Pasela 700&times;23c gumwall</td><td>Clears Zephyr &amp; frame. Consider 25&ndash;28mm for loaded riding.</td></tr>
+<tr><td>Freewheel (cargo mode)</td><td>36T thread-on freewheel</td><td>ISO 1.37&Prime;&times;24 TPI &mdash; fits track hub drive-side thread</td></tr>
+<tr><td>Fixed cog (unladen mode)</td><td>20T track cog + lockring</td><td>Lockring is 1.29&Prime;&times;24 TPI <strong>left-hand thread</strong> &mdash; reverse-thread for back-torque retention</td></tr>
+<tr><td>Chainring</td><td>42T on BBSHD spider</td><td><span class="badge verify">measure chainline to both rear cogs</span></td></tr>
+<tr><td>Chain</td><td>Single-speed, quality (e.g. Izumi, KMC Z1)</td><td>Must tolerate motor torque + cargo loads</td></tr>
+</table>
+<div class="callout danger">
+  <strong>Safety-critical: track hub threading is NOT the same both sides</strong>
+  The Dura-Ace 7600 track hub uses a stepped threading interface. The drive side is 1.37&Prime;&times;24 TPI (standard cog thread shared with freewheel). The non-drive (lockring) side is 1.29&Prime;&times;24 TPI with <strong>left-hand</strong> threading. The left-hand lockring thread is what prevents the fixed cog from unscrewing under back-torque. Using the wrong lockring, cross-threading, or confusing the two thread standards can lead to the cog coming loose while riding &mdash; a potentially catastrophic failure on a fixed-gear setup.
+</div>
+</div>
+
+<!-- Drivetrain - Motor -->
+<div class="spec-group">
+<div class="spec-group-title elec">Motor &amp; Drivetrain</div>
+<table class="spec">
+<tr><th>Component</th><th>Specification</th><th>Fit Notes</th></tr>
+<tr><td>Motor</td><td>Bafang BBSHD (68&ndash;73mm variant)</td><td>~1000W nominal, ~160 N&middot;m max torque (vendor spec)</td></tr>
+<tr><td>Motor BB fit</td><td>68mm BSA &mdash; matches Kilo TT</td><td><span class="badge ok">confirmed</span></td></tr>
+<tr><td>Stock controller</td><td>REMOVED &mdash; running external Baserunner</td><td>Motor treated as bare 3-phase BLDC + Halls</td></tr>
+<tr><td>Gear ratio (cargo)</td><td>42&times;36 = 31.5 gear-inches</td><td>~9.5mph @ 80RPM cadence. Motor does the work.</td></tr>
+<tr><td>Gear ratio (fixed)</td><td>42&times;20 = 56.7 gear-inches</td><td>~19mph @ 80RPM. Normal urban SS ratio.</td></tr>
+</table>
+</div>
+
+<!-- Controller & Electronics -->
+<div class="spec-group">
+<div class="spec-group-title elec">Controller &amp; Electronics</div>
+<table class="spec">
+<tr><th>Component</th><th>Specification</th><th>Fit Notes</th></tr>
+<tr><td>Controller</td><td>Grin Baserunner V6 Z9</td><td>FOC, 60V max, 55A peak phase, Z910 motor plug</td></tr>
+<tr><td>Firmware req.</td><td>&ge; 6.025</td><td><span class="badge crit">must verify/update &mdash; 6.023 has display bugs</span></td></tr>
+<tr><td>Software req.</td><td>Phaserunner Suite &ge; 2.0</td><td>Required for Superharness operation</td></tr>
+<tr><td>Controller mount</td><td>Seat tube (round-tube mount)</td><td>Short phase wire run to BBSHD at BB</td></tr>
+<tr><td>Harness</td><td>Grin Superharness (Main9)</td><td>Merges throttle+brake into single analog signal</td></tr>
+<tr><td>Display</td><td>Grin SW102 (Star Union OLED, KM5s protocol)</td><td>System on/off via display power button</td></tr>
+<tr><td>Throttle</td><td>DYOL bidirectional twist</td><td>1V neutral, 0&ndash;4V range, 3-pin Higo, 1V offset for Grin</td></tr>
+<tr><td>Programming cable</td><td>TRRS-to-USB TTL (Grin or compatible FTDI)</td><td>0&ndash;5V serial, connects via TRRS jack on controller</td></tr>
+</table>
+</div>
+
+<!-- Battery & BMS -->
+<div class="spec-group">
+<div class="spec-group-title elec">Battery &amp; BMS</div>
+<table class="spec">
+<tr><th>Component</th><th>Specification</th><th>Fit Notes</th></tr>
+<tr><td>Pack config</td><td>14s4p 18650 Li-ion</td><td>58.8V full charge, ~52V nominal</td></tr>
+<tr><td>BMS</td><td>JK-BD4A17S4P (Jikong Smart BMS)</td><td>Full protection + 0.4A active balance + Bluetooth</td></tr>
+<tr><td>BMS cont. discharge</td><td>40A</td><td>System bottleneck &mdash; set controller limits below this</td></tr>
+<tr><td>BMS peak discharge</td><td>60A</td><td>Short-duration only</td></tr>
+<tr><td>BMS charge current</td><td>10&ndash;40A adjustable</td><td>Set below regen current limit</td></tr>
+<tr><td>BMS switching</td><td>Low-side, common-port (B- / C-)</td><td>Pack+ goes direct; BMS switches negative leg</td></tr>
+<tr><td>BMS activation</td><td>Charging activation (charger V &gt; pack V + ~2V)</td><td>No physical power switch on BMS</td></tr>
+<tr><td>BMS comms</td><td>Bluetooth (Android/iOS app), RS485 (P4), UART 3.3V (P5)</td><td>Default BT password: &quot;1234&quot; or &quot;123456&quot;</td></tr>
+<tr><td>Pack mount</td><td>Rear rack (in bag/case)</td><td>Adds rear weight &mdash; monitor handling with Zephyr fork</td></tr>
+<tr><td>Precharge</td><td>XT90-S anti-spark connector</td><td>Eliminates inrush spark into capacitive controller</td></tr>
+<tr><td>Main fuse</td><td>Sized to system (~50A, pack-level)</td><td>Close to pack positive terminal</td></tr>
+</table>
+
+<!-- Battery assembly photo gallery -->
+<h3>Battery Assembly Photos</h3>
+<div class="photo-gallery">
+  <figure class="photo-card">
+    <img src="188492-fe91804f987eb1131d64a054c95844ce.jpg" alt="Open battery cell stack with nickel layout and leads" loading="lazy">
+    <figcaption><strong>Open pack stack</strong>Reference for raw cell stack and discharge lead orientation before final closure.</figcaption>
+  </figure>
+  <figure class="photo-card">
+    <img src="188493-dc4b4d6897a698108730d49a5315495c.jpg" alt="Battery pack with BMS mounted and harnesses exposed" loading="lazy">
+    <figcaption><strong>BMS mounted, harnesses open</strong>Compare BMS placement and routed balance leads before wrapping.</figcaption>
+  </figure>
+  <figure class="photo-card">
+    <img src="188494-871da0bba727bd18a0c487095a066e44.jpg" alt="Wrapped battery pack with connector lead exposed" loading="lazy">
+    <figcaption><strong>Wrapped pack, green sleeve</strong>Confirm main lead exit and strain relief against this reference before bagging the pack.</figcaption>
+  </figure>
+  <figure class="photo-card">
+    <img src="188496-3f3270467206faa4328934fe8dc3e43e.jpg" alt="Wrapped battery pack with black exterior" loading="lazy">
+    <figcaption><strong>Wrapped pack, black sleeve</strong>Secondary closure view for dimensional comparison and connector emergence.</figcaption>
+  </figure>
+  <figure class="photo-card">
+    <img src="188497-c767533d7cfb9340f7847b2a6a1a6b2f.jpg" alt="Battery pack mockup in a bicycle frame bag area" loading="lazy">
+    <figcaption><strong>Frame-fit reference</strong>Rough sanity check for battery placement away from the rear rack.</figcaption>
+  </figure>
+</div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!--  SECTION 2: GEOMETRY                                -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="section" id="geometry">
+<h2><span class="domain-tag mech">mech</span> Geometry &amp; Handling Notes</h2>
+
+<div class="geo-compare">
+  <div class="geo-card">
+    <h4>Stock Kilo TT (63cm)</h4>
+    <div class="geo-val" style="color:var(--text-dim)">~60.5mm</div>
+    <div class="geo-label">Trail (28mm rake, 75&deg; HTA)</div>
+  </div>
+  <div class="geo-card">
+    <h4>With Zephyr Fork</h4>
+    <div class="geo-val" style="color:var(--mech)">~53mm</div>
+    <div class="geo-label">Trail (35mm rake, 75&deg; HTA) &mdash; quicker steering</div>
+  </div>
+</div>
+
+<div class="callout warn">
+  <strong>Handling advisory</strong>
+  ~7mm trail reduction + rear-biased load (rack battery + panniers) = potentially twitchy front end at speed. Test the bike gradually: unloaded &rarr; partially loaded &rarr; fully loaded. If handling feels unstable, first upgrade to wider tires (25&ndash;28mm), then consider moving battery to main triangle. Swapping back to a lower-rake fork is the nuclear option.
+</div>
+
+<table class="spec">
+<tr><th>Dimension</th><th>Value</th><th>Source</th></tr>
+<tr><td>Head tube angle</td><td>75&deg;</td><td>Kilo TT geometry chart (63cm)</td></tr>
+<tr><td>Stock fork rake</td><td>28mm</td><td>Kilo TT geometry chart</td></tr>
+<tr><td>Zephyr fork rake</td><td>35mm</td><td>Wound Up spec sheet</td></tr>
+<tr><td>Wheelbase (stock)</td><td>1023mm</td><td>Kilo TT geometry chart</td></tr>
+<tr><td>Chainstay</td><td>401mm</td><td>Kilo TT geometry chart</td></tr>
+<tr><td>Zephyr A-to-C</td><td>368mm</td><td>Wound Up spec sheet</td></tr>
+</table>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!--  SECTION 3: SYSTEM TOPOLOGY                         -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="section" id="topology">
+<h2><span class="domain-tag elec">elec</span> System Topology</h2>
+
+<div class="diagram"><span class="e">POWER PATH</span>
+  <span class="d">14s4p Pack+</span> &rarr; Main Fuse &rarr; <span class="d">XT90-S</span> &rarr; <span class="e">Baserunner Batt V+</span> (seat tube)
+  <span class="d">14s4p Pack-</span> &rarr; <span class="d">JK BMS B-</span> &rarr; <span class="d">BMS C-</span> &rarr; <span class="e">Baserunner Batt GND</span>
+
+<span class="e">MOTOR PATH</span>
+  <span class="e">Baserunner Z910</span> &larr;&mdash; Z910 adapter harness &mdash;&rarr; <span class="m">BBSHD 3&times; phases + Halls + temp</span>
+                     (down seat tube to BB shell)
+
+<span class="e">SIGNAL PATH</span>
+  <span class="e">Baserunner Main9</span> &larr;&mdash; 9-pin Cusmade &mdash;&rarr; <span class="c">Superharness</span> (near stem)
+                                              &boxur;&rarr; <span class="c">SW102</span> display (5-pin Higo) &rarr; bars
+                                              &boxur;&rarr; <span class="c">DYOL</span> throttle (3-pin yellow Higo) &rarr; bars
+                                              &boxur;&rarr; E-brake (4-pin Higo, optional) &rarr; bars
+                                              &boxv;&rarr; Lights (barrel jack, optional)
+
+<span class="e">UNUSED</span>
+  Baserunner 6-pin PAS &rarr; <span class="m">capped</span> (throttle-only, no PAS)
+  Baserunner WP8 (CA)  &rarr; <span class="m">capped</span> (or tap for rear light power)</div>
+
+<h3>Voltage Architecture</h3>
+<table class="spec">
+<tr><th>Bus</th><th>Voltage</th><th>Notes</th></tr>
+<tr><td>Pack full charge</td><td>58.8V (14 &times; 4.2V)</td><td>Only 1.2V below Baserunner 60V max</td></tr>
+<tr><td>Pack nominal</td><td>~51.8V (14 &times; 3.7V)</td><td>Normal operating range</td></tr>
+<tr><td>Pack cutoff</td><td>~40.6V (14 &times; 2.9V, BMS default UVP)</td><td>BMS shuts off discharge</td></tr>
+<tr><td>Superharness output</td><td>0.0V (max regen) &rarr; 0.95V (neutral) &rarr; 3.6V (max power)</td><td>Single analog line to Baserunner Analog Input 2</td></tr>
+<tr><td>Hall sensors</td><td>0&ndash;5V logic</td><td>Z910 Hall 5V / GND / 3&times; signals</td></tr>
+<tr><td>DYOL throttle raw</td><td>0V (regen) &rarr; 1V (neutral) &rarr; 4V (power)</td><td>Superharness remaps to its own output range</td></tr>
+</table>
+
+<div class="callout danger">
+  <strong>Regen voltage headroom</strong>
+  58.8V full charge is only 1.2V below the Baserunner's 60V absolute max. During regen, pack voltage can spike above resting full-charge voltage. Set the Baserunner's max regen voltage limit BELOW the BMS overcharge trip (58.8V). Set the BMS charge overcurrent protection to catch any current the Baserunner doesn't self-limit. Test regen behavior with the pack near full charge before riding.
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!--  SECTION 4: MECHANICAL BUILD CHECKLIST              -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="section" id="mech-build">
+<h2><span class="domain-tag mech">mech</span> Mechanical Build Checklist</h2>
+
+<div class="checklist-section">
+  <div class="checklist-header"><span class="step-badge mech">1</span> BBSHD Dry-Fit &amp; Chainline</div>
+  <div class="check-items">
+    <div class="check-item"><input type="checkbox" id="m1a"><label for="m1a">Bolt BBSHD (68-73mm variant) onto Kilo TT BB shell &mdash; snug, not final torque</label></div>
+    <div class="check-item"><input type="checkbox" id="m1b"><label for="m1b">Confirm motor housing clears chainstays and downtube on both sides</label></div>
+    <div class="check-item"><input type="checkbox" id="m1c"><label for="m1c">Confirm cable exit side clears and cables can route without kinking</label></div>
+    <div class="check-item"><input type="checkbox" id="m1d"><label for="m1d">Mount 42T chainring on BBSHD spider/adapter</label></div>
+    <div class="check-item"><input type="checkbox" id="m1e"><label for="m1e">Measure front chainline: seat tube centerline &rarr; center of chainring = _____ mm</label></div>
+    <div class="check-item"><input type="checkbox" id="m1f"><label for="m1f">Install rear wheel with 36T freewheel (drive side). Measure rear chainline = _____ mm</label></div>
+    <div class="check-item"><input type="checkbox" id="m1g"><label for="m1g">Flip rear wheel to 20T fixed cog side. Measure rear chainline = _____ mm</label></div>
+    <div class="check-item"><input type="checkbox" id="m1h"><label for="m1h">Calculate offset for each mode: |front &minus; rear| &le; 5mm acceptable, &gt;5mm needs correction</label></div>
+    <div class="check-item sub"><input type="checkbox" id="m1h2"><label for="m1h2">If offset bad: try different chainring position on spider, axle spacers, or accept compromise</label></div>
+    <div class="check-item"><input type="checkbox" id="m1i"><label for="m1i">Check chain tension range &mdash; horizontal dropouts must provide enough travel for both cogs</label></div>
+  </div>
+</div>
+
+<div class="checklist-section">
+  <div class="checklist-header"><span class="step-badge mech">2</span> Fork, Headset &amp; Steerer</div>
+  <div class="check-items">
+    <div class="check-item"><input type="checkbox" id="m2a"><label for="m2a">Measure Zephyr crown race seat diameter with calipers: should be 26.4mm (ISO)</label></div>
+    <div class="check-item"><input type="checkbox" id="m2b"><label for="m2b">Confirm headset crown race ID matches 26.4mm (not JIS 27.0mm)</label></div>
+    <div class="check-item"><input type="checkbox" id="m2c"><label for="m2c">Press crown race onto Zephyr steerer (use crown race setter tool or shop press)</label></div>
+    <div class="check-item"><input type="checkbox" id="m2d"><label for="m2d">Measure: head tube length + desired spacer stack (&le;44mm) + stem clamp height + 3mm top cap</label></div>
+    <div class="check-item"><input type="checkbox" id="m2e"><label for="m2e">Mark and cut steerer (leave 3-5mm extra first &mdash; can always cut more, can't add back)</label></div>
+    <div class="check-item"><input type="checkbox" id="m2f"><label for="m2f">Install star nut at correct depth for threadless preload</label></div>
+    <div class="check-item"><input type="checkbox" id="m2g"><label for="m2g">Assemble headset: lower bearing &rarr; fork through head tube &rarr; upper bearing &rarr; spacers &rarr; stem &rarr; top cap</label></div>
+    <div class="check-item"><input type="checkbox" id="m2h"><label for="m2h">Preload headset (top cap bolt), then tighten stem clamp bolts. Check for smooth rotation, no play.</label></div>
+    <div class="check-item"><input type="checkbox" id="m2i"><label for="m2i">Confirm spacer stack &le; 44mm (Wound Up max spec)</label></div>
+  </div>
+</div>
+
+<div class="checklist-section">
+  <div class="checklist-header"><span class="step-badge mech">3</span> Caliper Brake Reach Verification</div>
+  <div class="check-items">
+    <div class="check-item"><input type="checkbox" id="m3a"><label for="m3a">Install wheel with 23mm tire in fork. Measure: fork brake bolt hole &rarr; center of rim brake track = _____ mm</label></div>
+    <div class="check-item"><input type="checkbox" id="m3b"><label for="m3b">Install wheel in frame rear. Measure: brake bridge hole &rarr; center of rim brake track = _____ mm</label></div>
+    <div class="check-item"><input type="checkbox" id="m3c"><label for="m3c">Both measurements within Dia-Compe 9000Ti range (39&ndash;49mm)?</label></div>
+    <div class="check-item sub"><input type="checkbox" id="m3c2"><label for="m3c2">If at edge of range: install caliper, verify brake pad contacts rim squarely with adjustment room remaining</label></div>
+    <div class="check-item"><input type="checkbox" id="m3d"><label for="m3d">Install calipers, set pad toe-in, confirm both wheels brake evenly without rubbing</label></div>
+  </div>
+</div>
+
+<div class="checklist-section">
+  <div class="checklist-header"><span class="step-badge mech">4</span> Cockpit Assembly &amp; Lever Fit</div>
+  <div class="check-items">
+    <div class="check-item"><input type="checkbox" id="m4a"><label for="m4a">Install B263AA on stem (25.4mm clamp or shimmed 31.8mm stem)</label></div>
+    <div class="check-item"><input type="checkbox" id="m4b"><label for="m4b">Install GIRACHA levers on 22.2mm section &mdash; tighten to spec, not over-torque</label></div>
+    <div class="check-item"><input type="checkbox" id="m4c"><label for="m4c"><strong>Lever slip test:</strong> grab lever body firmly, try to twist/rotate on bar. Must not move.</label></div>
+    <div class="check-item sub"><input type="checkbox" id="m4c2"><label for="m4c2">If lever slips: install 0.4mm aluminum shim sleeve (full-wrap with friction material), re-test</label></div>
+    <div class="check-item"><input type="checkbox" id="m4d"><label for="m4d">Route brake cables, set cable tension and pad clearance</label></div>
+    <div class="check-item"><input type="checkbox" id="m4e"><label for="m4e">Install Berthoud Galibier on Nitto S-83 &mdash; protect ti rails from cradle marring (leather/rubber strip)</label></div>
+    <div class="check-item"><input type="checkbox" id="m4f"><label for="m4f">Set saddle height, setback, and angle</label></div>
+  </div>
+</div>
+
+<div class="checklist-section">
+  <div class="checklist-header"><span class="step-badge mech">5</span> Baserunner Physical Mounting</div>
+  <div class="check-items">
+    <div class="check-item"><input type="checkbox" id="m5a"><label for="m5a">Hold Baserunner against seat tube &mdash; confirm Z910 cable reaches BBSHD harness at BB</label></div>
+    <div class="check-item"><input type="checkbox" id="m5b"><label for="m5b">Confirm Main9 cable routes cleanly from controller up toward cockpit</label></div>
+    <div class="check-item"><input type="checkbox" id="m5c"><label for="m5c">Confirm TRRS programming jack is accessible (not buried behind tubes)</label></div>
+    <div class="check-item"><input type="checkbox" id="m5d"><label for="m5d">Secure Baserunner to seat tube: Grin round-tube mount, or robust clamp with rubber backing</label></div>
+    <div class="check-item"><input type="checkbox" id="m5e"><label for="m5e">Ensure metal mounting plate faces outward for thermal airflow</label></div>
+  </div>
+</div>
+
+<div class="checklist-section">
+  <div class="checklist-header"><span class="step-badge mech">6</span> Battery &amp; Wiring Routing</div>
+  <div class="check-items">
+    <div class="check-item"><input type="checkbox" id="m6a"><label for="m6a">Mount battery pack + JK BMS in rear rack bag/case &mdash; secure against vibration</label></div>
+    <div class="check-item"><input type="checkbox" id="m6b"><label for="m6b">Route main power leads: Pack+ &rarr; fuse &rarr; XT90-S &rarr; along frame &rarr; Baserunner (seat tube)</label></div>
+    <div class="check-item"><input type="checkbox" id="m6c"><label for="m6c">Route BMS C- &rarr; along frame &rarr; Baserunner battery GND</label></div>
+    <div class="check-item"><input type="checkbox" id="m6d"><label for="m6d">Route Main9/Superharness cable from Baserunner (seat tube) up to cockpit area</label></div>
+    <div class="check-item"><input type="checkbox" id="m6e"><label for="m6e">Keep phase wires (Z910 adapter) short and away from signal cables</label></div>
+    <div class="check-item"><input type="checkbox" id="m6f"><label for="m6f">Use spiral wrap / cable lacing to bundle cleanly along frame tubes</label></div>
+    <div class="check-item"><input type="checkbox" id="m6g"><label for="m6g">No cable resting on hot surfaces, no sharp bends, no loose loops near drivetrain</label></div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!--  SECTION 5: ELECTRICAL BUILD CHECKLIST              -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="section" id="elec-build">
+<h2><span class="domain-tag elec">elec</span> Electrical Build Checklist</h2>
+
+<div class="checklist-section">
+  <div class="checklist-header"><span class="step-badge elec">A</span> Firmware &amp; Software Pre-Flight</div>
+  <div class="check-items">
+    <div class="check-item"><input type="checkbox" id="ea1"><label for="ea1">Connect Baserunner via TRRS + TTL&rarr;USB cable to computer</label></div>
+    <div class="check-item"><input type="checkbox" id="ea2"><label for="ea2">Open Phaserunner Software Suite (confirm version &ge; 2.0)</label></div>
+    <div class="check-item"><input type="checkbox" id="ea3"><label for="ea3">Check firmware version &mdash; if 6.023, update to &ge; 6.025</label></div>
+    <div class="check-item"><input type="checkbox" id="ea4"><label for="ea4">Load Superharness default parameter file (NOT CA defaults, NOT generic headless)</label></div>
+    <div class="check-item"><input type="checkbox" id="ea5"><label for="ea5">Save parameters to controller</label></div>
+  </div>
+</div>
+
+<div class="checklist-section">
+  <div class="checklist-header"><span class="step-badge elec">B</span> BBSHD Motor Wire Identification</div>
+  <div class="check-items">
+    <div class="check-item"><input type="checkbox" id="eb1"><label for="eb1">Identify 3&times; phase wires (thick conductors from motor windings)</label></div>
+    <div class="check-item"><input type="checkbox" id="eb2"><label for="eb2">Identify Hall + temp bundle (5&ndash;6 thin wires from sensor board)</label></div>
+    <div class="check-item"><input type="checkbox" id="eb3"><label for="eb3">DMM: confirm Hall 5V (likely red) and Hall GND (likely black) not shorted to each other</label></div>
+    <div class="check-item"><input type="checkbox" id="eb4"><label for="eb4">DMM: confirm no continuity between any phase wire and motor body (no phase-to-case short)</label></div>
+    <div class="check-item"><input type="checkbox" id="eb5"><label for="eb5">DMM: measure comparable low resistance between each phase pair (healthy windings)</label></div>
+    <div class="check-item"><input type="checkbox" id="eb6"><label for="eb6">Identify temp wire (likely purple): resistance to GND ~10k&ndash;100k&Omega; at room temp, changes when warmed</label></div>
+    <div class="check-item"><input type="checkbox" id="eb7"><label for="eb7">Label every wire with tape flags</label></div>
+  </div>
+</div>
+
+<div class="checklist-section">
+  <div class="checklist-header"><span class="step-badge elec">C</span> Hall Sensor Verification (Pre-Controller)</div>
+  <div class="check-items">
+    <div class="check-item"><input type="checkbox" id="ec1"><label for="ec1">Supply 5V to Hall power wire + GND to Hall ground (bench supply or USB breakout)</label></div>
+    <div class="check-item"><input type="checkbox" id="ec2"><label for="ec2">Probe each suspected Hall signal wire vs Hall GND while slowly rotating motor</label></div>
+    <div class="check-item"><input type="checkbox" id="ec3"><label for="ec3">Each of 3 Hall wires toggles between ~0V and ~5V (scope or DMM)</label></div>
+    <div class="check-item"><input type="checkbox" id="ec4"><label for="ec4">If a wire stays fixed: it's the temp wire mislabeled or a dead sensor &mdash; investigate</label></div>
+    <div class="check-item"><input type="checkbox" id="ec5"><label for="ec5">Disconnect bench supply when done</label></div>
+  </div>
+</div>
+
+<div class="checklist-section">
+  <div class="checklist-header"><span class="step-badge elec">D</span> Z910 Adapter Harness Build</div>
+  <div class="check-items">
+    <div class="check-item"><input type="checkbox" id="ed1"><label for="ed1">Cut female end of Z910 extension cable (never cut controller's own cable)</label></div>
+    <div class="check-item"><input type="checkbox" id="ed2"><label for="ed2">Continuity-check each wire back to male connector pins vs Grin pinout diagram</label></div>
+    <div class="check-item"><input type="checkbox" id="ed3"><label for="ed3">Label all 9 wires: 3&times; phase, Hall 5V, Hall GND, 3&times; Hall signal, Speed/Temp</label></div>
+    <div class="check-item"><input type="checkbox" id="ed4"><label for="ed4">Crimp insulated female spade terminals on 3&times; phase wires &rarr; match BBSHD phase tabs</label></div>
+    <div class="check-item"><input type="checkbox" id="ed5"><label for="ed5">Terminate Hall/temp wires &rarr; disconnectable connector or soldered + heatshrink</label></div>
+    <div class="check-item"><input type="checkbox" id="ed6"><label for="ed6">Connect phases: start color-to-color (fix in software during Autotune if needed)</label></div>
+    <div class="check-item"><input type="checkbox" id="ed7"><label for="ed7">Connect Halls per community-reported mapping (verify, don't trust):</label></div>
+    <div class="check-item sub"><input type="checkbox" id="ed7a"><label for="ed7a">Z910 Hall 5V &rarr; BBSHD Red | Z910 Hall GND &rarr; BBSHD Black</label></div>
+    <div class="check-item sub"><input type="checkbox" id="ed7b"><label for="ed7b">Z910 Yellow Hall &rarr; BBSHD Grey | Z910 Green Hall &rarr; BBSHD Blue | Z910 Blue Hall &rarr; BBSHD White</label></div>
+    <div class="check-item"><input type="checkbox" id="ed8"><label for="ed8">Connect Z910 Speed/Temp aux &rarr; BBSHD Purple (temperature thermistor)</label></div>
+    <div class="check-item"><input type="checkbox" id="ed9"><label for="ed9">Final check: no shorts between any phase pair, no short between Hall 5V and Hall GND</label></div>
+  </div>
+</div>
+
+<div class="checklist-section">
+  <div class="checklist-header"><span class="step-badge elec">E</span> JK BMS Wiring (14s Cell Taps)</div>
+  <div class="check-items">
+    <div class="check-item"><input type="checkbox" id="ee0"><label for="ee0">Pre-measure all 14 series group voltages at pack nodes (N0&ndash;N14). Record values.</label></div>
+    <div class="check-item"><input type="checkbox" id="ee1"><label for="ee1">Connect balance harness to pack FIRST (not into BMS yet), in strict order:</label></div>
+    <div class="check-item sub"><input type="checkbox" id="ee1a"><label for="ee1a">B- wire (P1 pin 1) &rarr; N0 (pack total negative)</label></div>
+    <div class="check-item sub"><input type="checkbox" id="ee1b"><label for="ee1b">B1 &rarr; N1 (group 1 positive) &hellip; continue through B14 &rarr; N14 (pack positive)</label></div>
+    <div class="check-item"><input type="checkbox" id="ee2"><label for="ee2">Connect B+ (P2 board power pin) &rarr; N14 (pack positive)</label></div>
+    <div class="check-item"><input type="checkbox" id="ee3"><label for="ee3">Leave B15&ndash;B17 (P2) unconnected for 14S configuration</label></div>
+    <div class="check-item"><input type="checkbox" id="ee4"><label for="ee4">DMM staircase verification before plugging into BMS:</label></div>
+    <div class="check-item sub"><input type="checkbox" id="ee4a"><label for="ee4a">B1 vs B- = group 1 voltage &#10003;</label></div>
+    <div class="check-item sub"><input type="checkbox" id="ee4b"><label for="ee4b">B2 vs B- = group 1+2 voltage &#10003; &hellip; continue to B14 vs B- = total pack voltage &#10003;</label></div>
+    <div class="check-item"><input type="checkbox" id="ee5"><label for="ee5">If any step shows unexpected voltage jump: STOP &mdash; miswire detected</label></div>
+    <div class="check-item"><input type="checkbox" id="ee6"><label for="ee6">Only after all taps verified: plug P1 and P2 into BMS board</label></div>
+    <div class="check-item"><input type="checkbox" id="ee7"><label for="ee7">Connect B- main lead to battery negative terminal on BMS</label></div>
+    <div class="check-item"><input type="checkbox" id="ee8"><label for="ee8">Connect C- main lead &mdash; this is the switched output to controller/charger GND</label></div>
+    <div class="check-item"><input type="checkbox" id="ee9"><label for="ee9">Connect charger to activate BMS (charger V &gt; pack V + ~2V)</label></div>
+    <div class="check-item"><input type="checkbox" id="ee10"><label for="ee10">Connect via Bluetooth app: confirm 14 cells detected, voltages match DMM readings</label></div>
+    <div class="check-item"><input type="checkbox" id="ee11"><label for="ee11">Set chemistry to Li-ion, cell count to 14, review protection thresholds</label></div>
+    <div class="check-item"><input type="checkbox" id="ee12"><label for="ee12">Calibrate BMS voltage reading against DMM if needed</label></div>
+  </div>
+</div>
+
+<div class="checklist-section">
+  <div class="checklist-header"><span class="step-badge elec">F</span> Signal Harness Connections</div>
+  <div class="check-items">
+    <div class="check-item"><input type="checkbox" id="ef1"><label for="ef1">Plug Z910 adapter (from step D) into Baserunner Z910 motor connector &mdash; align arrows</label></div>
+    <div class="check-item"><input type="checkbox" id="ef2"><label for="ef2">Plug Superharness into Baserunner Main9 (9-pin Cusmade 1109)</label></div>
+    <div class="check-item"><input type="checkbox" id="ef3"><label for="ef3">Plug SW102 display into Superharness (5-pin Higo) &mdash; mount on handlebars</label></div>
+    <div class="check-item"><input type="checkbox" id="ef4"><label for="ef4">Plug DYOL throttle into Superharness (3-pin yellow Higo) &mdash; mount on 22.2mm bar section</label></div>
+    <div class="check-item"><input type="checkbox" id="ef5"><label for="ef5">Plug e-brake lever into Superharness (4-pin Higo) &mdash; if you have one</label></div>
+    <div class="check-item"><input type="checkbox" id="ef6"><label for="ef6">Cap unused connectors: 6-pin PAS, WP8 (CA)</label></div>
+  </div>
+</div>
+
+<div class="checklist-section">
+  <div class="checklist-header"><span class="step-badge elec">G</span> Battery Power Connection</div>
+  <div class="check-items">
+    <div class="check-item"><input type="checkbox" id="eg1"><label for="eg1">Confirm no continuity between Batt+ and Batt- through controller path (disconnected)</label></div>
+    <div class="check-item"><input type="checkbox" id="eg2"><label for="eg2">Confirm correct polarity before power (reverse polarity = irreparable controller damage)</label></div>
+    <div class="check-item"><input type="checkbox" id="eg3"><label for="eg3">Connect battery via XT90-S (precharge resistor eliminates inrush spark)</label></div>
+    <div class="check-item"><input type="checkbox" id="eg4"><label for="eg4">Power on via SW102 display button</label></div>
+    <div class="check-item"><input type="checkbox" id="eg5"><label for="eg5">Confirm SW102 shows pack voltage and speed reads 00.0 (KM5s comms working)</label></div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!--  SECTION 6: COMMISSIONING                           -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="section" id="commission">
+<h2><span class="domain-tag comm">comm</span> Commissioning Sequence</h2>
+
+<div class="callout danger">
+  <strong>Before any motor tests</strong>
+  Secure bike so drivetrain can rotate freely in BOTH directions. The Baserunner requires bidirectional rotation during Autotune. Remove chain if necessary for free rotation.
+</div>
+
+<div class="checklist-section">
+  <div class="checklist-header"><span class="step-badge comm">1</span> Autotune &amp; Hall Table</div>
+  <div class="check-items">
+    <div class="check-item"><input type="checkbox" id="c1a"><label for="c1a">Connect laptop via TRRS + TTL&rarr;USB, open Phaserunner Suite (&ge;2.0)</label></div>
+    <div class="check-item"><input type="checkbox" id="c1b"><label for="c1b">Set conservative initial limits: ~10&ndash;15A battery current, modest phase current</label></div>
+    <div class="check-item"><input type="checkbox" id="c1c"><label for="c1c">Enter pole-pair estimate (~5 for BBSHD &mdash; confirm for your unit if possible)</label></div>
+    <div class="check-item"><input type="checkbox" id="c1d"><label for="c1d">Run Autotune &mdash; motor spins briefly both directions, detects kV, Rs, Ls</label></div>
+    <div class="check-item"><input type="checkbox" id="c1e"><label for="c1e">Run Hall table detection &mdash; verify valid Hall sequence detected</label></div>
+    <div class="check-item"><input type="checkbox" id="c1f"><label for="c1f">If direction is backward: &quot;Flip Motor Spin Direction&quot; in software, re-run (don't swap wires)</label></div>
+    <div class="check-item"><input type="checkbox" id="c1g"><label for="c1g">Save parameters to controller</label></div>
+  </div>
+</div>
+
+<div class="checklist-section">
+  <div class="checklist-header"><span class="step-badge comm">2</span> Throttle &amp; Regen Verification</div>
+  <div class="check-items">
+    <div class="check-item"><input type="checkbox" id="c2a"><label for="c2a">Verify Superharness output at Baserunner Analog Input 2 with DMM/scope:</label></div>
+    <div class="check-item sub"><input type="checkbox" id="c2b"><label for="c2b">DYOL neutral (hands off) &rarr; ~0.95V</label></div>
+    <div class="check-item sub"><input type="checkbox" id="c2c"><label for="c2c">DYOL roll-in (accelerate) &rarr; rises toward 3.6V</label></div>
+    <div class="check-item sub"><input type="checkbox" id="c2d"><label for="c2d">DYOL roll-back (regen) &rarr; drops toward 0.0V</label></div>
+    <div class="check-item"><input type="checkbox" id="c2e"><label for="c2e">Apply gentle throttle &mdash; motor spins smoothly in correct direction</label></div>
+    <div class="check-item"><input type="checkbox" id="c2f"><label for="c2f">Listen for cogging or erratic behavior (indicates Hall wiring error)</label></div>
+    <div class="check-item"><input type="checkbox" id="c2g"><label for="c2g">Toggle assist levels from SW102 up/down buttons (confirms 6.025 fix)</label></div>
+    <div class="check-item"><input type="checkbox" id="c2h"><label for="c2h">Test regen on DYOL rollback &mdash; expect no braking force due to BBSHD freewheel</label></div>
+  </div>
+</div>
+
+<div class="checklist-section">
+  <div class="checklist-header"><span class="step-badge comm">3</span> Current Limits &amp; Thermal Config</div>
+  <div class="check-items">
+    <div class="check-item"><input type="checkbox" id="c3a"><label for="c3a">Set battery current limit well below JK BMS 40A continuous (start ~15&ndash;20A)</label></div>
+    <div class="check-item"><input type="checkbox" id="c3b"><label for="c3b">Set max regen voltage limit BELOW 58.8V (pack full charge / BMS OVP)</label></div>
+    <div class="check-item"><input type="checkbox" id="c3c"><label for="c3c">If motor temp wire connected to Z910 aux: configure thermistor type in software</label></div>
+    <div class="check-item"><input type="checkbox" id="c3d"><label for="c3d">Monitor controller temp, motor temp, and BMS app during progressive load testing</label></div>
+    <div class="check-item"><input type="checkbox" id="c3e"><label for="c3e">Gradually increase battery current limit while monitoring thermals</label></div>
+    <div class="check-item"><input type="checkbox" id="c3f"><label for="c3f">Confirm BMS does not trip during normal operation or regen events</label></div>
+  </div>
+</div>
+
+<div class="checklist-section">
+  <div class="checklist-header"><span class="step-badge comm">4</span> Speed Sensing (Optional but Recommended)</div>
+  <div class="check-items">
+    <div class="check-item"><input type="checkbox" id="c4a"><label for="c4a">Decision: external wheel speed sensor or accept motor-RPM-derived speed?</label></div>
+    <div class="check-item sub"><input type="checkbox" id="c4b"><label for="c4b">If external sensor: mount magnetic pickup on wheel, feed signal to speed input</label></div>
+    <div class="check-item sub"><input type="checkbox" id="c4c"><label for="c4c">Configure wheel diameter and pulses/rev in software</label></div>
+    <div class="check-item sub"><input type="checkbox" id="c4d"><label for="c4d">Verify SW102 shows correct speed (push bike by hand, compare to known distance/time)</label></div>
+  </div>
+</div>
+
+<div class="checklist-section">
+  <div class="checklist-header"><span class="step-badge comm">5</span> Progressive Load Testing</div>
+  <div class="check-items">
+    <div class="check-item"><input type="checkbox" id="c5a"><label for="c5a">First ride: unloaded, flat ground, low speed, conservative current limits</label></div>
+    <div class="check-item"><input type="checkbox" id="c5b"><label for="c5b">Check: smooth throttle response, no cogging, brakes work, display reads correctly</label></div>
+    <div class="check-item"><input type="checkbox" id="c5c"><label for="c5c">Check: lever clamp hasn't slipped after real braking loads</label></div>
+    <div class="check-item"><input type="checkbox" id="c5d"><label for="c5d">Second ride: add partial rear load, test handling &mdash; note any front-end nervousness</label></div>
+    <div class="check-item"><input type="checkbox" id="c5e"><label for="c5e">Third ride: full cargo load, test at higher speeds &mdash; evaluate handling confidence</label></div>
+    <div class="check-item sub"><input type="checkbox" id="c5f"><label for="c5f">If handling feels twitchy loaded: consider wider tires (25&ndash;28mm) or moving battery to triangle</label></div>
+    <div class="check-item"><input type="checkbox" id="c5g"><label for="c5g">After first 50km: re-check all bolts, cable tension, lever clamp, BMS cell balance</label></div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!--  SECTION 7: KNOWN GOTCHAS                           -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="section" id="gotchas">
+<h2>Known Gotchas &amp; Design Advisories</h2>
+
+<div class="callout danger">
+  <strong>58.8V vs 60V headroom</strong>
+  Your 14s pack at full charge (58.8V) leaves only 1.2V before the Baserunner's absolute 60V max. Regen voltage spikes and wiring inductance can push voltage above resting charge level. Set regen voltage limits conservatively. Never charge the pack above 4.2V/cell while connected to the controller.
+</div>
+
+<div class="callout warn">
+  <strong>6.025 firmware display bug</strong>
+  The SW102 will show 82.5% of actual amps and watts due to a known KM5s scaling bug in 6.025 firmware. 500W on screen = ~606W real. Use Phaserunner Suite for accurate power numbers.
+</div>
+
+<div class="callout warn">
+  <strong>Superharness early hardware</strong>
+  Units sold before June 2024 had noise/reliability issues (light ports stuck on, harness unresponsive until power-cycled). If you have an early unit, Grin offered replacements. Check the 3 LEDs for diagnostic info.
+</div>
+
+<div class="callout info">
+  <strong>Mid-drive regen &mdash; probably won't work</strong>
+  The BBSHD drivetrain has a freewheel/clutch. The wheel likely can't backdrive the motor, so regen braking via DYOL rollback will produce no braking force even though the signal path is correct. This is normal &mdash; the regen signal chain is fine, the mechanics just decouple.
+</div>
+
+<div class="callout info">
+  <strong>Speed readout will be wrong without external sensor</strong>
+  Motor RPM &ne; wheel speed on a mid-drive (gear reduction + freewheel). The SW102 will show motor-derived &quot;speed&quot; that doesn't match real wheel speed, especially varying by gear and load. Add a spoke magnet + magnetic pickup for accurate speedometer.
+</div>
+
+<div class="callout warn">
+  <strong>JK BMS UART/GPS port (P5) &mdash; high voltage hazard</strong>
+  If you ever connect an ESP32 for BMS telemetry: P5 pin 1 (VGPS) outputs near full pack voltage (~58V) on a tiny 1.25mm JST connector next to 3.3V logic pins. Do not connect to any microcontroller without verifying pinout. One rotated connector = dead ESP32 or worse.
+</div>
+
+<div class="callout info">
+  <strong>23mm tires on a loaded e-bike</strong>
+  Your Pasela 700&times;23c are compatible but provide minimal contact patch and cushion for a motor-assisted cargo build. If the bike feels sketchy loaded, 25mm or 28mm Paselas are a direct swap and one of the easiest improvements to ride quality and grip.
+</div>
+
+<div class="callout info">
+  <strong>Chainline will differ between 36T and 20T sides</strong>
+  The freewheel and fixed cog are on opposite sides of the hub. You'll have different chainline offsets for each mode. Measure both and decide where to compromise. Up to ~5mm offset is tolerable with a single-speed chain under motor torque.
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!--  SECTION 8: DISCREPANCY LOG                         -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="section" id="discrepancies">
+<h2><span class="domain-tag comm">comm</span> Discrepancy Log</h2>
+<p style="margin-bottom:1rem;">This section tracks corrections made after reconciling the build document against <code>deep-research-report.md</code>. Each row documents an earlier simplification that was corrected to prevent bad decisions.</p>
+
+<table class="spec">
+<tr><th>Earlier Simplification</th><th>Corrected To</th><th>Why It Matters</th></tr>
+<tr><td>Rear hub described as 1.37&Prime;&times;24 TPI both sides</td><td>Track hub uses the standard cog thread (1.37&Prime;&times;24 TPI drive side) plus a smaller left-hand lockring thread (1.29&Prime;&times;24 TPI non-drive side)</td><td>Safety-critical interface for fixed-gear use. Wrong lockring threading can cause the cog to unscrew under back-torque.</td></tr>
+<tr><td>JK BMS activation read like a universal fixed +2V rule</td><td>Start at about pack voltage plus 2V per the BD4A manual, then adjust conditionally near full charge without exceeding cell limits</td><td>Avoids treating a stubborn near-full pack as a dead BMS when it may simply need different wake-up conditions.</td></tr>
+<tr><td>Galibier weight was stated as one exact number (346g)</td><td>Use a range of roughly 345&ndash;365g depending on hide and version</td><td>Keeps the spec honest instead of pretending seller listings agree.</td></tr>
+<tr><td>Steering change was described only as &quot;quicker&quot;</td><td>Trail is now quantified: ~60.5mm stock to ~53.3mm with the Zephyr (&minus;7.25mm)</td><td>The handling warning becomes concrete enough to shape test planning.</td></tr>
+<tr><td>Firmware guidance was tied to a specific confident claim</td><td>The real requirement is a Superharness-compatible firmware and software pairing, plus awareness of the KM5s scaling issue</td><td>More accurate troubleshooting posture, less cargo-cult version chasing.</td></tr>
+<tr><td>Controller setup implied that speed display would just work</td><td>Mid-drive speed needs a separate wheel input if you care about accuracy or speed limiting</td><td>Prevents false validation of system behavior from bad display data.</td></tr>
+<tr><td>Pack photos were mentioned but not anchored in the page</td><td>Local battery photos are now embedded in the Battery &amp; BMS spec section</td><td>Gives a visual QA reference before final wrap and bagging.</td></tr>
+</table>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!--  SECTION 9: FAULT TRIAGE                            -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="section" id="faults">
+<h2>Quick Fault Triage</h2>
+
+<table class="spec">
+<tr><th>Symptom</th><th>Most Likely Cause</th><th>Check</th></tr>
+<tr><td>Controller won't power on</td><td>On/Off (Key+) not reaching Batt+ via display</td><td>Confirm SW102 plugged in + powered; Main9 On/Off has battery V+ when display on</td></tr>
+<tr><td>SW102 shows --.- or EFF</td><td>KM5s protocol not communicating</td><td>Superharness param file loaded; firmware &ge;6.025; TX/RX not swapped</td></tr>
+<tr><td>No throttle response</td><td>Superharness 2mA current detection</td><td>DYOL is Hall-type (should be fine); check 3-pin Higo; check Superharness LEDs</td></tr>
+<tr><td>Motor spins backward</td><td>Phase/Hall mapping reversed</td><td>&quot;Flip Motor Spin Direction&quot; in software &mdash; don't swap wires</td></tr>
+<tr><td>Motor cogs / jerks</td><td>Hall wiring error or bad sensor</td><td>Re-verify Halls with scope; re-run Hall table detection</td></tr>
+<tr><td>Assist levels don't toggle</td><td>Firmware 6.023 bug</td><td>Update to &ge;6.025</td></tr>
+<tr><td>BMS trips during riding</td><td>Discharge overcurrent or charge overcurrent (regen)</td><td>Check BMS app for which protection triggered; lower controller limits</td></tr>
+<tr><td>BMS won't wake up</td><td>Charging activation not met</td><td>Charger voltage must exceed pack voltage by ~2V; B+ board power connected?</td></tr>
+<tr><td>Lights cause ERR30</td><td>High current ripple from light</td><td>Power light directly from battery, not through Superharness</td></tr>
+<tr><td>Lever slips on bar</td><td>23mm clamp on 22.2mm bar</td><td>Add 0.4mm full-wrap aluminum shim sleeve</td></tr>
+<tr><td>Front end feels twitchy loaded</td><td>Reduced trail (53mm) + rear-biased weight</td><td>Wider tires first; move battery to triangle; check tire pressure</td></tr>
+</table>
+</div>
+
+<footer style="margin-top:3rem; padding-top:1rem; border-top:1px solid var(--border); font-size:0.72rem; color:var(--text-dim); font-family:'JetBrains Mono',monospace;">
+  Kilo TT E-Bike Build &middot; Complete Spec &amp; Checklist<br>
+  Sources: <code>deep-research-report.md</code> &middot; Grin Baserunner V6 &amp; Superharness manuals &middot; Wound Up Zephyr spec &middot; BikesDirect Kilo TT specs &middot; JK-BD4A17S4P manual &middot; Grin product pages &middot; Community references (Endless Sphere, Bike Forums, DIY Solar Forum)<br>
+  All wire identifications and measurements must be verified on your specific hardware before connecting.
+</footer>
+
+</div>
+
+<script>
+// Checkbox persistence with localStorage (uses same key prefix as original)
+const allCheckboxes = [...document.querySelectorAll('input[type="checkbox"]')];
+const progressText = document.getElementById('progress-text');
+const progressFill = document.getElementById('progress-fill');
+const resetBtn = document.getElementById('reset-all');
+
+function updateProgress() {
+  const total = allCheckboxes.length;
+  const done = allCheckboxes.filter(cb => cb.checked).length;
+  progressText.textContent = done + ' / ' + total + ' complete';
+  progressFill.style.width = total ? ((done / total) * 100) + '%' : '0%';
+}
+
+allCheckboxes.forEach(cb => {
+  const key = 'kilo_' + cb.id;
+  cb.checked = localStorage.getItem(key) === 'true';
+  cb.addEventListener('change', () => {
+    localStorage.setItem(key, cb.checked);
+    updateProgress();
+  });
+});
+
+resetBtn.addEventListener('click', () => {
+  if (!confirm('Reset all checkboxes? This cannot be undone.')) return;
+  allCheckboxes.forEach(cb => {
+    localStorage.removeItem('kilo_' + cb.id);
+    cb.checked = false;
+  });
+  updateProgress();
+});
+
+updateProgress();
+</script>
+</body>
+</html>

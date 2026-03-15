@@ -1,0 +1,21 @@
+version: "0.1"
+id: prj_c6cd9200-055c-4afe-a621-d476051edacd
+name: craft  bicycle
+slug: craft--craft-bicycle
+domain: craft
+buildingType: Forge
+createdAt: 2026-01-01T23:27:22.020Z
+git:
+  defaultBranch: main
+  remote: null
+ai:
+  provider: groq
+  lastEvalCommit: 8a5ee6411980da3d2ce5138cc521eb1ddb620b0e
+_internal:
+  sdt:
+    - autonomy
+    - engagement
+    - meaning
+  needs:
+    - creation
+    - identity
