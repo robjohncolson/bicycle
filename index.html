@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kilo TT E-Bike &mdash; Wiring Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0e0f11;
+  --bg2: #141518;
+  --surface: #1a1b1f;
+  --surface2: #222329;
+  --surface3: #2a2b32;
+  --border: #333440;
+  --border-light: #444555;
+  --text: #c8c9d0;
+  --text-dim: #7a7b88;
+  --text-bright: #eaebf0;
+  --white: #ffffff;
+  --elec: #2d8cf0;
+  --elec-dim: #1a5a9e;
+  --elec-bg: rgba(45,140,240,0.06);
+  --danger: #e04848;
+  --danger-bg: rgba(224,72,72,0.08);
+  --warn: #d4a030;
+  --warn-bg: rgba(212,160,48,0.08);
+  --info: #5a9fd4;
+  --info-bg: rgba(90,159,212,0.08);
+  --ok: #4aaa6a;
+  --ok-bg: rgba(74,170,106,0.08);
+  --wy: #e8d44d; --wg: #5dbe6e; --wb: #5b9bd5;
+  --wr: #d94f4f; --wk: #555; --wgr: #999;
+  --ww: #ddd; --wp: #9966cc;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page { max-width: 980px; margin: 0 auto; padding: 2rem 2rem 4rem; }
+
+header {
+  padding: 3rem 0 2rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2.5rem;
+}
+header h1 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--white);
+  margin-bottom: 0.3rem;
+}
+header .sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  letter-spacing: 0.02em;
+}
+.build-id {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.35rem 0.8rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--text-dim);
+}
+
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 0.6rem 0;
+  margin: 0 -2rem 2rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  display: flex;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+  backdrop-filter: blur(8px);
+}
+nav a {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  text-decoration: none;
+  padding: 0.3rem 0.6rem;
+  border-radius: 3px;
+  transition: all 0.15s;
+  border-left: 2px solid var(--elec);
+}
+nav a:hover { color: var(--text-bright); background: var(--surface); }
+
+.section { margin-bottom: 3rem; }
+h2 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--white);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+h2 .domain-tag {
+  font-size: 0.6rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.15rem 0.5rem;
+  border-radius: 2px;
+  background: var(--elec-bg);
+  color: var(--elec);
+  border: 1px solid var(--elec-dim);
+}
+h3 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-bright);
+  margin-top: 1.8rem;
+  margin-bottom: 0.6rem;
+}
+p { font-size: 0.88rem; margin-bottom: 0.7rem; }
+
+table.spec {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+table.spec th {
+  text-align: left;
+  padding: 0.45rem 0.8rem;
+  background: var(--surface2);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-dim);
+  border-bottom: 1px solid var(--border);
+}
+table.spec td {
+  padding: 0.45rem 0.8rem;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  vertical-align: top;
+}
+table.spec tr:last-child td { border-bottom: none; }
+
+.wire-dot {
+  display: inline-block;
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  margin-right: 0.35rem;
+  vertical-align: middle;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.callout {
+  border-radius: 4px;
+  padding: 0.8rem 1rem;
+  margin: 0.8rem 0;
+  font-size: 0.82rem;
+  line-height: 1.55;
+}
+.callout.danger { background: var(--danger-bg); border: 1px solid rgba(224,72,72,0.25); color: #f0a0a0; }
+.callout.warn   { background: var(--warn-bg);   border: 1px solid rgba(212,160,48,0.25); color: #e8cc80; }
+.callout.info   { background: var(--info-bg);    border: 1px solid rgba(90,159,212,0.25); color: #a0c8e8; }
+.callout.ok     { background: var(--ok-bg);      border: 1px solid rgba(74,170,106,0.25); color: #90d4a8; }
+.callout strong {
+  display: block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.2rem;
+}
+
+.diagram {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1.2rem 1.5rem;
+  margin: 1.2rem 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  line-height: 1.9;
+  overflow-x: auto;
+  white-space: pre;
+  color: var(--text-dim);
+}
+.diagram .d { color: var(--danger); font-weight: 600; }
+.diagram .e { color: var(--elec); font-weight: 600; }
+.diagram .c { color: var(--ok); font-weight: 600; }
+.diagram .m { color: var(--warn); font-weight: 600; }
+
+.badge {
+  display: inline-block;
+  padding: 0.08rem 0.4rem;
+  border-radius: 2px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+.badge.verify { background: var(--warn-bg); color: var(--warn); border: 1px solid rgba(212,160,48,0.3); }
+.badge.ok { background: var(--ok-bg); color: var(--ok); border: 1px solid rgba(74,170,106,0.3); }
+.badge.crit { background: var(--danger-bg); color: var(--danger); border: 1px solid rgba(224,72,72,0.3); }
+.badge.logic { background: var(--info-bg); color: var(--info); border: 1px solid rgba(90,159,212,0.3); }
+
+/* Category cards */
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+.cat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1rem;
+  border-top: 3px solid var(--border);
+}
+.cat-card.fixed { border-top-color: var(--danger); }
+.cat-card.flex  { border-top-color: var(--ok); }
+.cat-card.meth  { border-top-color: var(--warn); }
+.cat-card .cat-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.4rem;
+}
+.cat-card.fixed .cat-label { color: var(--danger); }
+.cat-card.flex  .cat-label { color: var(--ok); }
+.cat-card.meth  .cat-label { color: var(--warn); }
+.cat-card .cat-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: var(--text-bright);
+  line-height: 1.2;
+  margin-bottom: 0.4rem;
+}
+.cat-card .cat-desc {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+
+@media (max-width: 800px) { .cat-grid { grid-template-columns: 1fr; } }
+
+/* Checklist */
+.checklist-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin-bottom: 1.25rem;
+  overflow: hidden;
+}
+.checklist-header {
+  padding: 0.7rem 1rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-bright);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.checklist-header .step-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  font-size: 0.72rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  background: var(--elec);
+  color: var(--bg);
+}
+.check-items { padding: 0.5rem 0; }
+.check-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  padding: 0.45rem 1rem;
+  font-size: 0.84rem;
+  transition: background 0.1s;
+}
+.check-item:hover { background: rgba(255,255,255,0.02); }
+.check-item input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 16px; height: 16px; min-width: 16px;
+  border: 1.5px solid var(--border-light);
+  border-radius: 3px;
+  background: transparent;
+  margin-top: 2px;
+  cursor: pointer;
+  transition: all 0.15s;
+  position: relative;
+}
+.check-item input[type="checkbox"]:checked {
+  background: var(--ok);
+  border-color: var(--ok);
+}
+.check-item input[type="checkbox"]:checked::after {
+  content: '\2713';
+  position: absolute;
+  top: -1px; left: 2px;
+  font-size: 11px;
+  color: white;
+  font-weight: 700;
+}
+.check-item label { cursor: pointer; flex: 1; }
+.check-item.sub { padding-left: 2.8rem; }
+.check-item.sub label { color: var(--text-dim); font-size: 0.8rem; }
+
+/* Permutation table */
+.perm-table { margin: 1rem 0; }
+.perm-table td { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; }
+.perm-table td.result-good { color: var(--ok); font-weight: 600; }
+.perm-table td.result-fix  { color: var(--info); font-weight: 600; }
+.perm-table td.result-bad  { color: var(--warn); font-weight: 600; }
+
+/* Staircase table */
+.staircase {
+  margin: 1rem 0;
+  font-family: 'JetBrains Mono', monospace;
+}
+.staircase td { padding: 0.3rem 0.6rem; font-size: 0.78rem; }
+.staircase .tap { color: var(--elec); font-weight: 600; }
+.staircase .ref { color: var(--text-dim); }
+.staircase .expect { color: var(--text-bright); }
+
+footer {
+  margin-top: 3rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+@media print {
+  body { background: white; color: #222; font-size: 10pt; }
+  .page { padding: 0.5in; max-width: none; }
+  nav { display: none; }
+  :root { --surface: #f4f4f4; --surface2: #eee; --border: #ccc; --text: #333; --text-dim: #666; --text-bright: #000; --white: #000; }
+}
+@media (max-width: 640px) {
+  .page { padding: 1rem; }
+  nav { margin: 0 -1rem 1.5rem; padding-left: 1rem; padding-right: 1rem; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header>
+  <h1>Wiring Guide</h1>
+  <div class="sub">BBSHD &rarr; Baserunner Z9 &amp; JK BMS &rarr; 14S4P Pack</div>
+  <div class="build-id">Kilo TT &middot; Bafang BBSHD (bare motor) &middot; Grin Baserunner V6 Z9 &middot; JK-BD4A17S4P &middot; 14s4p 18650 &middot; Throttle-Only</div>
+</header>
+
+<nav>
+  <a href="#overview">Overview</a>
+  <a href="#cat-framework">3 Categories</a>
+  <a href="#power-wires">Power Wires</a>
+  <a href="#phase-wires">Phase Wires</a>
+  <a href="#hall-wires">Hall Wires</a>
+  <a href="#temp-wire">Temp Wire</a>
+  <a href="#signal-path">Signal Path</a>
+  <a href="#power-path">Power Path</a>
+  <a href="#harness-build">Harness Build</a>
+  <a href="#bms-balance">BMS Balance</a>
+  <a href="#bms-power">BMS Power</a>
+  <a href="#bms-activate">BMS Activate</a>
+  <a href="#fault">Fault Triage</a>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  PART 1: BBSHD → PHASERUNNER Z9                        -->
+<!-- ═══════════════════════════════════════════════════════ -->
+
+<div class="section" id="overview">
+<h2><span class="domain-tag">elec</span> Part 1: BBSHD &rarr; Baserunner Z9 Wiring</h2>
+
+<p>The BBSHD's stock controller is removed. The motor is treated as a bare 3-phase BLDC with Hall sensors and a thermistor. All 9 wires route through a single Z910 connector on the Baserunner V6 Z9. You build an adapter harness by cutting a Z910 extension cable and splicing to the BBSHD's bare leads.</p>
+
+<div class="callout warn">
+  <strong>Throttle-only build &mdash; simplified wiring</strong>
+  No PAS sensor, no speed sensor, no regen. The BBSHD internal clutch means the wheel cannot backdrive the motor. The 6-pin PAS plug (Z609) and WP8/CA plug (Z812) get capped and ignored.
+</div>
+</div>
+
+<!-- ── THE 3-CATEGORY FRAMEWORK ── -->
+<div class="section" id="cat-framework">
+<h3>The Three Categories</h3>
+<p>Not all 9 wires have the same rules. Understanding which category each wire falls into prevents damage and saves time.</p>
+
+<div class="cat-grid">
+  <div class="cat-card fixed">
+    <div class="cat-label">Non-Negotiable</div>
+    <div class="cat-title">2 Power Wires</div>
+    <div class="cat-desc">Hall 5V and Hall GND. Must be correct. Get these backwards or crossed with a signal wire and you fry the Hall sensors on the motor's sensor board. Red to red, black to black. Verify with DMM before powering anything.</div>
+  </div>
+  <div class="cat-card flex">
+    <div class="cat-label">Software Sorts It Out</div>
+    <div class="cat-title">3 Phase Wires</div>
+    <div class="cat-desc">The thick power wires. Pick any assignment. Worst case: motor vibrates, cogs, or spins backward. No damage. Autotune detects parameters regardless. Wrong direction = flip in software. Cogging = swap any two. At most 2 physical tries.</div>
+  </div>
+  <div class="cat-card meth">
+    <div class="cat-label">Methodical Trial</div>
+    <div class="cat-title">3 Hall Signal Wires</div>
+    <div class="cat-desc">Software does NOT auto-sort these. 6 possible permutations, only 1 is correct for a given phase wiring. Start with the community mapping. If motor runs rough, swap pairs until smooth. Each attempt ~30 seconds.</div>
+  </div>
+</div>
+
+<p style="font-size:0.8rem; color:var(--text-dim);">Plus one more wire: the <strong>temperature thermistor</strong> (low stakes &mdash; wrong mapping just gives no reading or a nonsense value, no damage).</p>
+</div>
+
+<!-- ── CATEGORY 1: POWER WIRES ── -->
+<div class="section" id="power-wires">
+<h3>Category 1: Hall Power &mdash; Non-Negotiable</h3>
+
+<div class="callout danger">
+  <strong>These two wires must be correct &mdash; no trial and error</strong>
+  Reversing 5V/GND or crossing either with a signal wire will destroy the Hall sensors on the BBSHD's internal sensor board. This is irreversible without replacing the sensor PCB.
+</div>
+
+<table class="spec">
+<tr><th style="width:5%">#</th><th style="width:25%">Z910 Wire</th><th style="width:25%">&rarr; BBSHD Wire</th><th>Verification</th></tr>
+<tr>
+  <td>1</td>
+  <td><span class="wire-dot" style="background:var(--wr)"></span><strong>Red</strong> (thin)</td>
+  <td><span class="wire-dot" style="background:var(--wr)"></span><strong>Red</strong> &mdash; Hall 5V</td>
+  <td>DMM: confirm 5V present when controller powered. No short to GND.</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td><span class="wire-dot" style="background:var(--wk)"></span><strong>Black</strong> (thin)</td>
+  <td><span class="wire-dot" style="background:var(--wk)"></span><strong>Black</strong> &mdash; Hall GND</td>
+  <td>DMM: no continuity to phase wires or motor case.</td>
+</tr>
+</table>
+
+<div class="callout info">
+  <strong>Pre-power verification</strong>
+  Before connecting anything to the controller, use your DMM to confirm: (1) no short between the two Hall power wires, (2) they match the wires you identified during your bench Hall test (step 5 in the build checklist).
+</div>
+</div>
+
+<!-- ── CATEGORY 2: PHASE WIRES ── -->
+<div class="section" id="phase-wires">
+<h3>Category 2: Phase Wires &mdash; Software Sorts It Out</h3>
+
+<p>Three thick wires carrying up to 55A peak. The Baserunner's Autotune will detect motor parameters (kV, Rs, Ls) regardless of which phase goes where.</p>
+
+<table class="spec">
+<tr><th style="width:5%">#</th><th style="width:25%">Z910 Wire</th><th style="width:25%">&rarr; BBSHD Wire</th><th>Type</th><th>Notes</th></tr>
+<tr>
+  <td>3</td>
+  <td><span class="wire-dot" style="background:var(--wb)"></span>Blue Phase</td>
+  <td>Phase A (thick)</td>
+  <td><span class="badge crit">HIGH CURRENT</span></td>
+  <td rowspan="3">Start color-to-color. Anderson Powerpole connectors (45A-rated). Keep runs short, away from signal wires.</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td><span class="wire-dot" style="background:var(--wg)"></span>Green Phase</td>
+  <td>Phase B (thick)</td>
+  <td><span class="badge crit">HIGH CURRENT</span></td>
+</tr>
+<tr>
+  <td>5</td>
+  <td><span class="wire-dot" style="background:var(--wy)"></span>Yellow Phase</td>
+  <td>Phase C (thick)</td>
+  <td><span class="badge crit">HIGH CURRENT</span></td>
+</tr>
+</table>
+
+<p style="margin-top:1rem;">There are only three outcomes that matter:</p>
+
+<table class="spec perm-table">
+<tr><th>Outcome</th><th>What Happens</th><th>Fix</th></tr>
+<tr><td class="result-good">Correct forward</td><td>Motor spins smoothly in the right direction</td><td>Done. Save parameters.</td></tr>
+<tr><td class="result-fix">Correct backward</td><td>Motor spins smoothly but in the wrong direction</td><td>Click &quot;Flip Motor Spin Direction&quot; in software. Re-run. Don't swap wires.</td></tr>
+<tr><td class="result-bad">Wrong sequence (cogs)</td><td>Motor vibrates, jerks, or refuses to spin</td><td>Swap any two of the three phase wires. Re-run Autotune. At most 1 more try.</td></tr>
+</table>
+
+<div class="callout danger">
+  <strong>Phase wire safety</strong>
+  Anderson Powerpole crimps must be solid and fully seated. A loose connection under load = arc flash risk. Zip-tie or clamp the harness so vibration happens away from connectors. No phase wire can contact the frame or any signal wire.
+</div>
+</div>
+
+<!-- ── CATEGORY 3: HALL SIGNAL WIRES ── -->
+<div class="section" id="hall-wires">
+<h3>Category 3: Hall Signal Wires &mdash; Methodical Trial</h3>
+
+<p>Three thin wires. The Baserunner's Hall table detection <em>reads</em> whatever sequence the Halls produce, but it trusts the mapping. If the mapping is wrong, the table it builds will be wrong and the motor will run rough, cog, or stutter under load. The software does not try all permutations for you.</p>
+
+<p>6 possible permutations. Only 1 gives correct commutation for a given phase wiring.</p>
+
+<h3>Start with the community-reported mapping</h3>
+
+<table class="spec">
+<tr><th style="width:5%">#</th><th style="width:25%">Z910 (thin)</th><th style="width:25%">&rarr; BBSHD (thin)</th><th>Type</th></tr>
+<tr>
+  <td>6</td>
+  <td><span class="wire-dot" style="background:var(--wy)"></span>Yellow Hall</td>
+  <td><span class="wire-dot" style="background:var(--wgr)"></span>Grey (Hall A)</td>
+  <td><span class="badge logic">LOGIC</span></td>
+</tr>
+<tr>
+  <td>7</td>
+  <td><span class="wire-dot" style="background:var(--wg)"></span>Green Hall</td>
+  <td><span class="wire-dot" style="background:var(--wb)"></span>Blue (Hall B)</td>
+  <td><span class="badge logic">LOGIC</span></td>
+</tr>
+<tr>
+  <td>8</td>
+  <td><span class="wire-dot" style="background:var(--wb)"></span>Blue Hall</td>
+  <td><span class="wire-dot" style="background:var(--ww)"></span>White (Hall C)</td>
+  <td><span class="badge logic">LOGIC</span></td>
+</tr>
+</table>
+
+<div class="callout warn">
+  <strong>If the community mapping doesn't work</strong>
+  Run Autotune, run Hall table detection, apply gentle throttle. If the motor spins smoothly &mdash; you're done. If it cogs, stutters, or runs rough: swap two of the three Hall wires (any two), re-run Hall table detection, test again. You may need to do this up to 5 more times to cover all 6 permutations. Each attempt takes about 30 seconds.
+</div>
+
+<h3>All 6 permutations (systematic reference)</h3>
+
+<table class="spec perm-table">
+<tr><th>#</th><th>Z910 Yellow &rarr;</th><th>Z910 Green &rarr;</th><th>Z910 Blue &rarr;</th><th>Status</th></tr>
+<tr><td>1</td><td>Grey</td><td>Blue</td><td>White</td><td class="result-good">Try first (community)</td></tr>
+<tr><td>2</td><td>Grey</td><td>White</td><td>Blue</td><td class="result-bad">Swap Green&harr;Blue from #1</td></tr>
+<tr><td>3</td><td>Blue</td><td>Grey</td><td>White</td><td class="result-bad">Swap Yellow&harr;Green from #1</td></tr>
+<tr><td>4</td><td>Blue</td><td>White</td><td>Grey</td><td class="result-bad">Rotate all from #1</td></tr>
+<tr><td>5</td><td>White</td><td>Grey</td><td>Blue</td><td class="result-bad">Rotate other way from #1</td></tr>
+<tr><td>6</td><td>White</td><td>Blue</td><td>Grey</td><td class="result-bad">Swap Yellow&harr;Blue from #1</td></tr>
+</table>
+
+<p style="font-size:0.8rem; color:var(--text-dim); margin-top:0.8rem;">Work through these in order. When one produces smooth operation, stop and save parameters. Mark which permutation worked on your unit.</p>
+
+<div class="callout info">
+  <strong>Hall/temp wires &mdash; solder + heatshrink</strong>
+  Low-current logic signals. Solder each splice, stagger the joints so you don't create one thick lump, use adhesive-lined heatshrink on each joint. Then wrap the bundle in an outer sleeve or loom. If you want disconnectability, use a small locking connector (JST, Molex) &mdash; but avoid bare spades, they vibrate loose on logic signals.
+</div>
+</div>
+
+<!-- ── TEMPERATURE WIRE ── -->
+<div class="section" id="temp-wire">
+<h3>The Last Wire: Temperature</h3>
+
+<table class="spec">
+<tr><th style="width:5%">#</th><th style="width:25%">Z910 Wire</th><th style="width:25%">&rarr; BBSHD Wire</th><th>Notes</th></tr>
+<tr>
+  <td>9</td>
+  <td><span class="wire-dot" style="background:var(--wgr)"></span>White / Speed-Temp aux</td>
+  <td><span class="wire-dot" style="background:var(--wp)"></span><strong>Purple</strong> (thermistor)</td>
+  <td>NTC thermistor for motor temp. If wrong: no reading or nonsense value in software. No damage. Configure in Phaserunner Suite temp tab. Resistance to GND: ~10k&ndash;100k&Omega; at room temp, changes when warmed.</td>
+</tr>
+</table>
+</div>
+
+<!-- ── COMPLETE WIRING TABLE ── -->
+<div class="section" id="signal-path">
+<h3>Complete Z910 &rarr; BBSHD Table (all 9 wires)</h3>
+
+<table class="spec">
+<tr><th style="width:4%">#</th><th style="width:20%">Z910 Wire</th><th style="width:20%">&rarr; BBSHD Wire</th><th style="width:12%">Category</th><th style="width:10%">Type</th><th>Risk if Wrong</th></tr>
+<tr>
+  <td>1</td>
+  <td><span class="wire-dot" style="background:var(--wr)"></span>Red (thin)</td>
+  <td><span class="wire-dot" style="background:var(--wr)"></span>Red</td>
+  <td><span class="badge crit">FIXED</span></td>
+  <td>Hall 5V</td>
+  <td>Destroys Hall sensors</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td><span class="wire-dot" style="background:var(--wk)"></span>Black (thin)</td>
+  <td><span class="wire-dot" style="background:var(--wk)"></span>Black</td>
+  <td><span class="badge crit">FIXED</span></td>
+  <td>Hall GND</td>
+  <td>Destroys Hall sensors</td>
+</tr>
+<tr>
+  <td>3</td>
+  <td><span class="wire-dot" style="background:var(--wb)"></span>Blue (thick)</td>
+  <td>Phase A</td>
+  <td><span class="badge ok">FLEX</span></td>
+  <td>HIGH CURRENT</td>
+  <td>None &mdash; Autotune corrects</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td><span class="wire-dot" style="background:var(--wg)"></span>Green (thick)</td>
+  <td>Phase B</td>
+  <td><span class="badge ok">FLEX</span></td>
+  <td>HIGH CURRENT</td>
+  <td>None &mdash; Autotune corrects</td>
+</tr>
+<tr>
+  <td>5</td>
+  <td><span class="wire-dot" style="background:var(--wy)"></span>Yellow (thick)</td>
+  <td>Phase C</td>
+  <td><span class="badge ok">FLEX</span></td>
+  <td>HIGH CURRENT</td>
+  <td>None &mdash; Autotune corrects</td>
+</tr>
+<tr>
+  <td>6</td>
+  <td><span class="wire-dot" style="background:var(--wy)"></span>Yellow (thin)</td>
+  <td><span class="wire-dot" style="background:var(--wgr)"></span>Grey</td>
+  <td><span class="badge verify">TRIAL</span></td>
+  <td>Hall A</td>
+  <td>Cogging &mdash; swap pairs until smooth</td>
+</tr>
+<tr>
+  <td>7</td>
+  <td><span class="wire-dot" style="background:var(--wg)"></span>Green (thin)</td>
+  <td><span class="wire-dot" style="background:var(--wb)"></span>Blue</td>
+  <td><span class="badge verify">TRIAL</span></td>
+  <td>Hall B</td>
+  <td>Cogging &mdash; swap pairs until smooth</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td><span class="wire-dot" style="background:var(--wb)"></span>Blue (thin)</td>
+  <td><span class="wire-dot" style="background:var(--ww)"></span>White</td>
+  <td><span class="badge verify">TRIAL</span></td>
+  <td>Hall C</td>
+  <td>Cogging &mdash; swap pairs until smooth</td>
+</tr>
+<tr>
+  <td>9</td>
+  <td><span class="wire-dot" style="background:var(--wgr)"></span>White (thin)</td>
+  <td><span class="wire-dot" style="background:var(--wp)"></span>Purple</td>
+  <td><span class="badge logic">LOW</span></td>
+  <td>Thermistor</td>
+  <td>No/bad temp reading only</td>
+</tr>
+</table>
+
+<h3>Throttle Signal Chain (Main9 &rarr; Superharness &rarr; DYOL)</h3>
+
+<div class="diagram"><span class="e">THROTTLE SIGNAL CHAIN</span>
+
+  <span class="c">DYOL twist grip</span>                    <span class="c">Superharness</span>                         <span class="e">Baserunner</span>
+  ┌─────────────────┐              ┌──────────────────────┐              ┌──────────────────┐
+  │ 3-pin yellow    │&mdash;&mdash; Higo &mdash;&rarr;│ Remaps 1V&ndash;4V to      │&mdash;&mdash; Main9 &mdash;&rarr;│ Analog Input 2   │
+  │ Higo connector  │              │ 0.95V&ndash;3.6V output    │              │ (Pin 6, Blue)    │
+  │                 │              │                      │              │                  │
+  │ 1V = neutral    │              │ Also carries:        │              │ On/Off (Pin 8,   │
+  │ 4V = full power │              │ &bull; SW102 display data │              │  Orange) &rarr; Batt+ │
+  │ 0V = regen (N/A)│              │ &bull; On/Off switch sig  │              │  via display pwr │
+  └─────────────────┘              │ &bull; E-brake (if used)  │              └──────────────────┘
+                                   └──────────────────────┘
+
+  <span class="d">KEY:</span> Twist the grip &rarr; DYOL outputs 1&ndash;4V &rarr; Superharness remaps &rarr; Baserunner reads analog &rarr; FOC drives motor.
+  <span class="m">That's it. No PAS. No speed sensor. No regen. Twist and go.</span></div>
+</div>
+
+<!-- ── POWER PATH DIAGRAM ── -->
+<div class="section" id="power-path">
+<h3>Power Path (Battery &rarr; Controller &rarr; Motor)</h3>
+
+<div class="diagram"><span class="d">BATTERY POWER PATH</span>
+
+  ┌──────────────┐     ┌──────┐     ┌─────────┐     ┌──────────────┐     ┌──────────────┐
+  │ 14s4p Pack   │     │ Main │     │ XT90-S  │     │  Baserunner  │     │    BBSHD     │
+  │              │     │ Fuse │     │ Anti-   │     │  V6 Z9       │     │   Motor      │
+  │  B+ &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&rarr;&mdash;┤ ~50A ├&mdash;&rarr;&mdash;┤ spark   ├&mdash;&rarr;&mdash;┤ Batt V+      │     │              │
+  │              │     └──────┘     └─────────┘     │              │     │              │
+  │              │                                  │   Z910 &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&rarr;&mdash;┤ 3&times; Phase     │
+  │  B- &mdash;&rarr; JK BMS B-                              │              │     │   tabs       │
+  │         │                                       │              │     │              │
+  │         └&mdash;&rarr; BMS C- (switched) &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&rarr;&mdash;&mdash;&mdash;&mdash;┤ Batt GND     │     └──────────────┘
+  │              │                                  └──────────────┘
+  └──────────────┘
+
+  <span class="d">B+ goes DIRECT to controller (BMS does NOT switch positive).</span>
+  <span class="d">BMS switches the NEGATIVE path only (C- = controlled output).</span></div>
+</div>
+
+<!-- ── HARNESS BUILD CHECKLIST ── -->
+<div class="section" id="harness-build">
+<h3>Z910 Adapter Harness &mdash; Build Checklist</h3>
+
+<div class="checklist-section">
+  <div class="checklist-header"><span class="step-badge">1</span> Build the Adapter Harness</div>
+  <div class="check-items">
+    <div class="check-item"><input type="checkbox" id="h1"><label for="h1">Cut <strong>female</strong> end of Z910 extension cable (never cut controller's own cable)</label></div>
+    <div class="check-item"><input type="checkbox" id="h2"><label for="h2">Continuity-check each wire back to male connector pins vs Grin pinout diagram</label></div>
+    <div class="check-item"><input type="checkbox" id="h3"><label for="h3">Label all 9 wires: 3&times; phase (thick), Hall 5V, Hall GND, 3&times; Hall signal, Speed/Temp (thin)</label></div>
+    <div class="check-item"><input type="checkbox" id="h4"><label for="h4">Crimp Anderson Powerpoles (45A) on 3&times; phase wires &rarr; match BBSHD Powerpole leads</label></div>
+  </div>
+</div>
+
+<div class="checklist-section">
+  <div class="checklist-header"><span class="step-badge">2</span> Connect &mdash; Power Wires First</div>
+  <div class="check-items">
+    <div class="check-item"><input type="checkbox" id="h5"><label for="h5">Z910 <span style="color:var(--wr); font-weight:700;">Red</span> (Hall 5V) &rarr; BBSHD <span style="color:var(--wr); font-weight:700;">Red</span></label></div>
+    <div class="check-item"><input type="checkbox" id="h6"><label for="h6">Z910 <span style="color:#888; font-weight:700;">Black</span> (Hall GND) &rarr; BBSHD <span style="color:#888; font-weight:700;">Black</span></label></div>
+    <div class="check-item"><input type="checkbox" id="h7"><label for="h7">DMM: no short between Hall 5V and Hall GND</label></div>
+  </div>
+</div>
+
+<div class="checklist-section">
+  <div class="checklist-header"><span class="step-badge">3</span> Connect &mdash; Phase Wires</div>
+  <div class="check-items">
+    <div class="check-item"><input type="checkbox" id="h8"><label for="h8">Connect phases via Powerpoles: start color-to-color (Autotune corrects if needed)</label></div>
+    <div class="check-item"><input type="checkbox" id="h9"><label for="h9">Verify 45A-rated contacts (not 15A/30A)</label></div>
+  </div>
+</div>
+
+<div class="checklist-section">
+  <div class="checklist-header"><span class="step-badge">4</span> Connect &mdash; Hall Signal Wires</div>
+  <div class="check-items">
+    <div class="check-item"><input type="checkbox" id="h10"><label for="h10">Z910 <span style="color:var(--wy); font-weight:700;">Yellow</span> Hall &rarr; BBSHD <span style="color:var(--wgr); font-weight:700;">Grey</span></label></div>
+    <div class="check-item"><input type="checkbox" id="h11"><label for="h11">Z910 <span style="color:var(--wg); font-weight:700;">Green</span> Hall &rarr; BBSHD <span style="color:var(--wb); font-weight:700;">Blue</span></label></div>
+    <div class="check-item"><input type="checkbox" id="h12"><label for="h12">Z910 <span style="color:var(--wb); font-weight:700;">Blue</span> Hall &rarr; BBSHD <span style="color:var(--ww); font-weight:700;">White</span></label></div>
+    <div class="check-item sub"><input type="checkbox" id="h13"><label for="h13">This is the community mapping &mdash; verify by running Autotune + Hall table detection + gentle throttle</label></div>
+  </div>
+</div>
+
+<div class="checklist-section">
+  <div class="checklist-header"><span class="step-badge">5</span> Connect &mdash; Temperature + Final Check</div>
+  <div class="check-items">
+    <div class="check-item"><input type="checkbox" id="h14"><label for="h14">Z910 Speed/Temp aux &rarr; BBSHD <span style="color:var(--wp); font-weight:700;">Purple</span> (thermistor)</label></div>
+    <div class="check-item"><input type="checkbox" id="h15"><label for="h15">Final: no shorts between any phase pair</label></div>
+    <div class="check-item"><input type="checkbox" id="h16"><label for="h16">Final: no short between Hall 5V and Hall GND</label></div>
+    <div class="check-item"><input type="checkbox" id="h17"><label for="h17">Solder + adhesive-lined heatshrink on all logic splices, staggered joints</label></div>
+    <div class="check-item"><input type="checkbox" id="h18"><label for="h18">Outer loom/sleeve over signal wire bundle</label></div>
+    <div class="check-item"><input type="checkbox" id="h19"><label for="h19">Zip-tie / clamp harness so bending happens away from crimps and solder joints</label></div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  PART 2: BMS → 14S4P BATTERY PACK                      -->
+<!-- ═══════════════════════════════════════════════════════ -->
+
+<div class="section" id="bms-balance">
+<h2><span class="domain-tag">elec</span> Part 2: JK BMS &rarr; 14S4P Battery Pack</h2>
+
+<p>The JK-BD4A17S4P is a 4&ndash;17S smart BMS with active balancing and Bluetooth. It switches the negative leg only (B+ passes through direct). The balance harness connects via two board connectors: P1 (B- through B8) and P2 (B+ board power, then B9&ndash;B17, of which only B9&ndash;B14 are used for a 14S config).</p>
+
+<div class="callout danger">
+  <strong>52V is dangerous</strong>
+  The pack produces 58.8V at full charge and can deliver 40A+ continuous. A short across the balance leads or main terminals can cause arc flash, fire, or severe burns. Work slowly, one wire at a time, and verify every connection with a DMM before plugging into the BMS board.
+</div>
+
+<h3>Balance Wire Connection (P1 + P2)</h3>
+
+<p>Connect the balance harness to the <strong>pack first</strong> (not into the BMS yet). Wire in strict order from negative to positive.</p>
+
+<div class="diagram"><span class="e">14S4P PACK NODE LAYOUT (linear snake)</span>
+
+  N0        N1        N2        N3              N13       N14
+  (B-)      (G1+)     (G2+)    (G3+)    ...    (G13+)    (G14+ = B+)
+  ─┤────────┤─────────┤────────┤────────────────┤─────────┤─
+   │ Grp 1  │ Grp 2   │ Grp 3  │               │ Grp 14  │
+   │ 4 cells│ 4 cells │ 4 cells│               │ 4 cells │
+   │ ~3.6V  │ ~3.6V   │ ~3.6V  │               │ ~3.6V   │
+  ─┤────────┤─────────┤────────┤────────────────┤─────────┤─
+
+  <span class="d">Each node Nx is the junction between group x and group x+1.</span>
+  <span class="d">N0 = total pack negative. N14 = total pack positive.</span></div>
+
+<table class="spec">
+<tr><th>BMS Pin</th><th>&rarr; Pack Node</th><th>Connector</th><th>Voltage vs N0</th></tr>
+<tr><td>B- (P1 pin 1)</td><td>N0 (pack total negative)</td><td>P1</td><td>0V (reference)</td></tr>
+<tr><td>B1</td><td>N1 (group 1 positive)</td><td>P1</td><td>~3.6V</td></tr>
+<tr><td>B2</td><td>N2 (group 2 positive)</td><td>P1</td><td>~7.2V</td></tr>
+<tr><td>B3</td><td>N3</td><td>P1</td><td>~10.8V</td></tr>
+<tr><td>B4</td><td>N4</td><td>P1</td><td>~14.4V</td></tr>
+<tr><td>B5</td><td>N5</td><td>P1</td><td>~18.0V</td></tr>
+<tr><td>B6</td><td>N6</td><td>P1</td><td>~21.6V</td></tr>
+<tr><td>B7</td><td>N7</td><td>P1</td><td>~25.2V</td></tr>
+<tr><td>B8</td><td>N8</td><td>P1</td><td>~28.8V</td></tr>
+<tr><td>B+ (P2 board power)</td><td>N14 (pack positive)</td><td>P2</td><td>~50.4V</td></tr>
+<tr><td>B9</td><td>N9</td><td>P2</td><td>~32.4V</td></tr>
+<tr><td>B10</td><td>N10</td><td>P2</td><td>~36.0V</td></tr>
+<tr><td>B11</td><td>N11</td><td>P2</td><td>~39.6V</td></tr>
+<tr><td>B12</td><td>N12</td><td>P2</td><td>~43.2V</td></tr>
+<tr><td>B13</td><td>N13</td><td>P2</td><td>~46.8V</td></tr>
+<tr><td>B14</td><td>N14</td><td>P2</td><td>~50.4V</td></tr>
+<tr><td>B15&ndash;B17</td><td><em>not connected</em></td><td>P2</td><td>N/A &mdash; unused for 14S</td></tr>
+</table>
+
+<h3>DMM Staircase Verification</h3>
+
+<p>Before plugging P1 and P2 into the BMS board, verify every tap. Probe each balance wire against B- (N0). Voltage should rise in ~3.6V steps.</p>
+
+<div class="checklist-section">
+  <div class="checklist-header"><span class="step-badge">V</span> Staircase Check</div>
+  <div class="check-items">
+    <div class="check-item"><input type="checkbox" id="v1"><label for="v1">B1 vs B- = ~3.6V (one group)</label></div>
+    <div class="check-item"><input type="checkbox" id="v2"><label for="v2">B2 vs B- = ~7.2V (two groups)</label></div>
+    <div class="check-item"><input type="checkbox" id="v3"><label for="v3">B3 vs B- = ~10.8V</label></div>
+    <div class="check-item"><input type="checkbox" id="v4"><label for="v4">B4 vs B- = ~14.4V</label></div>
+    <div class="check-item"><input type="checkbox" id="v5"><label for="v5">B5 vs B- = ~18.0V</label></div>
+    <div class="check-item"><input type="checkbox" id="v6"><label for="v6">B6 vs B- = ~21.6V</label></div>
+    <div class="check-item"><input type="checkbox" id="v7"><label for="v7">B7 vs B- = ~25.2V</label></div>
+    <div class="check-item"><input type="checkbox" id="v8"><label for="v8">B8 vs B- = ~28.8V</label></div>
+    <div class="check-item"><input type="checkbox" id="v9"><label for="v9">B9 vs B- = ~32.4V</label></div>
+    <div class="check-item"><input type="checkbox" id="v10"><label for="v10">B10 vs B- = ~36.0V</label></div>
+    <div class="check-item"><input type="checkbox" id="v11"><label for="v11">B11 vs B- = ~39.6V</label></div>
+    <div class="check-item"><input type="checkbox" id="v12"><label for="v12">B12 vs B- = ~43.2V</label></div>
+    <div class="check-item"><input type="checkbox" id="v13"><label for="v13">B13 vs B- = ~46.8V</label></div>
+    <div class="check-item"><input type="checkbox" id="v14"><label for="v14">B14 vs B- = ~50.4V (full pack)</label></div>
+  </div>
+</div>
+
+<div class="callout danger">
+  <strong>If any step shows an unexpected voltage jump</strong>
+  STOP. A voltage that jumps by more than one cell (~3.6V) or drops indicates a miswire &mdash; you've skipped a group node or connected to the wrong tap. Disconnect, re-check, and re-measure before continuing. Do not plug into the BMS with a known bad tap.
+</div>
+
+<div class="callout ok">
+  <strong>Only after all 14 taps verified</strong>
+  Plug P1 and P2 into the BMS board. The staircase check guarantees no two adjacent pins see more than one cell's voltage, which is the BMS's design assumption. A miswired tap can cause the BMS to misread cell voltages, fail to balance, or trigger false protection events.
+</div>
+</div>
+
+<!-- ── BMS MAIN POWER LEADS ── -->
+<div class="section" id="bms-power">
+<h3>Main Power Leads + Fuse + Anti-Spark</h3>
+
+<div class="diagram"><span class="e">BMS POWER TOPOLOGY (low-side switching)</span>
+
+                     ┌──────────────────────────┐
+                     │        JK BMS Board       │
+                     │                           │
+  Pack N14 (B+) &mdash;&mdash;&mdash;&mdash;&rarr; B+ (board power in)       │
+                     │                           │
+  Pack N0  (B-) &mdash;&mdash;&mdash;&mdash;&rarr; B- (battery negative in)  │
+                     │                           │
+                     │ C- (switched negative) &mdash;&mdash;&mdash;&rarr;&mdash;&mdash; to controller / charger GND
+                     │                           │
+                     └──────────────────────────┘
+
+  <span class="d">B+ is NOT switched by the BMS &mdash; it passes through directly.</span>
+  <span class="d">C- is the controlled output. BMS opens C- to disconnect the pack.</span></div>
+
+<div class="checklist-section">
+  <div class="checklist-header"><span class="step-badge">P</span> Main Power Wiring</div>
+  <div class="check-items">
+    <div class="check-item"><input type="checkbox" id="p1"><label for="p1">Connect B- main lead to battery negative terminal on BMS board</label></div>
+    <div class="check-item"><input type="checkbox" id="p2"><label for="p2">Connect C- main lead &mdash; this is the switched output going to controller/charger GND</label></div>
+    <div class="check-item"><input type="checkbox" id="p3"><label for="p3">Install main fuse (~50A) close to pack positive terminal (N14)</label></div>
+    <div class="check-item"><input type="checkbox" id="p4"><label for="p4">Install XT90-S anti-spark connector between fuse output and controller Batt V+ lead</label></div>
+    <div class="check-item"><input type="checkbox" id="p5"><label for="p5">Route: Pack+ &rarr; fuse &rarr; XT90-S &rarr; along frame to Baserunner Batt V+</label></div>
+    <div class="check-item"><input type="checkbox" id="p6"><label for="p6">Route: BMS C- &rarr; along frame to Baserunner Batt GND</label></div>
+    <div class="check-item"><input type="checkbox" id="p7"><label for="p7">DMM: confirm correct polarity at controller end before connecting (reverse polarity = dead controller)</label></div>
+  </div>
+</div>
+
+<div class="callout warn">
+  <strong>58.8V vs 60V headroom</strong>
+  14S at full charge (58.8V) leaves only 1.2V before the Baserunner's absolute 60V max. Even without regen, back-EMF spikes under sudden load changes can produce transient overvoltage. Never charge above 4.2V/cell while connected to the controller.
+</div>
+</div>
+
+<!-- ── BMS ACTIVATION ── -->
+<div class="section" id="bms-activate">
+<h3>BMS Activation &amp; Bluetooth Setup</h3>
+
+<div class="checklist-section">
+  <div class="checklist-header"><span class="step-badge">A</span> First Power-On</div>
+  <div class="check-items">
+    <div class="check-item"><input type="checkbox" id="a1"><label for="a1">Confirm no continuity between Batt+ and Batt- through the controller path (should be disconnected)</label></div>
+    <div class="check-item"><input type="checkbox" id="a2"><label for="a2">Connect charger to activate BMS (charger voltage must exceed pack voltage by ~2V)</label></div>
+    <div class="check-item sub"><input type="checkbox" id="a2b"><label for="a2b">Near full charge this can be tricky &mdash; adjust expectations, BMS may just need different wake-up conditions</label></div>
+    <div class="check-item"><input type="checkbox" id="a3"><label for="a3">Connect via Bluetooth app (default password: &quot;1234&quot; or &quot;123456&quot;)</label></div>
+    <div class="check-item"><input type="checkbox" id="a4"><label for="a4">Confirm 14 cells detected, voltages match your DMM staircase readings</label></div>
+    <div class="check-item"><input type="checkbox" id="a5"><label for="a5">Set chemistry to Li-ion, cell count to 14</label></div>
+    <div class="check-item"><input type="checkbox" id="a6"><label for="a6">Review protection thresholds: discharge OC, charge OC, undervoltage, overvoltage, overtemp</label></div>
+    <div class="check-item"><input type="checkbox" id="a7"><label for="a7">Connect battery to controller via XT90-S (precharge resistor eliminates inrush spark)</label></div>
+  </div>
+</div>
+
+<div class="callout warn">
+  <strong>JK BMS UART/GPS port (P5) &mdash; high voltage hazard</strong>
+  If you ever connect an ESP32 for telemetry: P5 pin 1 (VGPS) outputs near full pack voltage (~58V) on a tiny 1.25mm JST connector next to 3.3V logic pins. One rotated connector = dead microcontroller or worse. Verify pinout with DMM before connecting.
+</div>
+</div>
+
+<!-- ── FAULT TRIAGE ── -->
+<div class="section" id="fault">
+<h2><span class="domain-tag">elec</span> Wiring Fault Triage</h2>
+
+<table class="spec">
+<tr><th>Symptom</th><th>Most Likely Cause</th><th>Check / Fix</th></tr>
+<tr><td>Motor spins backward</td><td>Phase mapping reversed</td><td>&quot;Flip Motor Spin Direction&quot; in software. Don't swap wires.</td></tr>
+<tr><td>Motor cogs / jerks / vibrates</td><td>Phase sequence wrong OR Hall wiring error</td><td>If all 3 phases are swapped badly: swap any two phase wires. If phases are OK but still rough: Hall wires are wrong &mdash; try next permutation.</td></tr>
+<tr><td>Motor stutters under load only</td><td>Hall mapping wrong (table is bad)</td><td>Re-run Hall table detection. If still bad, swap Hall wire pairs.</td></tr>
+<tr><td>No motor response at all</td><td>Hall 5V / GND miswired or disconnected</td><td>DMM: confirm 5V across Hall power/GND at the motor connector.</td></tr>
+<tr><td>Hall sensor destroyed</td><td>5V/GND reversed or crossed with signal</td><td>Sensor board replacement required. This is why you DMM-verify before powering on.</td></tr>
+<tr><td>Temp reading nonsense / missing</td><td>Purple wire wrong or disconnected</td><td>Low stakes. Re-check thermistor wire. Configure sensor type in software.</td></tr>
+<tr><td>Controller won't power on</td><td>On/Off (Key+) not reaching Batt+</td><td>SW102 plugged in + powered? Main9 On/Off has battery V+ when display on?</td></tr>
+<tr><td>BMS won't wake up</td><td>Charging activation not met</td><td>Charger V must exceed pack V by ~2V. B+ board power connected?</td></tr>
+<tr><td>BMS trips during riding</td><td>Overcurrent, undervoltage, overtemp, or wiring fault</td><td>Check BMS app for which protection triggered. Overcurrent: lower controller limits. Undervoltage: cells depleted. Wiring: check balance leads.</td></tr>
+<tr><td>BMS shows wrong cell count</td><td>Balance tap miswired or disconnected</td><td>Unplug P1/P2, re-do staircase verification, find the bad tap.</td></tr>
+<tr><td>One cell reads 0V or double voltage</td><td>Skipped or swapped balance tap</td><td>Two adjacent taps connected to the same node, or a tap skipped entirely. Unplug, re-verify.</td></tr>
+</table>
+</div>
+
+<footer>
+  Kilo TT E-Bike Build &middot; Wiring Guide<br>
+  See <a href="kilo-tt-ebike-build.html" style="color:var(--elec);">kilo-tt-ebike-build.html</a> for the full spec &amp; build checklist.<br>
+  Sources: Grin Baserunner V6 &amp; Superharness manuals &middot; JK-BD4A17S4P manual &middot; Community references (Endless Sphere)<br>
+  All wire identifications must be verified on your specific hardware before connecting.
+</footer>
+
+</div>
+
+<script>
+const allCheckboxes = [...document.querySelectorAll('input[type="checkbox"]')];
+
+allCheckboxes.forEach(cb => {
+  const key = 'wiring_' + cb.id;
+  cb.checked = localStorage.getItem(key) === 'true';
+  cb.addEventListener('change', () => {
+    localStorage.setItem(key, cb.checked);
+  });
+});
+</script>
+</body>
+</html>
