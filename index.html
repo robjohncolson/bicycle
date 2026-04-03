@@ -377,16 +377,49 @@ footer {
 @media (max-width: 640px) {
   .page { padding: 1rem; }
   nav { margin: 0 -1rem 1.5rem; padding-left: 1rem; padding-right: 1rem; }
+/* QR code */
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.5rem;
+}
+.header-text { flex: 1; }
+.qr-block {
+  flex-shrink: 0;
+  text-align: center;
+}
+.qr-block canvas {
+  border-radius: 6px;
+  border: 1px solid var(--border);
+}
+.qr-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--text-dim);
+  margin-top: 0.35rem;
+  letter-spacing: 0.03em;
+}
+@media print { .qr-block { display: none; } }
 }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
 </head>
 <body>
 <div class="page">
 
 <header>
-  <h1>Wiring Guide</h1>
-  <div class="sub">BBSHD &rarr; Baserunner Z9 &amp; JK BMS &rarr; 14S4P Pack</div>
-  <div class="build-id">Kilo TT &middot; Bafang BBSHD (bare motor) &middot; Grin Baserunner V6 Z9 &middot; JK-BD4A17S4P &middot; 14s4p 18650 &middot; Throttle-Only</div>
+  <div class="header-row">
+    <div class="header-text">
+      <h1>Wiring Guide</h1>
+      <div class="sub">BBSHD &rarr; Baserunner Z9 &amp; JK BMS &rarr; 14S4P Pack</div>
+      <div class="build-id">Kilo TT &middot; Bafang BBSHD (bare motor) &middot; Grin Baserunner V6 Z9 &middot; JK-BD4A17S4P &middot; 14s4p 18650 &middot; Throttle-Only</div>
+    </div>
+    <div class="qr-block">
+      <canvas id="qr-canvas"></canvas>
+      <div class="qr-label">Scan for mobile</div>
+    </div>
+  </div>
 </header>
 
 <nav>
@@ -957,6 +990,30 @@ allCheckboxes.forEach(cb => {
     localStorage.setItem(key, cb.checked);
   });
 });
+
+// QR code
+(function() {
+  var qr = qrcode(0, 'M');
+  qr.addData('https://robjohncolson.github.io/bicycle/');
+  qr.make();
+  var mods = qr.getModuleCount();
+  var canvas = document.getElementById('qr-canvas');
+  var size = 100;
+  var cell = size / mods;
+  canvas.width = size;
+  canvas.height = size;
+  var ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#1a1b1f';
+  ctx.fillRect(0, 0, size, size);
+  ctx.fillStyle = '#eaebf0';
+  for (var r = 0; r < mods; r++) {
+    for (var c = 0; c < mods; c++) {
+      if (qr.isDark(r, c)) {
+        ctx.fillRect(c * cell, r * cell, cell + 0.5, cell + 0.5);
+      }
+    }
+  }
+})();
 </script>
 </body>
 </html>
