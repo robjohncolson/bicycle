@@ -402,6 +402,42 @@ footer {
 }
 @media print { .qr-block { display: none; } }
 }
+
+/* Build Progress Tracker */
+.progress-tracker {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+  flex-wrap: wrap;
+}
+.progress-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.75rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+}
+.progress-item .status {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.6rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 2px;
+}
+.status-done { background: var(--ok-bg); color: var(--ok); border: 1px solid var(--ok); }
+.status-active { background: var(--elec-bg); color: var(--elec); border: 1px solid var(--elec-dim); animation: pulse-active 2s ease-in-out infinite; }
+.status-pending { background: var(--surface2); color: var(--text-dim); border: 1px solid var(--border); }
+@keyframes pulse-active {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+.progress-item .label { color: var(--text-dim); }
+.progress-date { color: var(--text-dim); font-size: 0.6rem; margin-left: 0.25rem; }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
 </head>
@@ -414,6 +450,12 @@ footer {
       <h1>Wiring Guide</h1>
       <div class="sub">BBSHD &rarr; Baserunner Z9 &amp; JK BMS &rarr; 14S4P Pack</div>
       <div class="build-id">Kilo TT &middot; Bafang BBSHD (bare motor) &middot; Grin Baserunner V6 Z9 &middot; JK-BD4A17S4P &middot; 14s4p 18650 &middot; Throttle-Only</div>
+      <div class="progress-tracker">
+        <div class="progress-item"><span class="status status-done">Done</span> <span class="label">Part 1: BBSHD &rarr; Z9</span> <span class="progress-date">2026-04-10</span></div>
+        <div class="progress-item"><span class="status status-pending">Todo</span> <span class="label">Seal BBSHD cable entry</span></div>
+        <div class="progress-item"><span class="status status-active">Active</span> <span class="label">Part 2: BMS &rarr; 14S4P</span></div>
+        <div class="progress-item"><span class="status status-pending">Pending</span> <span class="label">Autotune + Commission</span></div>
+      </div>
     </div>
     <div class="qr-block">
       <canvas id="qr-canvas"></canvas>
@@ -443,9 +485,14 @@ footer {
 <!-- ═══════════════════════════════════════════════════════ -->
 
 <div class="section" id="overview">
-<h2><span class="domain-tag">elec</span> Part 1: BBSHD &rarr; Baserunner Z9 Wiring</h2>
+<h2><span class="domain-tag">elec</span> Part 1: BBSHD &rarr; Baserunner Z9 Wiring <span style="font-size:0.6rem; background:var(--ok-bg); color:var(--ok); border:1px solid var(--ok); padding:0.1rem 0.5rem; border-radius:2px; margin-left:0.5rem; font-weight:600; letter-spacing:0.05em;">WIRED 2026-04-10</span></h2>
 
 <p>The BBSHD's stock controller is removed. The motor is treated as a bare 3-phase BLDC with Hall sensors and a thermistor. All 9 wires route through a single Z910 connector on the Baserunner V6 Z9. You build an adapter harness by cutting a Z910 extension cable and splicing to the BBSHD's bare leads.</p>
+
+<div class="callout ok">
+  <strong>Pre-mount task: Seal BBSHD cable entry</strong>
+  Before mounting the motor on the frame, seal the wire entry point on the BBSHD housing with Sugru (moldable silicone) and neutral-cure silicone sealant. Do NOT use acidic-cure silicone &mdash; acetic acid vapors corrode copper conductors and solder joints inside the motor housing. Apply Sugru for structural fill, then bead neutral-cure sealant around the perimeter for waterproofing.
+</div>
 
 <div class="callout warn">
   <strong>Throttle-only build &mdash; simplified wiring</strong>

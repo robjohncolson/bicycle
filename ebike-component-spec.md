@@ -102,6 +102,8 @@ This document serves as the master reference guide for integrating a Bafang BBSH
 
 ### Section 4: Wiring Cross-Reference
 
+#### BBSHD → Baserunner Z910 — WIRED 2026-04-10
+
 | Source: BBSHD Internal Component | Target: Baserunner Z910 Connector | Notes |
 | :--- | :--- | :--- |
 | Phase A / B / C | Blue / Green / Yellow Phase Pins | Colors NOT IN MANUAL. Map directly, FOC will correct order. |
@@ -109,7 +111,13 @@ This document serves as the master reference guide for integrating a Bafang BBSH
 | Hall GND | Hall GND | NOT IN MANUAL - verify independently. |
 | Hall Sensor A / B / C | Blue / Green / Yellow Hall Pins | Colors NOT IN MANUAL. |
 | Thermistor | Speed/Temp Pin | BBSHD thermistor specs NOT IN MANUAL. If equipped, route here and configure Baserunner demux chip. |
+
+> **Pre-mount:** Seal BBSHD cable entry with Sugru + neutral-cure silicone before mounting on frame. Do NOT use acidic-cure silicone (corrodes copper).
+
+#### JKBMS → Baserunner — IN PROGRESS
+
 | **Source: JKBMS** | **Target: Baserunner** | **Notes** |
+| :--- | :--- | :--- |
 | P- (Load Negative) | Battery Ground (Negative) | Connects via custom XT60/Anderson or direct solder. |
 | Battery Total Positive (B+) | Battery V+ (Positive) | Bypasses BMS switching directly to the controller. |
 
