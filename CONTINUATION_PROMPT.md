@@ -1,5 +1,35 @@
 # Continuation Prompt — Kilo TT E-Bike Build
 
+## Update (2026-04-23, evening) — Heavy-Lead Verification Complete, BMS Wake Still Blocker
+
+Copper strips arrived. Before reinforcing, did a full DMM verification pass on existing heavy leads to decide which joints need rework.
+
+**Heavy-lead verification results:**
+- **B+ / Pack+ at N14 path**: resistance 0.1Ω after subtracting 0.3Ω DMM lead resistance. **Clean. No rework needed.**
+- **B- wire continuity**: Pack N14 to N0 directly = 48.39V; Pack N14 to B- wire at BMS end = 48.4V. **B- wire has full continuity from N0 all the way to the BMS terminal. Solder joint is GOOD.** Earlier suspicion that B- had failed again was wrong — voltage anomaly is BMS-internal, not joint-related.
+- **Powerpole V+ to GND reads 41V** (not 48V). Exact leakage-artifact signature from the original BMS wake failure. Voltage drop is across BMS internals (off-state FETs / body diodes), confirming MCU is not running and FETs are not enabled.
+
+**DYOL blue-blip reinterpretation:** when Powerpoles were connected to the bike earlier, DYOL lit blue for one instant then died. Originally thought this meant BMS briefly conducted. Actually almost certainly a **capacitor discharge transient** — residual charge in Baserunner input caps from the earlier bench-supply session drained through the Superharness → lit throttle for a moment → gone. Not a BMS conduction event. BMS is still dead-to-the-world.
+
+**Copper strips now deferred** until BMS is sorted. No point reinforcing pads on a pack that can't power a load. When time comes: B- gets Option B (copper *alongside* existing lead — don't re-reflow the known-vulnerable joint since verification now confirms it's holding); B+ either option.
+
+**Ferrule-crimp trick for heavy-lead termination** (when copper-strip pass happens): user has ferrules + crimper. Plan: crimp ferrule on wire, **flatten with pliers/vise** to convert cylindrical ferrule into a flat tinned-copper pad, then solder the flattened pad flat to the copper strip. Functionally equivalent to a ring lug, uses parts already on hand.
+
+**Critical next-session action: Test 2 of the original 3-test diagnostic — P1 balance harness voltage check.**
+
+The MCU gets its power from the P1 balance connector (B14+ and B- sense lines), not from the heavy leads. If P1 is loose or a balance wire has failed, MCU won't boot no matter how healthy the heavy leads are.
+
+Procedure:
+1. **Reseat P1 firmly** (unplug, inspect pins for bend/debris, re-seat until latched).
+2. DMM across P1 on BMS side: red probe P1 pin 15 (B14+), black probe P1 pin 1 (B-). Expect **~48V**.
+   - **~48V** → MCU has power but still not booting. MCU may be dead or firmware locked. Proceed to Test 3 (discharge-side load test).
+   - **0V** → P1 connector lost contact. Reseat, retry.
+   - **Weird fraction (30V, 41V, etc.)** → balance wire(s) in chain have broken continuity. Probe N0→B1 (expect 3.43V), N0→B2 (6.86V), ... N0→B14 (48V). First mismatch = broken balance wire.
+3. Touch BMS case — warm after 30s = MCU drawing some current; cold = MCU not running.
+4. Short (1-sec) tap of BMS button — any status LED activity?
+
+---
+
 ## Update (2026-04-23) — Baserunner Bench Commissioning Complete
 
 Baserunner V6 Z9 fully commissioned on Matrix bench supply (50V, 5A limit). Independent of the ongoing JK BMS blocker.
