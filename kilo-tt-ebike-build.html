@@ -562,7 +562,7 @@ table.spec td:nth-child(3) { color: var(--text-dim); font-size: 0.78rem; }
 <header>
   <h1>Kilo TT &rarr; E-Assist Build</h1>
   <div class="sub">Complete Specification &amp; Build Checklist</div>
-  <div class="build-id">63cm Mercier Kilo TT &middot; BBSHD &rarr; Baserunner V6 Z9 &middot; Superharness + SW102 &middot; 14s4p 18650 + JK BMS &middot; Throttle-Only / 20T Fixed</div>
+  <div class="build-id">63cm Mercier Kilo TT &middot; BBSHD &rarr; Baserunner V6 Z9 &middot; Superharness + SW102 &middot; 14s4p 18650 VTC6 (12 Ah / 624 Wh) + JK BMS &middot; Throttle-Only / 20T Fixed</div>
 
   <!-- Overall progress bar -->
   <div class="overall-progress">
@@ -726,7 +726,8 @@ table.spec td:nth-child(3) { color: var(--text-dim); font-size: 0.78rem; }
 <div class="spec-group-title elec">Battery &amp; BMS</div>
 <table class="spec">
 <tr><th>Component</th><th>Specification</th><th>Fit Notes</th></tr>
-<tr><td>Pack config</td><td>14s4p 18650 Li-ion</td><td>58.8V full charge, ~52V nominal</td></tr>
+<tr><td>Pack config</td><td>14s4p 18650 Sony/Murata VTC6</td><td>~12 Ah / 624 Wh. 58.8V full charge, ~52V nominal. Cell rating: 30A cont / 60A peak each &rarr; 120A / 240A pack-level headroom (not the bottleneck).</td></tr>
+<tr><td>Estimated range</td><td>~20&ndash;40 miles</td><td>Flat + pedal-assist at top end; hilly / full-throttle at bottom end. Throttle-only use skews lower.</td></tr>
 <tr><td>BMS</td><td>JK-BD4A17S4P (Jikong Smart BMS)</td><td>Full protection + 0.4A active balance + Bluetooth</td></tr>
 <tr><td>BMS cont. discharge</td><td>40A</td><td>System bottleneck &mdash; set controller limits below this</td></tr>
 <tr><td>BMS peak discharge</td><td>60A</td><td>Short-duration only</td></tr>

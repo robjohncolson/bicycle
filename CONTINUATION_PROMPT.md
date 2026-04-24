@@ -67,7 +67,7 @@ Baserunner V6 Z9 fully commissioned on Matrix bench supply (50V, 5A limit). Inde
 - **V+ pigtail built**: heavy-gauge red → Y-split → Powerpoles V+ + XT60 V+, both in housings
 - **BMS B- (black) soldered to pack N0** — had to be **resoldered once**. Original joint was cold and failed continuity. This is a known-vulnerable spot; verify continuity before any future rework.
 - **Pack+ soldered to pack N14**
-- True pack voltage confirmed at ~48V (3.43V/cell, ~30% SOC) — 21700s depleted slightly during the debug session
+- True pack voltage confirmed at ~48V (3.43V/cell, ~30% SOC) — 18650 VTC6s depleted slightly during the debug session
 
 ### What's NOT done yet (deferred when BMS wake failed)
 

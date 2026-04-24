@@ -23,7 +23,7 @@ This is NOT a software project. It's a knowledge repository for:
 - **Frame**: Mercier Kilo TT 63cm (fixed-gear / track conversion)
 - **Motor**: Bafang BBSHD mid-drive (Anderson Powerpole phase wires)
 - **Controller**: Grin Baserunner V6 Z9 (sinusoidal FOC, 60V max, 40A continuous)
-- **Battery**: 14S4P 18650 Li-ion, ~52V nominal, 58.8V full charge
+- **Battery**: 14S4P 18650 Sony/Murata VTC6 (~12 Ah / 624 Wh), ~52V nominal, 58.8V full charge. Cell-level headroom 120A cont / 240A peak — BMS and controller are the bottlenecks, not the cells.
 - **BMS**: JK-BD4A17S4P smart BMS (Bluetooth, active balance, common-port, 40A cont / 60A peak)
 - **Drivetrain**: 42T chainring / 20T fixed cog primary, 36T freewheel spare on flip side
 - **Display**: SW102 via Superharness (KM5s protocol)
