@@ -735,12 +735,14 @@ table.spec td:nth-child(3) { color: var(--text-dim); font-size: 0.78rem; }
 <tr><td>BMS activation</td><td>Charging activation (charger V &gt; pack V + ~2V)</td><td>No physical power switch on BMS</td></tr>
 <tr><td>BMS comms</td><td>Bluetooth (Android/iOS app), RS485 (P4), UART 3.3V (P5)</td><td>Default BT password: &quot;1234&quot; or &quot;123456&quot;</td></tr>
 <tr><td>Pack mount</td><td>Rear rack (in bag/case)</td><td>Adds rear weight &mdash; monitor handling with Zephyr fork</td></tr>
-<tr><td>Precharge</td><td>XT90-S anti-spark connector</td><td>Eliminates inrush spark into capacitive controller</td></tr>
-<tr><td>Main fuse</td><td>Sized to system (~50A, pack-level)</td><td>Close to pack positive terminal</td></tr>
+<tr><td>Discharge connector</td><td>Anderson Powerpole (45A-rated)</td><td>No precharge &mdash; Baserunner input caps will arc slightly on first mate each ride. Accept contact wear, or add external precharge button + resistor in parallel if it becomes a problem.</td></tr>
+<tr><td>Charge connector</td><td>XT60 (separate pigtail, Y-split with discharge)</td><td>Both connectors share Pack+ (N14) and BMS C- through a Y-split at the pack output. Thinner gauge OK on charge pigtail (2&ndash;5A charger current).</td></tr>
+<tr><td>Main fuse</td><td><em>None (intentional)</em></td><td>BMS OCP is the only overcurrent protection. Slower than a fuse and requires BMS awake. Tradeoff accepted for this build.</td></tr>
 </table>
 
 <!-- Battery assembly photo gallery -->
 <h3>Battery Assembly Photos</h3>
+<p style="font-size:0.85em;opacity:0.75;margin:0 0 8px 0;">Reference photos from <a href="https://endless-sphere.com/sphere/threads/14s4p-in-linear-configuration-bms-balance-and-copper-nickle-sandwich.118426/" target="_blank" rel="noopener">Endless Sphere thread #118426</a> &mdash; 14S4P linear configuration / copper-nickel sandwich build.</p>
 <div class="photo-gallery">
   <figure class="photo-card">
     <img src="188492-fe91804f987eb1131d64a054c95844ce.jpg" alt="Open battery cell stack with nickel layout and leads" loading="lazy">
@@ -808,8 +810,11 @@ table.spec td:nth-child(3) { color: var(--text-dim); font-size: 0.78rem; }
 <h2><span class="domain-tag elec">elec</span> System Topology</h2>
 
 <div class="diagram"><span class="e">POWER PATH</span>
-  <span class="d">14s4p Pack+</span> &rarr; Main Fuse &rarr; <span class="d">XT90-S</span> &rarr; <span class="e">Baserunner Batt V+</span> (seat tube)
-  <span class="d">14s4p Pack-</span> &rarr; <span class="d">JK BMS B-</span> &rarr; <span class="d">BMS C-</span> &rarr; <span class="e">Baserunner Batt GND</span>
+  <span class="d">14s4p Pack+ (N14)</span> &rarr; Y-split &rarr; <span class="d">Powerpoles V+</span> &rarr; <span class="e">Baserunner Batt V+</span> (seat tube)
+                                &rarr; <span class="d">XT60 V+</span> &rarr; <span class="m">Charger V+</span>
+  <span class="d">14s4p Pack- (N0)</span> &rarr; <span class="d">JK BMS B-</span> &rarr; FETs &rarr; <span class="d">BMS C-</span> &rarr; Y-split &rarr; <span class="d">Powerpoles GND</span> &rarr; <span class="e">Baserunner Batt GND</span>
+                                                             &rarr; <span class="d">XT60 GND</span> &rarr; <span class="m">Charger GND</span>
+  <span class="m">No fuse &mdash; BMS OCP only. No precharge &mdash; Powerpoles will arc slightly on first mate each ride.</span>
 
 <span class="e">MOTOR PATH</span>
   <span class="e">Baserunner Z910</span> &larr;&mdash; Z910 adapter harness &mdash;&rarr; <span class="m">BBSHD 3&times; phases + Halls + temp</span>
@@ -840,7 +845,7 @@ table.spec td:nth-child(3) { color: var(--text-dim); font-size: 0.78rem; }
 
 <div class="callout warn">
   <strong>Voltage ceiling &mdash; 58.8V vs 60V max</strong>
-  58.8V full charge is only 1.2V below the Baserunner's 60V absolute max. Even without regen (BBSHD clutch expected to decouple &mdash; pending bench-test), wiring inductance and load transients can produce brief voltage spikes. Set BMS overvoltage protection conservatively. Never charge above 4.2V/cell while connected to the controller.
+  58.8V full charge is only 1.2V below the Baserunner's 60V absolute max. Regen is bench-verified capable (not inert as originally assumed) &mdash; if re-enabled on-bike, cap Max Regen Voltage at 57.6V to leave headroom below full-charge 58.8V and prevent overcharge-into-a-full-pack. Wiring inductance and load transients can also produce brief voltage spikes. Set BMS overvoltage protection conservatively. Never charge above 4.2V/cell while connected to the controller.
 </div>
 </div>
 
@@ -906,20 +911,20 @@ table.spec td:nth-child(3) { color: var(--text-dim); font-size: 0.78rem; }
 
 <div class="diagram"><span class="d">BATTERY POWER PATH</span>
 
-  ┌──────────────┐     ┌──────┐     ┌─────────┐     ┌──────────────┐     ┌──────────────┐
-  │ 14s4p Pack   │     │ Main │     │ XT90-S  │     │  Baserunner  │     │    BBSHD     │
-  │              │     │ Fuse │     │ Anti-   │     │  V6 Z9       │     │   Motor      │
-  │  B+ &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&rarr;&mdash;┤ ~50A ├&mdash;&rarr;&mdash;┤ spark   ├&mdash;&rarr;&mdash;┤ Batt V+      │     │              │
-  │              │     └──────┘     └─────────┘     │              │     │              │
-  │              │                                  │   Z910 &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&rarr;&mdash;┤ 3&times; Phase     │
-  │  B- &mdash;&rarr; JK BMS B-                              │              │     │   tabs       │
-  │         │                                       │              │     │              │
-  │         └&mdash;&rarr; BMS C- (switched) &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&rarr;&mdash;&mdash;&mdash;&mdash;┤ Batt GND     │     └──────────────┘
-  │              │                                  └──────────────┘
-  └──────────────┘
+                                 ┌&mdash;&rarr; <span class="d">Powerpoles V+</span> &mdash;&rarr; <span class="e">Baserunner Batt V+</span>
+  <span class="d">Pack+ (N14)</span> &mdash;&rarr; Y-split &mdash;&mdash;&mdash;┤
+                                 └&mdash;&rarr; <span class="d">XT60 V+</span>       &mdash;&rarr; <span class="m">Charger V+</span>
 
-  <span class="d">B+ goes DIRECT to controller (BMS does NOT switch positive).</span>
-  <span class="d">BMS switches the NEGATIVE path only (C- = controlled output).</span></div>
+  <span class="d">Pack- (N0)</span> &mdash;&rarr; <span class="d">JK BMS B-</span> &mdash;&rarr; FETs &mdash;&rarr; <span class="d">BMS C- (switched)</span> &mdash;&rarr; Y-split &mdash;&mdash;┬&mdash;&rarr; <span class="d">Powerpoles GND</span> &mdash;&rarr; <span class="e">Baserunner Batt GND</span>
+                                                                      │
+                                                                      └&mdash;&rarr; <span class="d">XT60 GND</span>       &mdash;&rarr; <span class="m">Charger GND</span>
+
+  <span class="m">(Separate harness)</span> Baserunner Z910 &mdash;&rarr; <span class="m">BBSHD 3&times; phases + Halls + temp</span>
+
+  <span class="d">Pack+ goes DIRECT to both connectors</span> &mdash; BMS does NOT switch positive.
+  <span class="d">BMS switches the NEGATIVE path only</span> &mdash; C- Y-splits to both discharge (Powerpoles) and charge (XT60).
+  <span class="d">NO FUSE</span> &mdash; BMS OCP is the only overcurrent protection.
+  <span class="d">NO PRECHARGE</span> &mdash; Powerpoles will arc slightly on first mate each ride into Baserunner input caps.</div>
 
 <h3>What's NOT Connected (and why)</h3>
 <table class="spec">
@@ -1050,14 +1055,23 @@ table.spec td:nth-child(3) { color: var(--text-dim); font-size: 0.78rem; }
 </div>
 
 <div class="checklist-section">
-  <div class="checklist-header"><span class="step-badge elec">8</span> Main Power Leads + Fuse + Anti-Spark</div>
+  <div class="checklist-header"><span class="step-badge elec">8</span> Main Power Leads + BMS Commissioning (pre-wrap)</div>
   <div class="check-items">
-    <div class="check-item"><input type="checkbox" id="s8a"><label for="s8a">Connect B- main lead to battery negative terminal on BMS</label></div>
-    <div class="check-item"><input type="checkbox" id="s8b"><label for="s8b">Connect C- main lead &mdash; this is the switched output to controller/charger GND</label></div>
-    <div class="check-item"><input type="checkbox" id="s8c"><label for="s8c">Install main fuse (~50A) close to pack positive terminal</label></div>
-    <div class="check-item"><input type="checkbox" id="s8d"><label for="s8d">Install XT90-S anti-spark connector between fuse output and controller power lead</label></div>
-    <div class="check-item"><input type="checkbox" id="s8e"><label for="s8e">Route: Pack+ &rarr; fuse &rarr; XT90-S &rarr; along frame to Baserunner Batt V+</label></div>
-    <div class="check-item"><input type="checkbox" id="s8f"><label for="s8f">Route: BMS C- &rarr; along frame to Baserunner Batt GND</label></div>
+    <div class="check-item"><input type="checkbox" id="s8a"><label for="s8a">Install thermistors on cell bodies (not bus bars): 1&ndash;2 probes minimum, Kapton tape or thermal adhesive, distribute across pack length</label></div>
+    <div class="check-item"><input type="checkbox" id="s8b"><label for="s8b">Button connector: install external momentary wake/sleep button (optional) OR cap and tuck inside wrap</label></div>
+    <div class="check-item"><input type="checkbox" id="s8c"><label for="s8c">Leave P2 extension balance header unplugged (firmware ignores unused cell positions after cell count is set in step s8l)</label></div>
+    <div class="check-item"><input type="checkbox" id="s8d"><label for="s8d">Build GND Y-split: BMS blue (P-/C-) wire &rarr; Anderson Powerpoles GND contact + XT60 GND contact, both fully seated in housings</label></div>
+    <div class="check-item"><input type="checkbox" id="s8e"><label for="s8e">Build V+ Y-split: heavy-gauge red wire &rarr; Anderson Powerpoles V+ contact + XT60 V+ contact, both fully seated. DO NOT land on pack yet.</label></div>
+    <div class="check-item"><input type="checkbox" id="s8f"><label for="s8f">Verify JK BMS color convention before landing heavy leads: DMM continuity from each heavy lead to P1 pin 1 (B-/N0). The lead that beeps continuity = B-. The other = P-/C-.</label></div>
+    <div class="check-item"><input type="checkbox" id="s8g"><label for="s8g">Solder BMS B- (black) heavy lead to pack N0 &mdash; low risk, ground-to-ground, no voltage differential</label></div>
+    <div class="check-item"><input type="checkbox" id="s8h"><label for="s8h"><strong>HIGH RISK:</strong> Solder V+ Y-split to pack N14/B14+ &mdash; do LAST. One hand in pocket, insulated tools. Once landed, entire V+ pigtail is live at ~52V. Confirm both Powerpoles V+ and XT60 V+ housings are fully seated with no exposed metal before this step.</label></div>
+    <div class="check-item"><input type="checkbox" id="s8i"><label for="s8i">DMM polarity check: Powerpoles V+ vs pack N0 = +52V correct polarity; XT60 V+ vs N0 = same. Reference N0 directly, NOT BMS C- (asleep BMS can float C- via FET body diodes and give a false reversed reading).</label></div>
+    <div class="check-item"><input type="checkbox" id="s8j"><label for="s8j">Plug charger into XT60 to wake BMS (charger V must be &gt; pack V + ~2V). Listen for FET relay click.</label></div>
+    <div class="check-item"><input type="checkbox" id="s8k"><label for="s8k">Install JK BMS app (publisher: JiaBaiDa &mdash; avoid clones). Grant Bluetooth + Location permissions. Scan, pair. Default password: <code>1234</code> (fallback <code>123456</code>, <code>000000</code>).</label></div>
+    <div class="check-item"><input type="checkbox" id="s8l"><label for="s8l"><strong>Set cell count = 14 FIRST</strong>, then chemistry = Li-ion, capacity = pack Ah, review OVP/UVP/OCP/OTP thresholds, charge + discharge enable ON. Save and verify persistence by disconnecting + reconnecting Bluetooth.</label></div>
+    <div class="check-item"><input type="checkbox" id="s8m"><label for="s8m">Verify dashboard: 14 cells detected, voltages match DMM staircase (step 7e), temps reading ambient from thermistors, zero fault flags. Positions 15+ should vanish from display after cell count save.</label></div>
+    <div class="check-item"><input type="checkbox" id="s8n"><label for="s8n">Optional bench load test: small resistor or 12V bulb across Powerpoles &mdash; confirm P- FETs conduct under load and BMS current reading is non-zero</label></div>
+    <div class="check-item"><input type="checkbox" id="s8o"><label for="s8o"><strong>Gate to step 9:</strong> do NOT wrap the pack until all above items are complete and fault-free. Unwrapping a sealed pack to fix a miswire is painful &mdash; validate everything here first.</label></div>
   </div>
 </div>
 
@@ -1096,16 +1110,14 @@ table.spec td:nth-child(3) { color: var(--text-dim); font-size: 0.78rem; }
 </div>
 
 <div class="checklist-section">
-  <div class="checklist-header"><span class="step-badge elec">12</span> Connect Battery &amp; Activate BMS</div>
+  <div class="checklist-header"><span class="step-badge elec">12</span> Final Controller Mate &amp; Power-On</div>
   <div class="check-items">
-    <div class="check-item"><input type="checkbox" id="s12a"><label for="s12a">Confirm no continuity between Batt+ and Batt- through controller path (disconnected)</label></div>
-    <div class="check-item"><input type="checkbox" id="s12b"><label for="s12b">Confirm correct polarity before power (reverse polarity = irreparable controller damage)</label></div>
-    <div class="check-item"><input type="checkbox" id="s12c"><label for="s12c">Connect charger to activate BMS first (charger V &gt; pack V + ~2V) &mdash; BMS won't wake without this</label></div>
-    <div class="check-item"><input type="checkbox" id="s12d"><label for="s12d">Connect via Bluetooth app: confirm 14 cells detected, voltages match DMM readings</label></div>
-    <div class="check-item"><input type="checkbox" id="s12e"><label for="s12e">Set chemistry to Li-ion, cell count to 14, review protection thresholds</label></div>
-    <div class="check-item"><input type="checkbox" id="s12f"><label for="s12f">Connect battery to controller via XT90-S (precharge resistor eliminates inrush spark)</label></div>
-    <div class="check-item"><input type="checkbox" id="s12g"><label for="s12g">Power on via SW102 display button</label></div>
-    <div class="check-item"><input type="checkbox" id="s12h"><label for="s12h">Confirm SW102 shows pack voltage and speed reads 00.0 (KM5s comms working)</label></div>
+    <div class="check-item"><input type="checkbox" id="s12a"><label for="s12a">Pre-requisites confirmed: BMS was commissioned pre-wrap in step 8 (cell count = 14, no faults, temps sane, 14 cells detected)</label></div>
+    <div class="check-item"><input type="checkbox" id="s12b"><label for="s12b">Pack wrapped (step 9), mounted to rack (step 9), Baserunner mounted (step 10), Z910 + Main9 signal harnesses plugged (step 11)</label></div>
+    <div class="check-item"><input type="checkbox" id="s12c"><label for="s12c">Final polarity sanity: DMM at the Powerpoles side one more time (V+ pin vs GND pin) before mating to controller &mdash; expect ~52V correct polarity. Reverse polarity = dead controller.</label></div>
+    <div class="check-item"><input type="checkbox" id="s12d"><label for="s12d">Mate Powerpoles to Baserunner battery leads. <strong>Expect a slight arc</strong> &mdash; there is no precharge resistor. Contacts will darken over time; inspect periodically and replace if visibly pitted.</label></div>
+    <div class="check-item"><input type="checkbox" id="s12e"><label for="s12e">Power on via SW102 display button</label></div>
+    <div class="check-item"><input type="checkbox" id="s12f"><label for="s12f">Confirm SW102 shows pack voltage and speed reads 00.0 (KM5s comms working)</label></div>
   </div>
 </div>
 
@@ -1155,7 +1167,7 @@ table.spec td:nth-child(3) { color: var(--text-dim); font-size: 0.78rem; }
   <div class="checklist-header"><span class="step-badge comm">16</span> Anti-Lug Tuning &amp; Thermal Config</div>
   <div class="check-items">
     <div class="check-item"><input type="checkbox" id="s16a"><label for="s16a">Set battery current limit well below JK BMS 40A continuous (start ~15&ndash;20A)</label></div>
-    <div class="check-item"><input type="checkbox" id="s16b"><label for="s16b">Disable regen in software (or set to 0A) &mdash; BBSHD clutch expected to make it inert (pending bench-test)</label></div>
+    <div class="check-item"><input type="checkbox" id="s16b"><label for="s16b">Set Regen Current = 0A for commissioning (bench-verified 2026-04-23: regen <em>is</em> electrically active when motor spins under power, trips bench supply). Optional on-bike: re-enable at ~5A with Max Regen Voltage 57.6V for gentle descent braking.</label></div>
     <div class="check-item"><input type="checkbox" id="s16c"><label for="s16c">Configure thermistor type in Phaserunner Suite temp tab (Z910 aux &rarr; BBSHD purple wire)</label></div>
     <div class="check-item"><input type="checkbox" id="s16d"><label for="s16d"><strong>Anti-lug tuning:</strong> 42/20 is tall gearing &mdash; at low RPM the controller pushes high phase current. Set a soft throttle ramp (not instant full power) and conservative phase current limit.</label></div>
     <div class="check-item"><input type="checkbox" id="s16e"><label for="s16e">Monitor controller temp, motor temp, and BMS app during progressive load testing</label></div>
@@ -1211,8 +1223,8 @@ table.spec td:nth-child(3) { color: var(--text-dim); font-size: 0.78rem; }
 </div>
 
 <div class="callout ok">
-  <strong>No regen &mdash; by design</strong>
-  The BBSHD's internal clutch is expected to prevent the wheel from backdriving the motor, meaning DYOL rollback should produce zero braking force. This is the intended behavior &mdash; verify via bench-test before committing to 20T fixed as the sole cog. If the clutch does not fully decouple, flip the wheel to the 36T freewheel side. Braking is always mechanical (Dia-Compe calipers).
+  <strong>Regen &mdash; partially capable (bench-verified 2026-04-23)</strong>
+  Bench test with motor free-spinning confirmed the Baserunner <em>can</em> regen when the motor is already spinning under power (reverse throttle twist brakes the motor and pushes current back onto the DC bus &mdash; enough to overvoltage-trip a bench supply). Pure-coast regen is still expected to fail because the BBSHD clutch disengages when the chainring spins faster than the motor (no rotor motion = no energy to harvest), and this build is fixed-gear so coasting doesn't exist anyway. <strong>For commissioning: set Regen Current = 0A</strong> (bench supplies can't sink regen current). Optional on-bike later: re-enable at low current (~5A) with Max Regen Voltage at 57.6V for gentle descent braking into the real battery. Primary braking is always mechanical (Dia-Compe calipers).
 </div>
 
 <div class="callout warn">
