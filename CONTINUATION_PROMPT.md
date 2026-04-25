@@ -1,5 +1,52 @@
 # Continuation Prompt — Kilo TT E-Bike Build
 
+## Update (2026-04-24) — Original JK BMS Bricked, Swapping to Spare 200A JK
+
+Full 3-test diagnostic completed. Verdict: **original JK BMS is bricked at the MCU / FET-driver level.** Hardware around it is fine.
+
+**Diagnostic results (final):**
+
+| Test | Result |
+|---|---|
+| Heavy lead joints (B+, B-) | ✅ Verified clean (B+ 0.1Ω; B- continuity 48.4V end-to-end) |
+| Test 2 — P1 voltage at MCU | ✅ Staircase 3.4V → 48V, all balance wires good, MCU has full power rail |
+| Test 3 — discharge load (100W incandescent in series with DMM ammeter) | ❌ **4 mA** at 48V (expected 700–1000 mA). FETs not conducting; current is body-diode/parasitic leakage only |
+| BMS button: 1-sec tap + 5-sec long press | ❌ No ammeter spike, no LED, no Bluetooth, nothing |
+| Charger-wake attempt 2 (Matrix 58.8V CV / 2A CC into XT60, polarity verified) | ❌ Matrix ammeter held at 0.00A for 30s, BLE silent |
+
+MCU has every condition it needs to boot and respond — full power rail, working button input, working charge-side reference — and produces zero response on any axis. Not recoverable without component-level repair, which is not worth the time when a free replacement is on hand.
+
+**Action: swap to spare 200A JK BMS.**
+
+Logistics confirmed:
+- Spare 200A JK is physically accessible
+- Current pack is lightly taped/glued, BMS is easy to remove without unwrapping
+- Spare 200A JK is also 14S+ capable (pin compatibility expected; verify P1 pin pitch and count match before committing)
+- Spare has dual B- / dual P- heavy leads (designed for parallel FET banks); for 40A application, use only one of each pair, cap the unused pair
+
+**Swap procedure** (next session, immediate):
+
+1. **Disconnect P1 balance harness from dead JK first.** This depowers the dead BMS and prevents transient voltage events on the balance side during heavy-lead rework.
+2. **Disconnect heavy leads from dead JK** — screw terminals if present (unscrew), or desolder if soldered. The B- wire (from pack N0) and the C-/P- blue wire (going to Y-split → Powerpoles GND + XT60 GND).
+3. **Connect heavy leads to spare 200A JK** — same B- and same C-/P-. **Cap the unused B- and unused P- terminals** with heat-shrink to prevent accidental shorts.
+4. **Plug P1 balance harness into spare BMS.** Verify pin alignment first — JK BMS variants can differ in pin pitch and count. If P1 doesn't seat, may need to re-pin or rebuild the connector.
+5. **Try charger-wake on the new BMS** — Matrix at 58.8V/2A into XT60, watch ammeter for current rise + BLE for advertise.
+6. **Commission via Bluetooth**:
+   - Set cell count = 14
+   - Verify all 14 cell voltages reading ~3.43V each
+   - Set protection thresholds (overvoltage, undervoltage, OCP, OTP — sensible defaults for 14S Li-ion)
+   - Disable any default current that's wrong for 40A pack
+7. **Re-run Test 3 (discharge load) with new BMS** to confirm FETs conduct.
+8. **Hardware Inventory note**: original spare-for-future-build is now in service. The "future high-current build" no longer has a BMS earmarked.
+
+**Still deferred until BMS swap completes:**
+- Copper strip reinforcement (B-/B+ pads). Plan stays the same: Option B (copper alongside existing leads) for B-, either option for B+. Ferrule-flatten technique for wire termination.
+- Thermistor install on new BMS's P3.
+- Button connector decision (external vs. capped).
+- Pack wrap.
+
+---
+
 ## Update (2026-04-23, evening) — Heavy-Lead Verification Complete, BMS Wake Still Blocker
 
 Copper strips arrived. Before reinforcing, did a full DMM verification pass on existing heavy leads to decide which joints need rework.
