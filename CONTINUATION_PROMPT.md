@@ -64,21 +64,53 @@ User has a second 14S4P pack (Samsung high-drain 21700 cells) physically built �
 - Prefer **smart/Bluetooth variant** if available at same listing (~$10–20 premium worth it for diagnostic capability)
 - Seller: **DALY Official** or reputable reseller
 
-### Pre-swap verification — DRY-FIT P1 BEFORE COMMITTING
+### P1 dry-fit FAILED — pitch mismatch (2026-04-24, late)
 
-Before disconnecting anything from the dead JK, **dry-fit P1 against the spare 200A's balance socket**:
-1. Pin **count** matches?
-2. Pin **pitch** matches (2.54mm vs 2.0mm — close-but-different will appear to fit but won't seat)?
-3. Pin **orientation** matches (B- and B14+ on the same physical sides)?
+User dry-fit existing P1 plug against spare 200A's balance socket: **pin pitch is larger on the 200A**. Likely 2.0mm (PH) on the dead JK / existing 18650 harness, 2.54mm (XH) on the 200A. **Plug-and-play killed.**
 
-If yes → genuine plug-and-play, proceed with swap.
-If no → P1 needs re-pinning to new connector geometry. ~1 hour with crimper + new pins. Stop and re-plan before committing.
+### Plan flipped back — Option 2 locked in (200A → 21700, Daly → 18650)
 
-### After 18650 commissioning — set 21700 work for the Daly arrival
+The pitch mismatch eliminated the only reason to put 200A on 18650 (speed). Reverting to original gut-instinct assignment:
 
-While waiting for the Daly:
-- 21700 pack pre-flight: heavy lead pull tests, voltage verification, balance harness staircase. **Do this proactively before the Daly arrives** so commissioning day is uninterrupted.
-- Don't install the Daly until it physically arrives — no point speculating on its connector geometry.
+| Pack | Cells | BMS | Why |
+|---|---|---|---|
+| **Pack A: 18650 VTC6** (12 Ah, 624 Wh) — **practice pack per user intent** | Existing build, dead JK removed | **Daly 60A common-port** (Amazon B0CZQJ6G39, ETA Thursday 2026-04-30) | Right-sized for 30A Z9 system. May plug-and-play if Daly is also 2.54mm; may need re-pin if Daly is 2.0mm. Acceptable risk on a practice pack. |
+| **Pack B: 21700 Samsung high-drain** (~16–20 Ah, 832–1040 Wh) — **production pack** | Cells stacked + nickel welded, no balance harness installed yet | **Spare 200A JK** (in hand) | High-current BMS rightly paired with high-capacity high-drain cells. Build balance harness FRESH to match 200A's 2.54mm pitch from scratch — no re-pinning friction. |
+
+**Why this is better than re-pinning the 18650 harness:**
+- No crimper purchase / wait
+- 21700 commissioning is happening anyway (user committed to second pack)
+- Each BMS lands on its naturally-matched pack
+- 18650 stays "as-is" until Daly arrives, no work disturbed
+- 6-day Daly window used productively to commission the 21700
+
+### Tonight (2026-04-24)
+
+1. **Order the Daly** before bed — Amazon B0CZQJ6G39, variant verification per checklist above.
+2. **Set 18650 pack aside cleanly**: disconnect dead JK from heavy leads, insulate bare wire ends with heat-shrink or tape (Pack+ at N14 stays live, don't let dangling B-/C- leads find it).
+3. **Stop for the night.** Long debug session — diminishing returns past this point.
+
+### Tomorrow / next session — start 21700 commissioning
+
+1. **Pre-flight the 21700 pack** (assumes cells stacked + nickel welded but no balance harness):
+   - Visual inspect: nickel welds look uniform, no missing welds, no scorch marks
+   - Pull-test on existing pack-level joints (Pack+ heavy lead, B- heavy lead — if installed)
+   - DMM staircase across cell groups directly on the nickel: N0→N1, N0→N2, ... N0→N14. Each step adds the cell voltage. Confirm monotonic climb to ~48V.
+   - Cell voltage spread: all 14 within 50mV? If one is 100mV+ off, that group has a problem — investigate before BMS install.
+2. **Build balance harness fresh** — sized for 2.54mm JST-XH pitch (200A's connector). 15 wires, B0 through B14, terminated in a 16-pin XH shell with one position blanked (or 15-pin if available). Match wire colors to the existing 18650 harness convention for muscle-memory consistency.
+3. **Install heavy leads** on 21700 pack — Pack+ direct from N14, B- to BMS B- terminal. Y-split for discharge (Powerpoles + XT60) per existing topology.
+4. **Install 200A JK** — connect heavy leads, **cap unused B- and unused P- pair** (200A has duals; for 40A application use only one each). Plug fresh balance harness into P1. Don't plug P2 (14S only uses P1).
+5. **Charger-wake** Matrix at 58.8V/2A into XT60 charge port → watch for ammeter rise + BLE advertise.
+6. **Commission via JK app**: cell count = 14, verify all 14 cells reading correctly, set protection thresholds (OVP 4.20V/cell, UVP 2.80V/cell, OCP 80A — give 200A some headroom, OTP 60°C).
+7. **Re-run Test 3** (100W bulb + DMM ammeter across discharge connector). Expect 400–800 mA. Confirms FETs conduct.
+
+### Thursday (2026-04-30) — Daly arrives, 18650 swap
+
+1. **Inspect Daly's balance connector** — what pitch? If 2.54mm, may match Daly's pinout to existing 18650 harness directly. If 2.0mm, may match the existing 18650 harness directly (since old JK was likely 2.0mm). If neither matches, may need fresh balance harness on the 18650 too.
+2. **Connect Daly to 18650**: heavy leads (B- to N0 wire, P- to discharge harness), balance harness via P1.
+3. **Commission**: Daly is non-smart in the cheaper variant (no app); some variants have BLE. If non-smart, BMS is auto-configured for the listed cell count — **buy the 14S variant specifically**, no software config needed.
+4. **Test 3** on 18650 with Daly. Expect FETs conduct under load.
+5. **Wrap both packs.**
 
 ---
 
