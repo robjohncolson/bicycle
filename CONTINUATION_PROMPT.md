@@ -1,5 +1,34 @@
 # Continuation Prompt — Kilo TT E-Bike Build
 
+## Update (2026-04-25) — Daly Arrived 5 Days Early, 18650 + Daly Is Now Active
+
+Daly 60A common-port Li-ion 14S BMS shipped early — in hand 2026-04-25 (was ETA 2026-04-30). **Plan flip:** instead of using the 6-day window to commission the 21700 + 200A JK first, jump straight to 18650 + Daly. 21700 + 200A JK shelved cleanly (no balance harness installed yet — nothing to undo).
+
+**Why flip:** the 21700 plan was filling dead time. With Daly here, the fastest path to a rideable bike is the 18650 pack — it's already 90% built, balance harness in place, heavy leads verified clean.
+
+### Immediate next actions (Daly + 18650)
+
+1. **Eyeball Daly's P1 connector pitch** vs. existing 18650 harness plug. Existing is 2.0mm (PH). If Daly matches → plug-and-play. If 2.54mm (XH) → re-pin or rebuild harness. **Decision gate before any wiring.**
+2. **Heavy leads onto Daly**: B- to N0 wire (existing solder joint, verified holding 2026-04-24 — pull-test before committing), P- to existing Y-split (Powerpoles + XT60 GND).
+3. **Plug P1 balance harness.** Daly is dumb by intentional choice — no app, no commissioning workflow, no wake ritual, no Bluetooth handshake. Hardware-fixed thresholds for the 14S Li-ion 60A model.
+4. **Verify pack live**: DMM at Powerpoles → expect ~48V real. (If you see 41V, that's the leakage artifact from the dead JK era — should NOT happen with the Daly because its FETs default to conducting on a healthy pack. If you see 41V, something is wrong.)
+5. **Test 3** (100W incandescent + DMM ammeter in series across Powerpoles V+/GND): expect 400–800 mA. Confirms FETs conduct.
+6. **Thermistor install** (count TBD: 1, 2, or 4 on hand?), **button decision** (external momentary on bag exterior or capped/tucked), **copper strip reinforcement** on B+/B- pads (Option B alongside existing leads, ferrule-flatten technique on wire ends).
+7. **Wrap pack** — only after Test 3 passes. Pre-wrap commissioning gate is holding for a reason.
+
+### 21700 + 200A JK — deferred, clean state
+
+Pack is in a good state to resume later: cells stacked + nickel welded, no balance harness installed (nothing to undo). When 18650 is wrapped and rideable, return to this:
+
+1. Pre-flight 21700 (visual welds + DMM staircase N0→N14, cell spread <50mV)
+2. Build fresh 2.54mm JST-XH balance harness (15 wires)
+3. Install heavy leads + Y-split discharge
+4. Mount 200A JK, cap unused dual B-/P- pair
+5. Charger-wake → JK app commission (cell count=14, OVP 4.20V/cell, UVP 2.80V/cell, OCP 80A, OTP 60°C)
+6. Test 3 load test, then wrap
+
+---
+
 ## Update (2026-04-24) — Original JK BMS Bricked, Swapping to Spare 200A JK
 
 Full 3-test diagnostic completed. Verdict: **original JK BMS is bricked at the MCU / FET-driver level.** Hardware around it is fine.
