@@ -45,6 +45,41 @@ Logistics confirmed:
 - Button connector decision (external vs. capped).
 - Pack wrap.
 
+### Two-pack strategy (2026-04-24, decision)
+
+User has a second 14S4P pack (Samsung high-drain 21700 cells) physically built — cells stacked, nickel welded, balance harness soldered — but no BMS commissioned yet (Scenario B in our earlier triage). Strategy split:
+
+| Pack | Cells | BMS | Status | Timeline |
+|---|---|---|---|---|
+| **Pack A** (current build) | 14S4P 18650 VTC6 (12 Ah / 624 Wh) | **Spare 200A JK** (in hand) | Plug-and-play swap pending P1 pin compatibility check | This session |
+| **Pack B** (future) | 14S4P 21700 Samsung high-drain (~16–20 Ah / 832–1040 Wh) | **Daly common-port 14S 60A** (Amazon B0CZQJ6G39, ordered, arrives Thursday 2026-04-30) | Full commissioning workflow when Daly arrives | Thursday + 1–2 days |
+
+**Rationale**: 18650 pack is 90% built, plug-and-play swap is the fastest path to riding. Daly is right-sized for the Z9 system (30A continuous controller bottleneck means 60A BMS gives 50% headroom — appropriate). Doing one commissioning at a time beats parallel commissioning across two packs. Original 200A "earmarked for future high-current build" plan flexes — for the current Z9 system, 200A on the 18650 is harmless surplus and saves a week of waiting.
+
+**Order tonight (2026-04-24)** before sleep: Daly listing variant verification —
+- Cell count: **14S** (not 13S)
+- Chemistry: **Li-ion** (not LiFePO4)
+- Current: **60A**
+- Topology: **common-port** (two heavy leads, not three)
+- Prefer **smart/Bluetooth variant** if available at same listing (~$10–20 premium worth it for diagnostic capability)
+- Seller: **DALY Official** or reputable reseller
+
+### Pre-swap verification — DRY-FIT P1 BEFORE COMMITTING
+
+Before disconnecting anything from the dead JK, **dry-fit P1 against the spare 200A's balance socket**:
+1. Pin **count** matches?
+2. Pin **pitch** matches (2.54mm vs 2.0mm — close-but-different will appear to fit but won't seat)?
+3. Pin **orientation** matches (B- and B14+ on the same physical sides)?
+
+If yes → genuine plug-and-play, proceed with swap.
+If no → P1 needs re-pinning to new connector geometry. ~1 hour with crimper + new pins. Stop and re-plan before committing.
+
+### After 18650 commissioning — set 21700 work for the Daly arrival
+
+While waiting for the Daly:
+- 21700 pack pre-flight: heavy lead pull tests, voltage verification, balance harness staircase. **Do this proactively before the Daly arrives** so commissioning day is uninterrupted.
+- Don't install the Daly until it physically arrives — no point speculating on its connector geometry.
+
 ---
 
 ## Update (2026-04-23, evening) — Heavy-Lead Verification Complete, BMS Wake Still Blocker
