@@ -86,7 +86,7 @@ The pitch mismatch eliminated the only reason to put 200A on 18650 (speed). Reve
 
 ### Tonight (2026-04-24)
 
-1. **Order the Daly** before bed — Amazon B0CZQJ6G39, variant verification per checklist above.
+1. ✅ **Daly already ordered** — non-smart variant chosen intentionally to sidestep firmware/Bluetooth/wake-failure modes. Arrives Thursday 2026-04-30.
 2. **Set 18650 pack aside cleanly**: disconnect dead JK from heavy leads, insulate bare wire ends with heat-shrink or tape (Pack+ at N14 stays live, don't let dangling B-/C- leads find it).
 3. **Stop for the night.** Long debug session — diminishing returns past this point.
 
@@ -108,7 +108,7 @@ The pitch mismatch eliminated the only reason to put 200A on 18650 (speed). Reve
 
 1. **Inspect Daly's balance connector** — what pitch? If 2.54mm, may match Daly's pinout to existing 18650 harness directly. If 2.0mm, may match the existing 18650 harness directly (since old JK was likely 2.0mm). If neither matches, may need fresh balance harness on the 18650 too.
 2. **Connect Daly to 18650**: heavy leads (B- to N0 wire, P- to discharge harness), balance harness via P1.
-3. **Commission**: Daly is non-smart in the cheaper variant (no app); some variants have BLE. If non-smart, BMS is auto-configured for the listed cell count — **buy the 14S variant specifically**, no software config needed.
+3. **Commission**: Daly is **non-smart by user choice** (no Bluetooth, no app, no firmware-config gate). 14S variant is hardware-fixed for cell count and protection thresholds — wire it up and it works. No commissioning workflow needed. This was an intentional choice to sidestep the firmware-failure modes that bricked the JK.
 4. **Test 3** on 18650 with Daly. Expect FETs conduct under load.
 5. **Wrap both packs.**
 
