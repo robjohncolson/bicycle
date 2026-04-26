@@ -1,5 +1,40 @@
 # Continuation Prompt — Kilo TT E-Bike Build
 
+## Update (2026-04-26) — Motor Drop Damage: Anti-Rotation Arm Gap Spread with DIY Oak Wedge
+
+BBSHD was dropped at some point pre-install. Damage assessment after first attempt to mount on frame:
+
+- **Spindle housing slightly bent relative to motor body** — pinched the gap where the anti-rotation arm seats. Bracket couldn't reach its mounting holes; arm wouldn't slide into the gap at all.
+- Motor electrically functional; spindle rotates smoothly; bearings appear OK.
+- **NOT bending the anti-rotation arm itself** — it must stay flat to grip the chainstay correctly. Fix is on the housing side.
+
+**Field repair plan:** spread the gap 3mm using a DIY truncated hardwood wedge driven by a large C-clamp.
+
+**Wedge spec:**
+- Material: oak hobby board (1×3, ~$5 Home Depot)
+- Length: 92mm (working-space constraint)
+- Tip thickness: 0.55" (slides into 0.6" current gap)
+- Thick-end thickness: 0.78" (target = current + 3mm spread + ~1mm overshoot for spring-back)
+- Effective taper: ~3.6° — chosen for fine control on cast aluminum
+- Width: ~15–20mm (matches gap depth perpendicular to spread)
+- Both faces taped with electrical/painter's tape to protect casting finish
+
+**Why DIY over off-the-shelf:** sharp-tipped wedges in 92mm length force a steep ≥11.7° angle. Truncated wedge with 0.55" flat tip lets the angle drop to 3.6° — much more controllable on cast aluminum where overshoot = crack. Off-the-shelf wedges always start sharp; can't buy this geometry.
+
+**Process:**
+1. C-clamp drives wedge in eighth-turns (not quarter-turns — 3.6° taper is shallow but cast aluminum is unforgiving)
+2. Measure gap with calipers after each turn
+3. Bright LED on inside corners of the gap to watch for crack initiation
+4. Stop at 0.78" gap (overshoot for spring-back)
+5. Release clamp slowly, measure relaxed gap, test-fit anti-rotation arm
+6. **Verify spindle still rotates smoothly after spread** — binding = bearing alignment shifted, back off immediately
+
+**Why this is logged:** if drivetrain weirdness (chain drop, BB bearing wear, chainline drift) shows up in the next 6+ months, the motor drop + housing spread is the prime suspect. Future-you needs to know this happened.
+
+**Status:** wedge not yet fabricated. Next session: Home Depot run for oak hobby board, fabricate wedge, execute spread, mount motor.
+
+---
+
 ## Update (2026-04-25, evening) — 18650 + Daly ELECTRICALLY COMMISSIONED, First Charge In Progress
 
 Daly install went plug-and-play. Pack is alive, motor spins on the real pack, charging now.
