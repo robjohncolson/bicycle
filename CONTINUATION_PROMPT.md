@@ -1,5 +1,41 @@
 # Continuation Prompt — Kilo TT E-Bike Build
 
+## Update (2026-04-25, evening) — 18650 + Daly ELECTRICALLY COMMISSIONED, First Charge In Progress
+
+Daly install went plug-and-play. Pack is alive, motor spins on the real pack, charging now.
+
+**What worked:**
+- Daly P1 connector pitch matched the existing 18650 harness (both 2.0mm). No re-pin needed.
+- Heavy leads joined via inline **PP30 Anderson Powerpoles** (matching the existing motor-side connectors) — replaced the brass connectors that were originally suspected as a JK culprit (probably weren't, but bad for 30A path regardless).
+- **Color convention is FLIPPED on the Daly side:** **BLUE = B-, BLACK = P-** (opposite of JK convention). Sharpie note on the Daly recommended for future-you. Powerpoles wired blue-to-blue and black-to-black across the inline pair — internally consistent.
+- **Daly is dumb — no app, no wake ritual.** Plugging P1 *was* the power-on. FETs enabled instantly, Powerpoles went from 1.6V leakage (FETs off) to 48V real (FETs conducting) the moment the balance harness seated.
+- Hooked to Z9 → motor spins smoothly under throttle.
+- **Regen blip on real pack: no downside.** Reverse-twist of DYOL throttle dumped current back into the pack cleanly — pack absorbed it (unlike the Matrix bench supply that overvolted on the same test 2026-04-23). **Regen is now real-pack-verified.** Can re-enable regen current beyond 0A on-bike for descent braking whenever desired.
+- AFU 58.8V/10A charger connected, charging in progress.
+
+**Currently doing (during charge):**
+1. DMM cell-group spread mid-charge (~54V): probe each B(n)→B(n-1), expect 3.86V ± 50mV
+2. Touch Daly case every 15 min — cool/warm OK, hot = stop
+3. Watch for clean termination at 58.8V (charger LED2 green when CV holds and CC tapers <0.5A)
+4. Let pack sit 1 hour post-charge, re-check cell spread for drift
+
+**BMS mounted with double-sided foam tape / hot glue (NOT epoxy)** — Daly is removable if it ever fails. Balance harness routed with service loop so P1 can be unplugged without cutting tape.
+
+**Deferred items resolved/skipped (dumb-BMS choice):**
+- ~~Thermistor install~~ — Daly has internal OTP, no app to display external thermistor data, skip
+- ~~Button decision~~ — Daly has no external button, nothing to decide
+- **Copper strip reinforcement** — defer or skip; heavy leads verified holding, can add later if voltage sag observed under load
+
+**Still to do before pack is ride-ready:**
+1. Verify clean charge termination at 58.8V
+2. Re-check cell spread post-charge (1 hour rest)
+3. **Short test ride** with light throttle, monitor for sag/heat/regen behavior
+4. Then full pack wrap (shrink-wrap or sealed bag) — only after one full charge cycle + test ride proves the pack
+
+**21700 + 200A JK still shelved** until 18650 is wrapped and rideable. Resume per Update (2026-04-25 morning) plan below.
+
+---
+
 ## Update (2026-04-25) — Daly Arrived 5 Days Early, 18650 + Daly Is Now Active
 
 Daly 60A common-port Li-ion 14S BMS shipped early — in hand 2026-04-25 (was ETA 2026-04-30). **Plan flip:** instead of using the 6-day window to commission the 21700 + 200A JK first, jump straight to 18650 + Daly. 21700 + 200A JK shelved cleanly (no balance harness installed yet — nothing to undo).
