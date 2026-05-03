@@ -1,6 +1,101 @@
 # Continuation Prompt — Kilo TT E-Bike Build
 
+## Update (2026-05-03) — PHASERUNNER SUITE TUNING COMPLETE; new fork installed; reverse-twist regen disabled
+
+**Bike has been ridden over the past week, runs well.** Today's session: full Baserunner V6 Z9 retune via Phaserunner Suite. Reverse-twist regen requested gone (rider preference — "doesn't matter which way you flick the throttle, it goes" minus the regen-on-reverse behavior). New fork installed (replaces the cut-too-short steerer issue from 2026-04-26). Holding off on 21700 commissioning for a bit longer — Kilo TT 18650 build is the active platform.
+
+### Phaserunner Suite connection — Superharness TTS does NOT carry comms
+
+- Tried connecting via the **TTS port on the Superharness** first. **It does not route to the Baserunner serial pins on this hardware.** Either the Superharness variant in this build doesn't break out comms, or the TTS port is a CA3 (Cycle Analyst) breakout with a different pinout — same physical JST, different signals. Phaserunner Suite cannot talk through it.
+- Working comms path: **direct USB-TTL into the small JST port on the Baserunner controller body.**
+- **Baserunner direct port slightly bent** from being wedged near the motor. Currently functional but fragile. **Saved config to file as backup** so if the port dies, settings can be flashed to a replacement Baserunner without redoing the tune. Future: tape foam around the port area to keep it from getting squeezed against the motor again.
+
+### Settings changed (all written + saved)
+
+| Setting | Was | Now | Rationale |
+|---|---|---|---|
+| Low Voltage Cutoff | **19.5V** | **42V** | Old value was a 6S default — would have allowed cell-destroying over-discharge. 42V = 14S × 3.0V/cell, BMS now never has to act as primary protection. |
+| Max Regen Battery Current | 7A | **0A** | Kills regen entirely. Reverse-twist now does nothing. |
+| Max Battery Current | 14A | **30A** | Was capping power at ~700W. 30A is the Z910 cable hard ceiling. |
+| Max Power Limit | 700W | **1800W** | Was the actual binding limit (14A × 48V ≈ 700W). 1800W keeps Max Battery Current as the active cap. |
+| Max Phase Current | 46A | **55A** | Bumped straight to Z9 phase peak (skipped 50A intermediate step). User comfortable with the jump. |
+| Throttle Start Voltage | 1.2V | **1.05V** | Just above measured rest of 0.98V — clean zero, no ghost-throttle. |
+| Throttle Max Voltage | 3.5V | **3.6V** | Just below measured forward max of 3.7V — full range usable. |
+| Throttle Fault Range | 0.8V | **1.5V** | Old value was triggering fault on reverse twist (0.04V below 0.4V threshold). Widened so reverse twist is silent — accepts the tradeoff that low-side fault detection is now disabled (broken throttle wire grounding to 0V can't be distinguished from normal reverse twist). |
+
+**Throttle voltage measurements (DYOL bidirectional):**
+- Rest: **0.98V**
+- Full forward: **3.7V**
+- Full reverse: **0.04V**
+
+**Settings left unchanged:**
+- Max Regen Voltage 59.5V (correct — pack peaks 58.8V at full charge, 0.7V regen-cutoff headroom)
+- Brake Start 0.85V / Brake Max 0.1V (these are the ebrake input wire — inverse-logic Hall sensor settings — unrelated to throttle reverse-twist; left alone since no ebrake sensor wired)
+- Deadband Threshold 0
+- Plug braking: **disabled** (BBSHD clutch disengages on coast → no kinetic energy to dissipate; also would re-introduce the reverse-twist-does-something behavior we just removed)
+
+### Fork — replaced
+
+New fork installed (replaces the cut-too-short steerer that produced "not rock solid" front end). Specifics not noted this session — assume Soma Corsa chrome 1" threaded 230mm per the prior plan unless follow-up reveals otherwise. **JIS vs ISO headset verification + upper stack measurement no longer blocking** — fork is in.
+
+### 21700 commissioning — still on hold (deliberate)
+
+Kilo TT 18650 + Daly drivetrain is the active build. 21700 + 200A JK still shelved, cells stacked + nickel welded but no balance harness installed. Resume later (no committed date this session). Mamachari sleeper-build pivot from 2026-04-27 (in `project_mamachari_sleeper_build.md`) is the longer-term context for what the 21700 will eventually power.
+
+### Next-session priorities
+
+1. **Test ride with new tune** — reverse twist should be a dead zone, forward should feel notably more punchy now (30A vs 14A battery limit, 55A vs 46A phase). Hand-temp motor casing after the local hill climb to confirm thermal margin at the new phase ceiling.
+2. **Re-test the cutout hill** on 36T cog — 30A continuous is well below the Daly's 60A OCP, expect zero cutouts now.
+3. **Tape foam/protection around the Baserunner direct comms port** to prevent further mechanical damage. Port works now but is the only viable comms path.
+4. **Ride the bike, accumulate run-time data**, defer 21700 commissioning until Kilo TT proves itself over weeks of normal use.
+
+---
+
+## Update (2026-04-26, evening) — FIRST RIDE COMPLETE; lug cutout characterized; fork replacement planned
+
+**Bike is rideable.** Motor drop damage straightened **with a chisel from the side** (no wedge needed — wedge + C-clamp will be returned when they arrive). First ride happened today.
+
+### Hill behavior — characterized and partially mitigated
+
+- **42-22 (small rear cog) on local hill: full power cutout, required battery disconnect/reconnect to restore.** Latched protection trip. Diagnosed as **Daly OCP latch** — BBSHD lug current at low cadence on a steep grade exceeded 60A momentarily; Daly common-port FETs latched open and required full disconnect to reset.
+- **Switched to 36T larger rear freewheel cog → no more cutouts on the same hill.** Hill is still physically hard, but the bike no longer cuts out. Bigger cog = more reduction = lower battery current under lug, stays under Daly's 60A ceiling.
+- This is **empirical confirmation** that the BMS sizing assignment (200A→21700 production, Daly→18650 practice) was the right call. On the future 21700 build, lug spikes will rollback at the Baserunner (auto-recovers, no full cutout) instead of latching at the BMS.
+
+### Z9 ceiling correction (important — overrides earlier suggestion)
+
+- Baserunner V6 Z9 with Z910 motor cable is rated **30A continuous battery / 55A peak phase**. The 30A limit comes from the **Z910 cable**, not the controller — cannot be exceeded safely.
+- An earlier session-suggestion of "raise Max Battery Current to 40-45A for more torque" was wrong. **30A is the system ceiling.** Don't go above it.
+- **Phase current is the only torque lever left** on this fixed-gear single-ratio (42-36) build. In Phaserunner Suite, raise Max Phase Current toward 55A in 5A steps, ride the hill between each, hand-temp the motor casing after each climb to watch for thermal margin.
+
+### Fork replacement — required, planned
+
+- Existing fork's threaded steerer was cut too short during prior install. Insufficient threads for proper top-race + locknut engagement → front end feels "not rock solid." Not fixable without replacement.
+- **Crown-race-to-top-of-locknut measurement: 230mm.**
+- Plan: **Soma Corsa, chrome, 1" threaded, 230mm steerer.** Specs: 366mm axle-to-crown (~9mm shorter than likely OEM 375mm — slight head angle steepening, acceptable), 42mm rake, 26.4mm crown race seat (**JIS** standard), 50mm of threads on the steerer, drilled for short/mid-reach brake caliper, chromoly. Chrome is the only color Soma offers — classic track-bike look on red-orange.
+- **Verifications still required before ordering:**
+  1. Confirm existing headset is **JIS** (26.4mm crown race seat) and not ISO (27.0mm). Measure or pull lower locknut and inspect.
+  2. Measure **upper headset stack** (top of head tube to top of locknut) — must be ≤45mm so the 50mm of threads gives full engagement. Almost certainly fine on a 63cm frame but worth confirming.
+- User has a thread cutter on hand → fallback is a long-steerer threadless steel fork (e.g., Surly Steamroller chromoly, 300mm) threaded down manually. Not needed unless Corsa is unavailable.
+- Zero re-cut margin on the 230mm Corsa option (230mm needed, 230mm offered). Future stem-position changes will be constrained.
+
+### Status of original packs
+
+- **18650 + Daly**: rideable. First charge completed. Pack still not formally wrapped — that's fine, it's the practice pack; wrap when fully proven.
+- **21700 + 200A JK**: still shelved. Cells stacked + nickel welded, no balance harness yet. Resume after fork swap and Phaserunner phase-current tuning are done on the 18650 build.
+
+### Next-session priorities (in rough order)
+
+1. **Fork verifications**: measure JIS vs ISO headset standard + upper stack height. Then order Soma Corsa chrome 230mm.
+2. **Phaserunner phase-current tuning**: bump Max Phase Current from default toward 55A in 5A steps, ride hill, hand-temp motor casing.
+3. **Fork swap**: pull old fork, install Soma Corsa, set headset preload, road-test.
+4. **Return wedge + C-clamp** when they arrive (no longer needed).
+5. **21700 commissioning**: resume after the bike is fully proven on the 18650.
+
+---
+
 ## Update (2026-04-26) — Motor Drop Damage: Anti-Rotation Arm Gap Spread with DIY Oak Wedge
+
+**Resolved 2026-04-26: chisel-from-the-side technique straightened the spindle housing without needing the wedge.** Wedge + C-clamp will be returned when they arrive. The plan below is preserved as a record of the field-repair approach in case similar damage recurs on a future BBSHD.
 
 BBSHD was dropped at some point pre-install. Damage assessment after first attempt to mount on frame:
 
