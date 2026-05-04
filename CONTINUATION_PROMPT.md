@@ -1,5 +1,58 @@
 # Continuation Prompt — Kilo TT E-Bike Build
 
+## Update (2026-05-04) — RIDE TEST: hills conquered, but SLAM-STALL appears; throttle ramp suspected
+
+**Took the bike out today on the new tune. Hills are confirmed conquered** — the 30A battery / 55A phase ceiling did the job. But a new symptom surfaced: **if you slam the throttle to full from rest, the motor cuts out.** Has to be eased in gently from zero. Once moving, throttle is fully usable.
+
+**Critical diagnostic info captured:**
+- **The cutout AUTO-RECOVERS** (release throttle, re-twist, motor works). Does NOT require battery disconnect/reconnect.
+- → This rules out Daly OCP latch (latch would require disconnect to reset).
+- → This is a **controller-side protection trip**, not BMS.
+
+**Working hypothesis: Throttle Ramp Up Rate is too aggressive (or absent).** Slamming throttle commands an instant 0→100% torque step; current control loop overshoots → controller trips itself. Auto-recover is consistent with Baserunner internal fault behavior.
+
+**Secondary suspect: Low Voltage Rolloff Start may be at default (likely too low).** Pack sag at instant 30A draw can transiently dip pack voltage below the 42V LVC. Without LV rolloff acting as a soft taper above LVC, the cutoff is a cliff — any transient sag below 42V = instant cut.
+
+### Next-session priorities (work-laptop pickup, where Phaserunner Suite + connected Baserunner are)
+
+**1. Find and set Throttle Ramp Up Rate.** Naming varies by Suite version — look for one of:
+   - "Throttle Ramp Up Rate"
+   - "Throttle Smoothing"
+   - "Acceleration Time"
+   - "Throttle Filter"
+
+   Likely in the **Throttle** tab already explored, possibly in **Advanced** or **Motor** tab.
+
+   **Set to ~0.4 seconds for 0→100%** as starting point. Unit conversions if the field uses something else:
+   - Seconds → 0.4
+   - Milliseconds → 400
+   - V/s (rate of change) → (3.6 − 1.05) / 0.4 ≈ **6.4 V/s**
+   - %/s → 250
+
+**2. Read out current Low Voltage Rolloff Start value.** Ideally should be ~45V (3V above the 42V LVC) so power tapers gracefully under sag instead of cliff-cutting. If at factory default, will likely need adjustment.
+
+**3. Bench test first.** Motor on stand, slam throttle from zero: should now ramp to full in ~half a second instead of jumping. If bench passes, ride-test the slam.
+
+**4. If slam-stall persists after ramp adjustment** → try lowering LVC from 42V to 40V (14S × 2.86V) to give sag headroom. Daly cell-level UVP still protects against true over-discharge.
+
+**5. Pack voltage at rest after the ride** — measure with DMM at Powerpoles. This tells us roughly where the pack's SOC sits and whether sag-into-LVC is plausible.
+
+### What's confirmed working from yesterday's tune (2026-05-03)
+
+- **Hills conquered.** 30A/55A ceiling did the job.
+- **Reverse twist is dead.** No regen, no fault, no torque — fully a dead zone.
+- **Forward throttle is much punchier** than before — when it doesn't trip on slam.
+- **No Daly OCP latch incidents** during this ride. 30A continuous controller cap is well clear of 60A BMS limit.
+
+### State of the build (unchanged from 2026-05-03 update below)
+
+- New fork installed, front end solid.
+- 21700 + 200A JK still deliberately on hold. Kilo TT 18650 + Daly is active platform, accumulating ride hours.
+- Baserunner direct-USB JST port still bent-but-working. Config saved to file as backup. Future: foam-tape protect the port.
+- Superharness TTS port confirmed does NOT carry Phaserunner comms — direct port is the only path.
+
+---
+
 ## Update (2026-05-03) — PHASERUNNER SUITE TUNING COMPLETE; new fork installed; reverse-twist regen disabled
 
 **Bike has been ridden over the past week, runs well.** Today's session: full Baserunner V6 Z9 retune via Phaserunner Suite. Reverse-twist regen requested gone (rider preference — "doesn't matter which way you flick the throttle, it goes" minus the regen-on-reverse behavior). New fork installed (replaces the cut-too-short steerer issue from 2026-04-26). Holding off on 21700 commissioning for a bit longer — Kilo TT 18650 build is the active platform.
