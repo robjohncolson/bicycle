@@ -1,5 +1,45 @@
 # Continuation Prompt — Kilo TT E-Bike Build
 
+## Update (2026-05-05) — SLAM-STALL TUNED OUT; awaiting real-world ride confirmation
+
+**Phaserunner Suite session complete. Three settings changed, bench behavior is clean. The slam-stall only surfaces in real-world conditions, so the fix is provisional until a ride confirms it.**
+
+### What changed (all written + saved; export in `z9tune.xml`)
+
+| Param | Addr | Was | Now | Why |
+|---|---|---|---|---|
+| Low Voltage Cutoff (Start) | 141 | 42.5 V | **45 V** | Old rolloff window was only 0.5V wide (42.5→42V) — any pack sag past 42V was a cliff. 3V window now lets the controller taper power gracefully under sag instead of cutting. |
+| Torque Up Ramp | 220 | 500 ms | **800 ms** | Smooths inrush peak at 0 RPM throttle slam. Torque-mode ramp lever (Throttle Control Mode = 2 = Torque With Speed Limiting). |
+| Torque Down Ramp | 221 | 50 ms | **100 ms** | Slight weight/carry on release without going sluggish. Conservative bump (option was up to 200–300 ms; held back for emergency-cut response). |
+
+### What was NOT changed (and why)
+
+- **Max Battery Current stays at 55.2 A** (param 155). User intentionally raised from 30A → 55A and confirms hills feel much better with the higher cap. Don't give back torque to chase a transient. Slam-stall is a sag/protection-window problem, not a steady-state cap problem.
+- **LVC End stays at 42 V** (param 142, 14S × 3.0V/cell). Was discussed dropping to 40V (2.86V/cell) as a fallback. Held back because: (a) one-variable-at-a-time discipline — if 45V rolloff alone fixes it, LVC End shouldn't be sacrificed; (b) 40V starts impacting cycle life of the VTC6s under repeated sag. Reserve 40V as the escalation lever if 45V rolloff + 800/1000ms up-ramp doesn't resolve.
+- **Regen settings** (Max Regen Battery Current = 0A, Max Regen Voltage = 59.5V) — left alone, dead reverse-twist is the rider preference.
+
+### Diagnostic logic that drove the fix
+
+Slam-stall mechanism: **slam from rest → motor at 0 RPM → no back-EMF → controller demands full battery current immediately → pack sags hard → sag dips through the 0.5V-wide rolloff straight into the 42V hard cutoff → cut. Release throttle → current drops → pack rebounds → controller auto-recovers.**
+
+Auto-recovery (release-and-retwist works) confirmed it was a controller-side protection trip, not a Daly OCP latch (which would require pack disconnect to reset). Two fixes are complementary: widening the rolloff gives the pack room to sag without falling off the cliff; lengthening the up-ramp lowers the peak inrush so the pack sags less in the first place.
+
+### Next-session priorities
+
+1. **Real-world ride test.** Slam-stall only appears under field conditions — bench tests can't reproduce it. Take the bike out and try slamming throttle from rest at multiple SOCs (full charge, mid-pack, near-empty). Note whether the cutout reappears.
+2. **If slam-stall persists** → escalate Torque Up Ramp from 800 ms to **1000 ms** before touching anything else.
+3. **If still tripping after 1000 ms ramp** → drop LVC End from 42V to **40V** (param 142). Daly cell-level UVP still protects against true over-discharge.
+4. **Pack rest voltage at Powerpoles with DMM** at the start of the ride and after — gives a baseline for where SOC sits when the trip does/doesn't happen.
+5. **Hand-temp the motor** after a hard climb. Phase ceiling at 55A means thermal margin is the next thing to watch.
+
+### Reference
+
+- **Phaserunner export**: `z9tune.xml` — full Baserunner V6 Z9 parameter dump as of this tune. Reload via Phaserunner Suite → Read From File if a future tune corrupts settings or the direct comms port dies.
+- **Software rev**: 6.025 (param 256 in XML).
+- **Throttle Control Mode**: 2 = Torque Mode With Speed Limiting (param 11). All "throttle ramp" tuning happens via Torque Up/Down Ramp (params 220/221) — there is no separate "Throttle Ramp Up Rate" field for torque mode.
+
+---
+
 ## Update (2026-05-04) — RIDE TEST: hills conquered, but SLAM-STALL appears; throttle ramp suspected
 
 **Took the bike out today on the new tune. Hills are confirmed conquered** — the 30A battery / 55A phase ceiling did the job. But a new symptom surfaced: **if you slam the throttle to full from rest, the motor cuts out.** Has to be eased in gently from zero. Once moving, throttle is fully usable.
