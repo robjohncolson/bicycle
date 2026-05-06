@@ -1,5 +1,73 @@
 # Continuation Prompt — Kilo TT E-Bike Build
 
+## Update (2026-05-05, evening) — POWER MAP enabled to address sustained-load I²t cutout
+
+**The 2026-05-05 LVC + ramp tune did NOT solve the field problem.** Real-world ride up the steepest local hill produced cutouts that **auto-recovered, recurred on re-engage with shorter wait → less recurrence with longer wait**. Pack was nearly full and brand new (sag into LVC ruled out). Motor not hot. Baserunner is mounted apart from the motor (not bolted on), so case heat conduction not a factor.
+
+### Diagnosis: controller I²t firmware foldback
+
+The wait-then-trip-again-then-wait-longer-then-no-trip pattern is the signature of a thermal integrator (I²t accumulator), not voltage sag, not Daly latch, not motor temp. The firmware integrator decays on the 300s cooling-time constant (param 103). At low RPM with sustained ~55A phase current, FET heat concentrates because commutation is slow — same FETs carry the load instead of distributing across three phases per rotation. The I²t accumulator builds in firmware regardless of whether the case is physically hot.
+
+**Slam-from-rest cutout** (still occasional after the ramp tune) and **sustained hill cutout** are likely the same root cause hit from different starting points. Slam at 0 RPM = accumulator builds in hundreds of ms; steep hill at low RPM = builds over many seconds.
+
+### Fix: Power Map (params 157–172) — speed-dependent power cap
+
+User did NOT want to lower Max Phase Current (55A — confirmed great hill torque) or push Torque Up Ramp to 3000ms (would feel sluggish). Power Map is the right lever: limits commanded power as a function of motor RPM, so low-RPM operating points get a soft cap that prevents I²t buildup, while mid/high-RPM still gets full 100% power.
+
+**Curve applied** (anchored on the empirical data point: 40% throttle was sustainable at low RPM on the steepest hill):
+
+| # | Speed % rated RPM | Power % rated |
+|---|---|---|
+| 1 | 0% | 35% |
+| 2 | 8% | 45% |
+| 3 | 18% | 60% |
+| 4 | 30% | 80% |
+| 5 | 45% | 95% |
+| 6 | 60% | 100% |
+| 7 | 80% | 100% |
+| 8 | 100% | 100% |
+
+Plus **Features 2 bit 11** (param 174) set to 1 → "Throttle mapping on speed for torque mode" — required to route throttle commands through the map. Param 174 raw value: 32 → 2080.
+
+### How it got applied (Suite GUI doesn't expose Power Map for sw rev 6.025)
+
+1. **First attempt (firmware 6.025):** edited z9tune.xml directly, loaded via File → Open Parameter File, wrote to controller. Read-back into z9tune2.xml showed **all Power Map params reverted to 4096 (100%) — write was silently filtered**. The Power Map params are not in the Suite's writable list at this firmware level.
+2. **Firmware update.** User updated Baserunner firmware (specific version not noted — check Suite for current sw rev).
+3. **Second attempt (post-firmware-update):** loaded the same modified z9tune.xml, wrote to controller, read back into z9tune2.xml. **All Power Map values stuck.** Curve, speed setpoints, and bit 11 all confirmed in the read-back.
+
+**z9tune2.xml is now the authoritative export.** z9tune.xml is the pre-Power-Map baseline (kept for reference).
+
+### Next-session priorities
+
+1. **Bench test before ride.** Wheel off ground, motor on stand:
+   - Slam throttle from rest → motor should ramp smoothly (capped at 35% rated power initially), no cut
+   - Verify free-spin reaches the same top RPM as before (curve doesn't clip top end)
+   - Hand-brake the wheel at full throttle to simulate hill load → motor should fold back gracefully, not cut
+2. **Ride the steepest local hill.** This was the empirical failure point on 2026-05-05 morning. Power Map should now sustain it without cutout because low-RPM commanded power is capped below the I²t threshold.
+3. **If slam-from-rest still cuts** → curve floor (setpoint 1) too high. Lower from 35% → 25% or 20%.
+4. **If hill still cuts** → setpoint 2/3 (low-RPM power) still too aggressive. Lower setpoint 2 from 45% → 35% and setpoint 3 from 60% → 50%.
+5. **If midrange feels weird** (sudden power jumps, dead spots between setpoints) → tell me which RPM range, will suggest curve smoothing.
+6. **Empirical refinement procedure** if the curve needs tuning: at constant RPM (push against ground/brake), find the throttle % at which cutout starts. Set Power Map at that speed point to ~90% of measured limit. Repeat at multiple speeds.
+
+### Settings unchanged by this session
+
+- **Max Phase Current = 55 A** (kept — confirmed great hill torque)
+- **Torque Up Ramp = 800 ms** (the 2026-05-05 morning fix — leave as is)
+- **Torque Down Ramp = 100 ms**
+- **LVC Start = 45 V, LVC End = 42 V**
+- **Max Battery Current = 55.2 A** (intentional — drives hill performance)
+- **Max Regen Battery Current = 0 A** (regen disabled per rider preference)
+
+### Reference
+
+- **Phaserunner exports:**
+  - `z9tune.xml` — last known-flat-curve config (pre-Power-Map). Use as fallback if Power Map causes weird behavior.
+  - `z9tune2.xml` — current authoritative config with Power Map active.
+- **Software rev:** updated this session. Whatever the Suite reports now is post-update.
+- **Throttle Control Mode:** still 2 = Torque Mode With Speed Limiting.
+
+---
+
 ## Update (2026-05-05) — SLAM-STALL TUNED OUT; awaiting real-world ride confirmation
 
 **Phaserunner Suite session complete. Three settings changed, bench behavior is clean. The slam-stall only surfaces in real-world conditions, so the fix is provisional until a ride confirms it.**

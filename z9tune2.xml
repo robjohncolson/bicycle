@@ -664,7 +664,7 @@
     <SerializableParameter>
         <Address>157</Address>
         <Value>1434</Value>
-        <Notes>Power Map Watts Setpoint 1: 35 % rated power (scale = 40.96)</Notes>
+        <Notes>Power Map Watts Setpoint 1: 35.01 % rated power (scale = 40.96)</Notes>
     </SerializableParameter>
     <SerializableParameter>
         <Address>158</Address>
@@ -674,7 +674,7 @@
     <SerializableParameter>
         <Address>159</Address>
         <Value>2458</Value>
-        <Notes>Power Map Watts Setpoint 3: 60 % rated power (scale = 40.96)</Notes>
+        <Notes>Power Map Watts Setpoint 3: 60.01 % rated power (scale = 40.96)</Notes>
     </SerializableParameter>
     <SerializableParameter>
         <Address>160</Address>
@@ -709,12 +709,12 @@
     <SerializableParameter>
         <Address>166</Address>
         <Value>328</Value>
-        <Notes>Power Map Speed Setpoint 2: 8 % rated rpm (scale = 40.96)</Notes>
+        <Notes>Power Map Speed Setpoint 2: 8.01 % rated rpm (scale = 40.96)</Notes>
     </SerializableParameter>
     <SerializableParameter>
         <Address>167</Address>
         <Value>737</Value>
-        <Notes>Power Map Speed Setpoint 3: 18 % rated rpm (scale = 40.96)</Notes>
+        <Notes>Power Map Speed Setpoint 3: 17.99 % rated rpm (scale = 40.96)</Notes>
     </SerializableParameter>
     <SerializableParameter>
         <Address>168</Address>
@@ -729,7 +729,7 @@
     <SerializableParameter>
         <Address>170</Address>
         <Value>2458</Value>
-        <Notes>Power Map Speed Setpoint 6: 60 % rated rpm (scale = 40.96)</Notes>
+        <Notes>Power Map Speed Setpoint 6: 60.01 % rated rpm (scale = 40.96)</Notes>
     </SerializableParameter>
     <SerializableParameter>
         <Address>171</Address>
@@ -749,7 +749,7 @@
     <SerializableParameter>
         <Address>174</Address>
         <Value>2080</Value>
-        <Notes>Features 2:
+        <Notes>Features 2: 
 			0  - 0 [Headlight Always ON enable]
 			1  - 0 [HDQ Replicating HALL]
 			2  - 0 [Free Wheel]
@@ -1199,8 +1199,8 @@
     </SerializableParameter>
     <SerializableParameter>
         <Address>256</Address>
-        <Value>6025</Value>
-        <Notes>Software Revision Level: 6.025 (scale = 1000)</Notes>
+        <Value>16027</Value>
+        <Notes>Software Revision Level: 16.027 (scale = 1000)</Notes>
     </SerializableParameter>
     <SerializableParameter>
         <Address>465</Address>
@@ -1401,8 +1401,8 @@
     </SerializableParameter>
     <SerializableParameter>
         <Address>502</Address>
-        <Value>3376</Value>
-        <Notes>Display Walk Command: 3376 enum</Notes>
+        <Value>3632</Value>
+        <Notes>Display Walk Command: 3632 enum</Notes>
     </SerializableParameter>
     <SerializableParameter>
         <Address>503</Address>
