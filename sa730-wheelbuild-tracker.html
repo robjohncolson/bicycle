@@ -144,6 +144,17 @@
 
   .footer{max-width:1180px;margin:30px auto 0;padding:0 22px;font-family:var(--mono);font-size:10.5px;color:var(--faint);letter-spacing:.05em;text-align:center;line-height:1.7}
   .footer b{color:var(--muted)}
+
+  /* ---- QR (scan to open live tracker) ---- */
+  .qrbox{display:flex;flex-direction:column;align-items:center;gap:11px;margin:36px auto 4px;max-width:1180px;padding:0 22px}
+  .qrlink{display:inline-block;line-height:0;text-decoration:none;border-radius:10px}
+  .qrtile{display:block;width:124px;height:124px;padding:9px;background:var(--ink);border:1px solid var(--line2);border-radius:10px;box-shadow:0 6px 22px rgba(0,0,0,.5);transition:.18s}
+  .qrtile svg{display:block;width:100%;height:100%}
+  .qrlink:hover .qrtile{border-color:var(--amber);box-shadow:0 6px 26px var(--amber-glow);transform:translateY(-1px)}
+  .qrcap{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:center;line-height:1.6}
+  .qrcap b{color:var(--amber);font-weight:500}
+  .qrcap .u{display:block;color:var(--faint);letter-spacing:.02em;font-size:10px;text-transform:none;margin-top:4px;word-break:break-all}
+
   input[type=file]{display:none}
 </style>
 </head>
@@ -250,6 +261,15 @@
     <div id="notes"></div>
   </section>
 </div>
+
+<section class="qrbox">
+  <a class="qrlink" href="https://robjohncolson.github.io/bicycle/sa730-wheelbuild-tracker.html" target="_blank" rel="noopener" title="Open the live tracker">
+    <span class="qrtile"><svg viewBox="0 0 45 45" shape-rendering="crispEdges" role="img" aria-label="QR code linking to the live tracker URL"><path fill="#ece7dc" d="M0 0h45v45h-45z"/><path stroke="#0c0e11" d="M4 4.5h7m1 0h1m2 0h1m2 0h2m3 0h4m2 0h1m4 0h7m-37 1h1m5 0h1m1 0h1m2 0h1m1 0h1m4 0h2m2 0h1m1 0h1m1 0h1m3 0h1m5 0h1m-37 1h1m1 0h3m1 0h1m1 0h2m1 0h1m2 0h3m2 0h1m1 0h2m2 0h3m2 0h1m1 0h3m1 0h1m-37 1h1m1 0h3m1 0h1m2 0h1m1 0h1m1 0h1m1 0h1m1 0h1m2 0h2m3 0h1m2 0h1m1 0h1m1 0h3m1 0h1m-37 1h1m1 0h3m1 0h1m1 0h1m2 0h1m6 0h2m6 0h1m1 0h1m1 0h1m1 0h3m1 0h1m-37 1h1m5 0h1m5 0h5m6 0h1m1 0h1m2 0h1m1 0h1m5 0h1m-37 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-27 1h5m1 0h3m1 0h1m1 0h1m1 0h5m-29 1h1m2 0h6m1 0h1m3 0h1m4 0h1m3 0h1m2 0h1m2 0h1m2 0h1m1 0h3m-37 1h1m2 0h1m1 0h1m1 0h2m1 0h2m1 0h1m2 0h1m1 0h1m2 0h3m1 0h3m3 0h2m1 0h2m-36 1h3m2 0h4m5 0h3m1 0h4m1 0h3m1 0h4m1 0h2m2 0h1m-36 1h1m1 0h1m1 0h1m3 0h4m3 0h2m1 0h2m1 0h3m1 0h1m2 0h1m1 0h2m1 0h3m-36 1h1m1 0h2m1 0h2m7 0h2m3 0h1m3 0h1m3 0h1m1 0h1m2 0h1m2 0h1m-36 1h3m1 0h1m3 0h2m1 0h1m1 0h3m4 0h3m1 0h4m3 0h2m1 0h1m-34 1h1m2 0h3m1 0h1m1 0h2m1 0h2m2 0h4m3 0h1m1 0h2m1 0h1m1 0h3m1 0h1m-37 1h1m1 0h2m5 0h3m2 0h3m2 0h1m2 0h2m4 0h1m2 0h1m1 0h3m-33 1h1m1 0h2m2 0h2m1 0h2m1 0h1m1 0h3m1 0h1m1 0h3m4 0h1m3 0h3m-37 1h1m1 0h2m3 0h1m2 0h4m8 0h1m2 0h1m1 0h2m2 0h1m1 0h1m-34 1h1m2 0h8m1 0h1m3 0h4m1 0h1m1 0h3m1 0h2m3 0h1m1 0h1m1 0h1m-37 1h3m1 0h2m3 0h2m1 0h1m1 0h3m2 0h2m1 0h2m1 0h2m1 0h2m2 0h2m2 0h1m-34 1h2m1 0h4m3 0h2m2 0h1m1 0h1m3 0h2m1 0h7m-32 1h5m1 0h2m2 0h2m2 0h1m1 0h4m1 0h2m3 0h1m4 0h1m1 0h2m-36 1h1m2 0h2m1 0h1m1 0h2m2 0h2m1 0h2m4 0h1m1 0h6m1 0h2m1 0h1m1 0h2m-37 1h5m4 0h1m3 0h1m1 0h1m2 0h3m1 0h1m3 0h2m2 0h5m-35 1h1m3 0h4m2 0h2m1 0h2m2 0h1m2 0h3m1 0h1m3 0h1m1 0h2m4 0h1m-37 1h1m3 0h2m2 0h1m2 0h1m1 0h2m3 0h2m3 0h6m3 0h2m-34 1h5m1 0h1m1 0h2m1 0h2m1 0h2m1 0h2m3 0h1m1 0h1m2 0h2m1 0h1m4 0h2m-37 1h1m2 0h1m6 0h1m2 0h1m2 0h1m2 0h1m2 0h3m6 0h6m-37 1h1m2 0h1m1 0h4m1 0h1m4 0h1m3 0h2m2 0h3m2 0h7m1 0h1m-29 1h1m2 0h12m1 0h2m2 0h1m3 0h1m1 0h1m-35 1h7m1 0h1m1 0h1m2 0h3m1 0h3m3 0h2m1 0h1m1 0h1m1 0h1m1 0h1m2 0h2m-37 1h1m5 0h1m1 0h3m2 0h2m1 0h1m2 0h3m1 0h1m1 0h1m1 0h2m3 0h1m2 0h2m-37 1h1m1 0h3m1 0h1m1 0h2m1 0h2m1 0h3m1 0h1m1 0h2m1 0h1m2 0h7m3 0h1m-37 1h1m1 0h3m1 0h1m1 0h1m1 0h3m4 0h1m2 0h4m1 0h2m2 0h2m5 0h1m-37 1h1m1 0h3m1 0h1m2 0h3m1 0h1m3 0h1m4 0h2m1 0h1m1 0h3m2 0h2m2 0h1m-37 1h1m5 0h1m2 0h3m1 0h3m1 0h2m3 0h2m2 0h1m2 0h1m2 0h5m-37 1h7m1 0h1m1 0h1m2 0h2m1 0h1m2 0h2m2 0h2m3 0h1m1 0h2m1 0h1m2 0h1"/></svg></span>
+  </a>
+  <div class="qrcap"><b>Scan to open this tracker on your phone</b>
+    <span class="u">robjohncolson.github.io/bicycle/sa730-wheelbuild-tracker.html</span>
+  </div>
+</section>
 
 <div class="footer">
   <b>Single-file bench log.</b> Progress saves to this browser automatically · use <b>Export</b> to back up your build to a file.<br>
