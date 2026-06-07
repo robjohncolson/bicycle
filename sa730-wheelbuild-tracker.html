@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SA-730 Wheelbuild · Bench Log</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Archivo:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0c0e11; --bg2:#13161b; --bg3:#1a1e25; --bg4:#222732;
+    --line:#2b313c; --line2:#3a414f;
+    --ink:#ece7dc; --muted:#8b919d; --faint:#5b6471;
+    --amber:#ff9d33; --amber-dim:#7a5326; --amber-glow:rgba(255,157,51,.35);
+    --steel:#58c6e6; --steel-dim:#2c5a6b;
+    --good:#74d189; --warn:#ffce5c; --bad:#ff6f60;
+    --display:'Oswald',sans-serif; --body:'Archivo',sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased}
+  body{
+    min-height:100vh; padding:0 0 80px;
+    background-image:
+      radial-gradient(900px 500px at 22% 12%, rgba(255,157,51,.06), transparent 60%),
+      radial-gradient(700px 600px at 88% 80%, rgba(88,198,230,.045), transparent 60%),
+      linear-gradient(transparent 0 1px, transparent 1px),
+      repeating-linear-gradient(0deg,transparent 0 39px,rgba(255,255,255,.018) 39px 40px),
+      repeating-linear-gradient(90deg,transparent 0 39px,rgba(255,255,255,.018) 39px 40px);
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:0 22px}
+
+  /* ---- header ---- */
+  header{border-bottom:1px solid var(--line);background:linear-gradient(180deg,rgba(20,23,28,.9),rgba(12,14,17,.6));position:sticky;top:0;z-index:20;backdrop-filter:blur(8px)}
+  .hbar{display:flex;align-items:center;gap:18px;padding:16px 22px;max-width:1180px;margin:0 auto;flex-wrap:wrap}
+  .badge{font-family:var(--mono);font-size:11px;letter-spacing:.18em;color:var(--amber);border:1px solid var(--amber-dim);border-radius:3px;padding:4px 9px;text-transform:uppercase;white-space:nowrap}
+  .htitle{font-family:var(--display);font-weight:600;font-size:25px;letter-spacing:.02em;text-transform:uppercase;line-height:1}
+  .htitle small{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--muted);font-weight:400;margin-top:5px;text-transform:none}
+  .hspace{flex:1}
+  .hstat{text-align:right;font-family:var(--mono)}
+  .hstat .pct{font-family:var(--display);font-weight:700;font-size:34px;color:var(--amber);line-height:.9;text-shadow:0 0 22px var(--amber-glow)}
+  .hstat .lbl{font-size:10px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase}
+  .tools{display:flex;gap:8px}
+  .tbtn{font-family:var(--mono);font-size:11px;letter-spacing:.08em;background:var(--bg3);color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:8px 11px;cursor:pointer;transition:.15s;text-transform:uppercase}
+  .tbtn:hover{color:var(--ink);border-color:var(--line2);background:var(--bg4)}
+  .tbtn.danger:hover{color:var(--bad);border-color:var(--bad)}
+
+  /* ---- layout ---- */
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:24px}
+  @media(max-width:900px){.grid{grid-template-columns:1fr}}
+  .panel{background:linear-gradient(180deg,var(--bg2),var(--bg));border:1px solid var(--line);border-radius:10px;padding:20px;position:relative;overflow:hidden}
+  .panel::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--line2),transparent)}
+  .ptitle{font-family:var(--display);font-weight:600;font-size:14px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:10px;margin-bottom:16px}
+  .ptitle .num{font-family:var(--mono);font-size:11px;color:var(--amber);border:1px solid var(--amber-dim);border-radius:3px;padding:2px 6px}
+  .ptitle .tail{flex:1;height:1px;background:var(--line)}
+
+  /* ---- spec ---- */
+  .spec{display:grid;grid-template-columns:auto 1fr;gap:9px 16px;font-family:var(--mono);font-size:12.5px}
+  .spec dt{color:var(--faint);letter-spacing:.05em;text-transform:uppercase;font-size:10.5px;align-self:center}
+  .spec dd{color:var(--ink);text-align:right}
+  .spec dd b{color:var(--amber);font-weight:700}
+  .spec dd.steel b{color:var(--steel)}
+  .spec input{background:var(--bg3);border:1px solid var(--line);color:var(--ink);font-family:var(--mono);font-size:12px;border-radius:4px;padding:5px 8px;width:100%;text-align:right;transition:.15s}
+  .spec input:focus{outline:none;border-color:var(--amber);background:var(--bg4)}
+  .specnote{margin-top:14px;font-size:11px;color:var(--faint);font-family:var(--mono);line-height:1.6;border-top:1px solid var(--line);padding-top:12px}
+
+  /* ---- wheel ---- */
+  .wheelwrap{display:flex;flex-direction:column;align-items:center}
+  svg.wheel{width:100%;max-width:360px;height:auto;cursor:crosshair;filter:drop-shadow(0 8px 30px rgba(0,0,0,.5))}
+  .spoke-hit{stroke:transparent;stroke-width:10;cursor:pointer}
+  .spoke{stroke-width:1.6;transition:.12s;pointer-events:none}
+  .spoke.R{stroke:var(--amber-dim)} .spoke.L{stroke:var(--steel-dim)}
+  .spoke.R.laced{stroke:var(--amber);filter:drop-shadow(0 0 4px var(--amber-glow))}
+  .spoke.L.laced{stroke:var(--steel);filter:drop-shadow(0 0 4px rgba(88,198,230,.4))}
+  .spoke:not(.laced){stroke-dasharray:2.5 3.5;opacity:.6}
+  .nip{fill:var(--bg4);stroke:var(--line2);stroke-width:1}
+  .nip.laced.R{fill:var(--amber)} .nip.laced.L{fill:var(--steel)}
+  .rimring{fill:none;stroke:var(--line2);stroke-width:6}
+  .rimring2{fill:none;stroke:var(--bg4);stroke-width:2}
+  .hubring{fill:var(--bg3);stroke:var(--line2);stroke-width:2}
+  .axle{fill:var(--bg4);stroke:var(--line2);stroke-width:1.5}
+  .lacehint{font-family:var(--mono);font-size:11px;fill:var(--faint);text-anchor:middle}
+
+  .groups{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;max-width:360px;margin-top:16px}
+  .gcard{background:var(--bg3);border:1px solid var(--line);border-radius:6px;padding:9px 11px;display:flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11px}
+  .gdot{width:9px;height:9px;border-radius:2px;flex:none}
+  .gcard .gl{flex:1;color:var(--muted);letter-spacing:.03em;line-height:1.25}
+  .gcard .gc{font-weight:700;color:var(--ink)}
+  .gcard.full{border-color:var(--good)} .gcard.full .gc{color:var(--good)}
+
+  .meter{margin-top:16px;width:100%;max-width:360px}
+  .meter .mlab{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:6px;letter-spacing:.05em;text-transform:uppercase}
+  .track{height:7px;background:var(--bg3);border-radius:99px;overflow:hidden;border:1px solid var(--line)}
+  .fill{height:100%;background:linear-gradient(90deg,var(--amber-dim),var(--amber));border-radius:99px;transition:width .4s cubic-bezier(.4,0,.2,1);box-shadow:0 0 12px var(--amber-glow)}
+
+  /* ---- stages ---- */
+  .stage{display:flex;align-items:flex-start;gap:12px;padding:11px 0;border-bottom:1px dashed var(--line)}
+  .stage:last-child{border-bottom:none}
+  .chk{width:22px;height:22px;border:1.5px solid var(--line2);border-radius:5px;flex:none;cursor:pointer;display:grid;place-items:center;transition:.15s;margin-top:1px;background:var(--bg3)}
+  .chk:hover{border-color:var(--amber)}
+  .chk.on{background:var(--amber);border-color:var(--amber);box-shadow:0 0 14px var(--amber-glow)}
+  .chk svg{width:13px;height:13px;stroke:#0c0e11;stroke-width:3.2;fill:none;opacity:0;transition:.15s}
+  .chk.on svg{opacity:1}
+  .stbody{flex:1}
+  .stbody .stxt{font-size:14px;line-height:1.35;transition:.15s}
+  .stage.done .stxt{color:var(--faint);text-decoration:line-through;text-decoration-color:var(--amber-dim)}
+  .sttime{font-family:var(--mono);font-size:10px;color:var(--amber);letter-spacing:.05em;margin-top:3px;display:none}
+  .stage.done .sttime{display:block}
+  .auto-tag{font-family:var(--mono);font-size:9px;color:var(--faint);border:1px solid var(--line);border-radius:3px;padding:1px 5px;margin-left:7px;letter-spacing:.08em;vertical-align:middle}
+
+  /* ---- tension ---- */
+  .tcols{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:560px){.tcols{grid-template-columns:1fr}}
+  .tcol h4{font-family:var(--display);font-weight:600;font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:9px;display:flex;align-items:center;gap:7px}
+  .tcol.R h4{color:var(--amber)} .tcol.L h4{color:var(--steel)}
+  .trow{display:flex;align-items:center;gap:7px;margin-bottom:5px}
+  .trow .ti{font-family:var(--mono);font-size:10px;color:var(--faint);width:26px;text-align:right}
+  .trow input{flex:1;background:var(--bg3);border:1px solid var(--line);color:var(--ink);font-family:var(--mono);font-size:12px;border-radius:4px;padding:5px 7px;transition:.15s;min-width:0}
+  .trow input:focus{outline:none;border-color:var(--amber);background:var(--bg4)}
+  .trow input.out{border-color:var(--bad);color:var(--bad)}
+  .stats{margin-top:18px;border-top:1px solid var(--line);padding-top:16px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  @media(max-width:560px){.stats{grid-template-columns:repeat(2,1fr)}}
+  .stat{text-align:center}
+  .stat .v{font-family:var(--display);font-weight:700;font-size:24px;color:var(--ink);line-height:1}
+  .stat .k{font-family:var(--mono);font-size:9.5px;color:var(--faint);letter-spacing:.1em;text-transform:uppercase;margin-top:5px}
+  .verdict{margin-top:16px;font-family:var(--mono);font-size:12px;text-align:center;padding:10px;border-radius:6px;border:1px solid var(--line);letter-spacing:.04em}
+  .verdict.good{color:var(--good);border-color:var(--good)} .verdict.warn{color:var(--warn);border-color:var(--warn)} .verdict.bad{color:var(--bad);border-color:var(--bad)} .verdict.idle{color:var(--faint)}
+  .tcfg{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:16px;flex-wrap:wrap}
+  .tcfg input{background:var(--bg3);border:1px solid var(--line);color:var(--ink);font-family:var(--mono);font-size:12px;border-radius:4px;padding:5px 8px;width:70px}
+  .tcfg input:focus{outline:none;border-color:var(--amber)}
+
+  /* ---- notes ---- */
+  .noteform{display:flex;gap:9px;margin-bottom:16px}
+  .noteform textarea{flex:1;background:var(--bg3);border:1px solid var(--line);color:var(--ink);font-family:var(--body);font-size:13px;border-radius:6px;padding:10px;resize:vertical;min-height:44px;transition:.15s}
+  .noteform textarea:focus{outline:none;border-color:var(--amber);background:var(--bg4)}
+  .addbtn{font-family:var(--display);font-weight:600;letter-spacing:.1em;text-transform:uppercase;font-size:12px;background:var(--amber);color:#0c0e11;border:none;border-radius:6px;padding:0 18px;cursor:pointer;transition:.15s;white-space:nowrap}
+  .addbtn:hover{filter:brightness(1.1);box-shadow:0 0 16px var(--amber-glow)}
+  .note{background:var(--bg3);border:1px solid var(--line);border-left:3px solid var(--amber-dim);border-radius:0 6px 6px 0;padding:10px 12px;margin-bottom:9px;position:relative}
+  .note .nt{font-family:var(--mono);font-size:10px;color:var(--amber);letter-spacing:.05em;margin-bottom:5px}
+  .note .nb{font-size:13px;line-height:1.5;white-space:pre-wrap}
+  .note .del{position:absolute;top:9px;right:11px;color:var(--faint);cursor:pointer;font-family:var(--mono);font-size:14px;line-height:1}
+  .note .del:hover{color:var(--bad)}
+  .empty{font-family:var(--mono);font-size:12px;color:var(--faint);text-align:center;padding:18px}
+
+  .footer{max-width:1180px;margin:30px auto 0;padding:0 22px;font-family:var(--mono);font-size:10.5px;color:var(--faint);letter-spacing:.05em;text-align:center;line-height:1.7}
+  .footer b{color:var(--muted)}
+  input[type=file]{display:none}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hbar">
+    <div>
+      <div class="htitle">SA-730 Wheelbuild<small>bench log · 36H · 4-cross · sapim strong</small></div>
+    </div>
+    <div class="hspace"></div>
+    <div class="hstat">
+      <div class="pct" id="overallPct">0%</div>
+      <div class="lbl">build complete</div>
+    </div>
+    <div class="tools">
+      <button class="tbtn" id="exportBtn">Export</button>
+      <button class="tbtn" id="importBtn">Import</button>
+      <button class="tbtn danger" id="resetBtn">Reset</button>
+      <input type="file" id="importFile" accept="application/json">
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="grid">
+
+    <!-- SPEC -->
+    <section class="panel">
+      <div class="ptitle"><span class="num">01</span> Build Spec <span class="tail"></span></div>
+      <dl class="spec">
+        <dt>Rim</dt><dd><b>Araya SA-730</b></dd>
+        <dt>Profile</dt><dd>30mm aero · 545g</dd>
+        <dt>Size / ETRTO</dt><dd>700c · 622-15c</dd>
+        <dt>ERD</dt><dd><b>578</b> mm</dd>
+        <dt>Drilling</dt><dd>36H · F/V · sleeved</dd>
+        <dt>Section</dt><dd>W1 20.8 · W2 15.4 · D 30</dd>
+        <dt>Spoke</dt><dd><b>Sapim Strong</b> SB J-bend</dd>
+        <dt>Length</dt><dd><b>286</b> mm · black ×36 <span style="color:var(--faint)">(+1)</span></dd>
+        <dt>Nipple</dt><dd>16mm brass · dbl-square</dd>
+        <dt>Washers</dt><dd>head ×37 · internal ×38</dd>
+        <dt>Lacing</dt><dd><b>4-cross</b> (9+9 per flange)</dd>
+        <dt>Hub</dt><dd><input id="m_hub" placeholder="dual track hub (no dish)"></dd>
+        <dt>Target tension</dt><dd><input id="m_target" placeholder="e.g. 110 kgf"></dd>
+      </dl>
+      <div class="specnote">
+        Symmetric track hub → no dish, single 286mm length, equal tension both sides.
+        4-cross is the standard cross at 36H — comfortable bracing, but spokes still leave the flange near-tangential, so seat each elbow flush before tensioning.
+      </div>
+    </section>
+
+    <!-- WHEEL -->
+    <section class="panel">
+      <div class="ptitle"><span class="num">02</span> Lacing <span class="tail"></span></div>
+      <div class="wheelwrap">
+        <svg class="wheel" id="wheel" viewBox="0 0 400 400"></svg>
+        <div class="groups" id="groups"></div>
+        <div class="meter">
+          <div class="mlab"><span>Spokes laced</span><span id="laceCount">0 / 36</span></div>
+          <div class="track"><div class="fill" id="laceFill" style="width:0%"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STAGES -->
+    <section class="panel">
+      <div class="ptitle"><span class="num">03</span> Build Stages <span class="tail"></span></div>
+      <div id="stages"></div>
+      <div class="meter" style="max-width:none">
+        <div class="mlab"><span>Stages done</span><span id="stageCount">0 / 0</span></div>
+        <div class="track"><div class="fill" id="stageFill" style="width:0%"></div></div>
+      </div>
+    </section>
+
+    <!-- TENSION -->
+    <section class="panel">
+      <div class="ptitle"><span class="num">04</span> Tension Log <span class="tail"></span></div>
+      <div class="tcfg">
+        <span>Outlier flag at ±</span><input id="m_tol" type="number" min="1" max="100"><span>% of mean</span>
+        <span style="color:var(--faint)">· enter TM-1 readings or kgf — spread is unit-free</span>
+      </div>
+      <div class="tcols">
+        <div class="tcol R"><h4><span class="gdot" style="background:var(--amber)"></span>Right flange</h4><div id="tR"></div></div>
+        <div class="tcol L"><h4><span class="gdot" style="background:var(--steel)"></span>Left flange</h4><div id="tL"></div></div>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="v" id="s_mean">–</div><div class="k">Mean</div></div>
+        <div class="stat"><div class="v" id="s_sd">–</div><div class="k">Std dev</div></div>
+        <div class="stat"><div class="v" id="s_cv">–</div><div class="k">CV %</div></div>
+        <div class="stat"><div class="v" id="s_range">–</div><div class="k">Min–Max</div></div>
+      </div>
+      <div class="verdict idle" id="verdict">Log readings to see spread</div>
+    </section>
+
+  </div>
+
+  <!-- NOTES -->
+  <section class="panel" style="margin-top:20px">
+    <div class="ptitle"><span class="num">05</span> Bench Notes <span class="tail"></span></div>
+    <div class="noteform">
+      <textarea id="noteInput" placeholder="Drop a note — what you adjusted, where it pulled, a tension reading, a problem to chase next session…"></textarea>
+      <button class="addbtn" id="noteAdd">Log</button>
+    </div>
+    <div id="notes"></div>
+  </section>
+</div>
+
+<div class="footer">
+  <b>Single-file bench log.</b> Progress saves to this browser automatically · use <b>Export</b> to back up your build to a file.<br>
+  No network needed once loaded. Tension spread = sample SD / mean. Good wheel target: CV under ~10%, every spoke within tolerance of the mean.
+</div>
+
+<script>
+const KEY = 'araya_sa730_build_v2';
+const NSPOKES = 36;
+
+// group meta: 0 R-trailing, 1 R-leading, 2 L-trailing, 3 L-leading
+const GROUPS = [
+  {name:'R · trailing (key)', side:'R', color:'var(--amber)'},
+  {name:'R · leading',        side:'R', color:'var(--amber)'},
+  {name:'L · trailing',       side:'L', color:'var(--steel)'},
+  {name:'L · leading',        side:'L', color:'var(--steel)'},
+];
+
+const STAGE_DEFS = [
+  {id:'prep', txt:'Spoke prep on threads & elbows (oil / Spoke Prep)'},
+  {id:'lace', txt:'Lacing complete — all 36 spokes hooked & threaded', auto:'lace'},
+  {id:'slack',txt:'Nipples run to last thread · gross slack removed'},
+  {id:'init', txt:'Initial even tension set (~½ target, true-ish)'},
+  {id:'lat',  txt:'Lateral true — side-to-side ≤ 0.2 mm'},
+  {id:'rad',  txt:'Radial true — roundness / hop ≤ 0.3 mm'},
+  {id:'tens', txt:'Brought to target tension, balanced side-to-side'},
+  {id:'stress',txt:'Stress relief — squeeze parallel pairs / lever, repeat'},
+  {id:'retrue',txt:'Re-true & re-balance after stress relief'},
+  {id:'final', txt:'Final tension spread checked — within tolerance'},
+  {id:'mount', txt:'Rim tape · cog/lockring or freewheel · mounted'},
+];
+
+function defaultState(){
+  return {
+    meta:{hub:'dual track hub · symmetric (no dish)', target:'115 kgf', tol:20},
+    spokes:Array.from({length:NSPOKES},(_,i)=>({laced:false})),
+    stages:Object.fromEntries(STAGE_DEFS.map(s=>[s.id,{done:false,ts:null}])),
+    tR:Array(18).fill(''),
+    tL:Array(18).fill(''),
+    notes:[]
+  };
+}
+
+// assign each spoke index -> group (8 per group). even idx = R flange, odd = L flange.
+function spokeGroup(i){
+  const side = i % 2;            // 0 = R, 1 = L
+  const k = Math.floor(i/2);     // 0..15 within side
+  const lead = k % 2;            // alternate trailing/leading
+  return side*2 + lead;          // 0 R-trail,1 R-lead,2 L-trail,3 L-lead
+}
+
+let state = load();
+
+function load(){
+  try{
+    const raw = localStorage.getItem(KEY);
+    if(raw){ const s = JSON.parse(raw); return migrate(s); }
+  }catch(e){}
+  return defaultState();
+}
+function migrate(s){
+  const d = defaultState();
+  s = (s && typeof s==='object') ? s : {};
+  const coerceStr = v => (v==null ? '' : String(v));
+  // validate element SHAPE, not just array length — a malformed/hand-edited import must not dead-lock or crash the UI
+  return {
+    meta:{
+      hub: coerceStr(s.meta && s.meta.hub) || d.meta.hub,
+      target: coerceStr(s.meta && s.meta.target) || d.meta.target,
+      tol: clampNum(s.meta && s.meta.tol, 1, 100, d.meta.tol)
+    },
+    spokes:(Array.isArray(s.spokes)&&s.spokes.length===NSPOKES)
+      ? s.spokes.map(x=>({laced: !!(x && x.laced)})) : d.spokes,
+    stages:Object.fromEntries(STAGE_DEFS.map(def=>{
+      const e=(s.stages && s.stages[def.id]) || {};
+      return [def.id, {done: !!e.done, ts: (typeof e.ts==='number')?e.ts:null}];
+    })),
+    tR:(Array.isArray(s.tR)&&s.tR.length===18)?s.tR.map(coerceStr):d.tR,
+    tL:(Array.isArray(s.tL)&&s.tL.length===18)?s.tL.map(coerceStr):d.tL,
+    notes:Array.isArray(s.notes)
+      ? s.notes.filter(n=>n&&typeof n==='object').map(n=>({ts:(typeof n.ts==='number')?n.ts:Date.now(), text:coerceStr(n.text)}))
+      : []
+  };
+}
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
+
+/* ---------- WHEEL ---------- */
+const CX=200, CY=200, RIM=168, HUB=52, OFFSET=52; // degrees of tangential sweep (visual 4x)
+function pol(cx,cy,r,deg){ const a=(deg-90)*Math.PI/180; return [cx+r*Math.cos(a), cy+r*Math.sin(a)]; }
+
+function buildWheel(){
+  const svg = document.getElementById('wheel');
+  let h = '';
+  h += `<circle class="rimring" cx="${CX}" cy="${CY}" r="${RIM}"/>`;
+  h += `<circle class="rimring2" cx="${CX}" cy="${CY}" r="${RIM-5}"/>`;
+  for(let i=0;i<NSPOKES;i++){
+    const g = spokeGroup(i);
+    const meta = GROUPS[g];
+    const rimDeg = i*(360/NSPOKES);
+    const lead = (g%2)===1;
+    const hubDeg = rimDeg + (lead ? OFFSET : -OFFSET);
+    const [rx,ry] = pol(CX,CY,RIM,rimDeg);
+    const [hx,hy] = pol(CX,CY,HUB,hubDeg);
+    h += `<line class="spoke ${meta.side}" data-i="${i}" x1="${hx.toFixed(1)}" y1="${hy.toFixed(1)}" x2="${rx.toFixed(1)}" y2="${ry.toFixed(1)}"/>`;
+    h += `<line class="spoke-hit" data-i="${i}" x1="${hx.toFixed(1)}" y1="${hy.toFixed(1)}" x2="${rx.toFixed(1)}" y2="${ry.toFixed(1)}"/>`;
+    h += `<circle class="nip ${meta.side}" data-i="${i}" cx="${rx.toFixed(1)}" cy="${ry.toFixed(1)}" r="3.4"/>`;
+  }
+  h += `<circle class="hubring" cx="${CX}" cy="${CY}" r="${HUB}"/>`;
+  h += `<circle class="axle" cx="${CX}" cy="${CY}" r="16"/>`;
+  h += `<circle class="axle" cx="${CX}" cy="${CY}" r="6"/>`;
+  h += `<text class="lacehint" x="${CX}" y="${CY+4}">4×</text>`;
+  svg.innerHTML = h;
+  svg.addEventListener('click', e=>{
+    const t = e.target;
+    if(t.classList.contains('spoke-hit')){
+      const i = +t.dataset.i;
+      state.spokes[i].laced = !state.spokes[i].laced;
+      syncLaceStage(); save(); renderWheel(); renderStages(); renderMeters();
+    }
+  });
+}
+function renderWheel(){
+  document.querySelectorAll('#wheel .spoke').forEach(el=>{
+    const i=+el.dataset.i; el.classList.toggle('laced', state.spokes[i].laced);
+  });
+  document.querySelectorAll('#wheel .nip').forEach(el=>{
+    const i=+el.dataset.i; el.classList.toggle('laced', state.spokes[i].laced);
+  });
+}
+function renderGroups(){
+  const counts=[0,0,0,0];
+  state.spokes.forEach((s,i)=>{ if(s.laced) counts[spokeGroup(i)]++; });
+  const el=document.getElementById('groups');
+  el.innerHTML = GROUPS.map((g,gi)=>{
+    const full = counts[gi]===9;
+    return `<div class="gcard ${full?'full':''}">
+      <span class="gdot" style="background:${g.color}"></span>
+      <span class="gl">${g.name}</span>
+      <span class="gc">${counts[gi]}/9</span>
+    </div>`;
+  }).join('');
+}
+
+/* ---------- STAGES ---------- */
+function syncLaceStage(){
+  const all = state.spokes.every(s=>s.laced);
+  const st = state.stages.lace;
+  if(all && !st.done){ st.done=true; st.ts=Date.now(); }
+  if(!all && st.done){ st.done=false; st.ts=null; }
+}
+function renderStages(){
+  const wrap=document.getElementById('stages');
+  wrap.innerHTML = STAGE_DEFS.map(def=>{
+    const st=state.stages[def.id];
+    const auto = def.auto ? `<span class="auto-tag">auto</span>` : '';
+    const time = st.ts ? `<div class="sttime">✓ ${fmt(st.ts)}</div>` : '';
+    return `<div class="stage ${st.done?'done':''}" data-id="${def.id}">
+      <div class="chk ${st.done?'on':''}" data-id="${def.id}" ${def.auto?'data-auto="1"':''}>
+        <svg viewBox="0 0 24 24"><polyline points="4,12 10,18 20,6"/></svg>
+      </div>
+      <div class="stbody"><div class="stxt">${def.txt}${auto}</div>${time}</div>
+    </div>`;
+  }).join('');
+  wrap.querySelectorAll('.chk').forEach(c=>{
+    c.addEventListener('click',()=>{
+      if(c.dataset.auto){ flash(c); return; } // lace stage is driven by the wheel
+      const id=c.dataset.id; const st=state.stages[id];
+      st.done=!st.done; st.ts=st.done?Date.now():null;
+      save(); renderStages(); renderMeters();
+    });
+  });
+  const done=STAGE_DEFS.filter(d=>state.stages[d.id].done).length;
+  document.getElementById('stageCount').textContent=`${done} / ${STAGE_DEFS.length}`;
+  document.getElementById('stageFill').style.width=(done/STAGE_DEFS.length*100)+'%';
+}
+function flash(el){ el.animate([{transform:'scale(1)'},{transform:'scale(1.18)'},{transform:'scale(1)'}],{duration:240}); }
+
+/* ---------- TENSION ---------- */
+function buildTension(){
+  ['R','L'].forEach(side=>{
+    const host=document.getElementById('t'+side);
+    let h='';
+    for(let i=0;i<18;i++){
+      h+=`<div class="trow"><span class="ti">${side}${String(i+1).padStart(2,'0')}</span>
+        <input data-side="${side}" data-i="${i}" inputmode="decimal" placeholder="–"></div>`;
+    }
+    host.innerHTML=h;
+  });
+  document.querySelectorAll('#tR input, #tL input').forEach(inp=>{
+    inp.addEventListener('input',()=>{
+      const side=inp.dataset.side, i=+inp.dataset.i;
+      state['t'+side][i]=inp.value.trim();
+      save(); computeStats();
+    });
+  });
+}
+function renderTensionValues(){
+  document.querySelectorAll('#tR input, #tL input').forEach(inp=>{
+    inp.value = state['t'+inp.dataset.side][+inp.dataset.i] || '';
+  });
+}
+function computeStats(){
+  const tol = clampNum(state.meta.tol,1,100,20);
+  const vals=[];
+  ['R','L'].forEach(side=>state['t'+side].forEach(v=>{ const n=parseFloat(v); if(!isNaN(n)) vals.push(n); }));
+  const mean = vals.length ? vals.reduce((a,b)=>a+b,0)/vals.length : null;
+  // outlier highlight
+  document.querySelectorAll('#tR input, #tL input').forEach(inp=>{
+    const n=parseFloat(inp.value); inp.classList.remove('out');
+    if(mean && !isNaN(n) && Math.abs(n-mean)/mean*100 > tol) inp.classList.add('out');
+  });
+  const $=id=>document.getElementById(id);
+  if(vals.length<2 || !mean){
+    ['s_mean','s_sd','s_cv','s_range'].forEach(id=>$(id).textContent='–');
+    setVerdict('idle','Log readings to see spread'); return;
+  }
+  const variance = vals.reduce((a,b)=>a+(b-mean)**2,0)/(vals.length-1);
+  const sd=Math.sqrt(variance), cv=sd/mean*100;
+  const mn=Math.min(...vals), mx=Math.max(...vals);
+  $('s_mean').textContent=fmtNum(mean);
+  $('s_sd').textContent=fmtNum(sd);
+  $('s_cv').textContent=cv.toFixed(1);
+  $('s_range').textContent=`${fmtNum(mn)}–${fmtNum(mx)}`;
+  const outliers=vals.filter(n=>Math.abs(n-mean)/mean*100>tol).length;
+  if(cv<10 && outliers===0) setVerdict('good',`Even — CV ${cv.toFixed(1)}%, all spokes within ±${tol}% (n=${vals.length})`);
+  else if(cv<20 && outliers<=2) setVerdict('warn',`Workable — CV ${cv.toFixed(1)}%, ${outliers} spoke(s) outside ±${tol}%`);
+  else setVerdict('bad',`Uneven — CV ${cv.toFixed(1)}%, ${outliers} spoke(s) outside ±${tol}% · keep balancing`);
+}
+function setVerdict(cls,txt){ const v=document.getElementById('verdict'); v.className='verdict '+cls; v.textContent=txt; }
+
+/* ---------- NOTES ---------- */
+function renderNotes(){
+  const el=document.getElementById('notes');
+  if(!state.notes.length){ el.innerHTML=`<div class="empty">No notes yet — first one logs the build start.</div>`; return; }
+  el.innerHTML=state.notes.map((n,i)=>`<div class="note">
+    <div class="del" data-i="${i}" title="delete">✕</div>
+    <div class="nt">${fmt(n.ts)}</div>
+    <div class="nb">${esc(n.text)}</div>
+  </div>`).join('');
+  el.querySelectorAll('.del').forEach(d=>d.addEventListener('click',()=>{
+    state.notes.splice(+d.dataset.i,1); save(); renderNotes();
+  }));
+}
+function addNote(){
+  const inp=document.getElementById('noteInput');
+  const t=inp.value.trim(); if(!t) return;
+  state.notes.unshift({ts:Date.now(),text:t}); inp.value=''; save(); renderNotes();
+}
+
+/* ---------- METERS ---------- */
+function renderMeters(){
+  const laced=state.spokes.filter(s=>s.laced).length;
+  document.getElementById('laceCount').textContent=`${laced} / ${NSPOKES}`;
+  document.getElementById('laceFill').style.width=(laced/NSPOKES*100)+'%';
+  renderGroups();
+  const done=STAGE_DEFS.filter(d=>state.stages[d.id].done).length;
+  document.getElementById('overallPct').textContent=Math.round(done/STAGE_DEFS.length*100)+'%';
+}
+
+/* ---------- META INPUTS ---------- */
+function bindMeta(){
+  const hub=document.getElementById('m_hub'), tgt=document.getElementById('m_target'), tol=document.getElementById('m_tol');
+  hub.value=state.meta.hub||''; tgt.value=state.meta.target||''; tol.value=state.meta.tol||20;
+  hub.addEventListener('input',()=>{state.meta.hub=hub.value;save();});
+  tgt.addEventListener('input',()=>{state.meta.target=tgt.value;save();});
+  tol.addEventListener('input',()=>{state.meta.tol=clampNum(tol.value,1,100,20);save();computeStats();});
+}
+
+/* ---------- IMPORT / EXPORT / RESET ---------- */
+function exportJSON(){
+  const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`sa730-build-${new Date().toISOString().slice(0,10)}.json`;
+  a.click(); URL.revokeObjectURL(a.href);
+}
+function importJSON(file){
+  const r=new FileReader();
+  r.onload=()=>{ try{ state=migrate(JSON.parse(r.result)); save(); renderAll(); }catch(e){ alert('Could not read that file.'); } };
+  r.readAsText(file);
+}
+function resetAll(){
+  if(confirm('Reset the whole build log? This clears lacing, stages, tension and notes.')){
+    state=defaultState(); save(); renderAll();
+  }
+}
+
+/* ---------- HELPERS ---------- */
+function fmt(ts){ const d=new Date(ts); return d.toLocaleDateString([], {month:'short',day:'numeric'})+' · '+d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}); }
+function fmtNum(n){ return Math.abs(n)>=100 ? Math.round(n).toString() : (Math.round(n*10)/10).toString(); }
+function clampNum(v,lo,hi,def){ const n=parseFloat(v); if(isNaN(n))return def; return Math.min(hi,Math.max(lo,n)); }
+function esc(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+/* ---------- INIT ---------- */
+function renderAll(){
+  bindMeta(); renderWheel(); renderStages(); renderTensionValues(); computeStats(); renderNotes(); renderMeters();
+}
+buildWheel(); buildTension();
+syncLaceStage();
+renderAll();
+
+document.getElementById('noteAdd').addEventListener('click',addNote);
+document.getElementById('noteInput').addEventListener('keydown',e=>{ if(e.key==='Enter'&&(e.metaKey||e.ctrlKey)) addNote(); });
+document.getElementById('exportBtn').addEventListener('click',exportJSON);
+document.getElementById('importBtn').addEventListener('click',()=>document.getElementById('importFile').click());
+document.getElementById('importFile').addEventListener('change',e=>{ if(e.target.files[0]) importJSON(e.target.files[0]); });
+document.getElementById('resetBtn').addEventListener('click',resetAll);
+</script>
+</body>
+</html>
