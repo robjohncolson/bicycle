@@ -1,5 +1,38 @@
 # Continuation Prompt — Kilo TT E-Bike Build
 
+## Update (2026-06-06) — 21700 + 200A JK COMMISSIONED & ON THE KILO TT; group-3 under-load sag (high-IR joint)
+
+**Status change — supersedes every "21700 shelved / on hold / deferred" line in the updates below.** The 14S4P 21700 Samsung 50S production pack is built (balance harness installed) and commissioned on the spare 200A JK smart BMS, and it is now **installed on the Kilo TT, replacing the 18650 + Daly practice pack.** The pack runs well overall.
+
+- **BMS-OCP hill cutout is gone.** The 200A JK has huge headroom over the Z9's 30A battery ceiling, so the Daly-OCP latch that cut power on steep lugs (2026-04-26) no longer happens. Field confirmation of the original "200A → 21700 production, Daly → 18650 practice" sizing call.
+- **Platform note:** this pack is **14S4P / 52V** on the existing BBSHD + Baserunner Z9 system. The 20S6P / 84V CYC X1 Pro plan in the memory files is still future — the current pack is *not* that.
+
+### Open issue — group 3 sags under sustained high-amp draw
+
+Under sustained draw, **series group 3 (of 14) dips noticeably in the JK app and recovers to match the other groups at rest.** Under-load-only sag isolated to one group is the signature of **elevated internal resistance in group 3**, not a charge imbalance.
+
+- At ≤30A through the Z910 cable the pack is only at ~7.5A/cell — well under the 50S's 25A/cell (~100A pack). Real per-group sag at that low a load means the resistance is genuinely elevated, not normal droop.
+- **Likely cause:** a cold/lifted/vibration-cracked **spot weld on a group-3 series joint** (the 2–3 or 3–4 nickel link — a bad *series* joint shows up in whichever group's sense window spans it, so it may be an adjacent link, not inside group 3), or a **poorly-bonded/unbonded parallel cell** (parallel-portion resistance rises, up to ~33% for a fully-open cell → 3P; a partial bond is more common, same signature), or a corroded cell-to-nickel interface worsened by ride hours. Each reads normal at rest because parallel cells equalize.
+- **The JK balancer can't fix this.** Active balance (0.4A) equalizes *resting* voltage only; group 3 reads healthy at rest so the BMS sees nothing wrong, and 0.4A can't offset a several-amp under-load drop anyway.
+- **Why it matters:** group 3 hits LVC/UVP first under sustained load (premature cutoff), and a resistive joint dumps I²R heat as a localized hot spot — a real fire/aging concern on a sealed pack.
+
+### Next-session diagnostic → fix plan
+
+1. **Rule out a measurement artifact first** — wiggle/re-seat the group-3 balance leads + connector, then confirm the sag with a DMM *directly across the physical group terminals* under load. A flaky high-R sense tap carries ~0 current (can't cause real load-sag) but throws false app readings — cheapest, most common smart-BMS fault; eliminate before any rework.
+2. **Quantify in the JK app** — log group 3's instantaneous voltage vs. neighbors during a known high-draw pull. Bigger delta at a given current = more excess resistance. Compare groups at *similar temperature* (cold cells read higher IR).
+3. **Thermal localize** — right after a sustained pull, IR-thermometer the group-3 interconnects (2–3 and 3–4) vs. cells: hot *joint* = series weld; hot *cells* = poorly-bonded parallel cell forcing the others to carry more.
+4. **Measure the joint** — milliohm meter across the suspect series link vs. a good group, or DMM voltage drop across it under known load (V/I = R).
+5. **Re-weld** — re-flow/add welds on suspect nickel, confirm all four parallel cells bonded, re-measure to confirm the sag delta drops.
+6. **Interim** — lower the controller's Max Battery Current ceiling and keep a conservative per-cell UVP; avoid sustained max draw. Group 3 sags deepest and hits cutoff/over-discharge first.
+
+⚠️ **High-voltage rework (mandatory):** steps 4–5 and the probing in steps 1/4 are on a live ~52V series stack. Discharge the pack toward storage voltage, disconnect the BMS and main discharge + charge leads, use insulated tools, observe the one-hand rule, and keep probes from bridging adjacent groups — a slipped probe or weld on an energized pack is a dead-short / arc-flash hazard.
+
+**Do not** chase this with more charge/balance cycles — it's a mechanical/resistance fault, not a state-of-charge imbalance.
+
+The HTML build bible (`kilo-tt-ebike-build.html`) carries this as a Field Update banner at the top plus a Battery & BMS field-diagnostic callout; its spec tables still describe the original 18650 + JK-BD4A17S4P design pack.
+
+---
+
 ## Update (2026-05-05, evening) — POWER MAP enabled to address sustained-load I²t cutout
 
 **The 2026-05-05 LVC + ramp tune did NOT solve the field problem.** Real-world ride up the steepest local hill produced cutouts that **auto-recovered, recurred on re-engage with shorter wait → less recurrence with longer wait**. Pack was nearly full and brand new (sag into LVC ruled out). Motor not hot. Baserunner is mounted apart from the motor (not bolted on), so case heat conduction not a factor.

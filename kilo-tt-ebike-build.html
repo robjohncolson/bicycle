@@ -584,6 +584,15 @@ table.spec td:nth-child(3) { color: var(--text-dim); font-size: 0.78rem; }
   This build is deliberately simple: <strong>throttle in &rarr; power out</strong>. No pedal assist sensor, no regen braking, no speed sensing complexity. The BBSHD's internal clutch prevents engine braking anyway &mdash; this design embraces that. The 20T fixed cog is the primary gear &mdash; it's the only ratio that's pedalable with the 42T BBSHD chainring (42/36 is too low, confirmed by spin-out at 50/36). The BBSHD internal clutch handles coasting (bench-test to confirm before ditching the 36T spare). Target cruise: <strong>&le;15 mph by feel</strong> (no hard speed cap, no speed sensor needed). Note: taller gearing means higher phase current at low RPM &mdash; compensate with conservative current limits and soft throttle ramp.
 </div>
 
+<div class="callout warn" style="margin-bottom:2rem;">
+  <strong>Field Update &mdash; 2026-06-06 &middot; live pack is now the 14S4P 21700 + 200A JK (group&nbsp;3 sags under load)</strong>
+  The bike is now running the <strong>14S4P 21700 Samsung 50S production pack on the spare 200A JK smart BMS</strong>, swapped onto the Kilo TT in place of the 18650 + Daly practice pack. The pack performs well overall, and the BMS-OCP hill cutout that plagued the 18650 + Daly build is gone &mdash; the 200A JK has enormous headroom over the Z9's 30A battery draw, confirming the original &ldquo;200A &rarr; 21700&rdquo; sizing call.
+  <br><br>
+  <strong>Open issue:</strong> under sustained high-amp draw, <strong>series group&nbsp;3 sags noticeably in the JK app and recovers to match the other 13 groups at rest.</strong> Under-load-only sag isolated to one group is the signature of <strong>elevated internal resistance in that group</strong> &mdash; a cold/lifted spot weld on the series nickel, or one of the four parallel cells not bonded (so the group runs as 3P under load). This is <strong>not</strong> a charge-balance problem: group&nbsp;3 reads healthy at rest, so the JK's 0.4A active balancer sees nothing wrong and cannot offset a multi-amp under-load drop anyway. Full diagnosis and fix sequence are in the <a href="#battery-field-diag">Battery &amp; BMS field diagnostic</a> below.
+  <br><br>
+  <span style="opacity:0.8;">The spec tables and assembly steps below still describe the original <strong>18650 VTC6 + JK-BD4A17S4P</strong> design pack. The live pack is the same 14S4P topology with these differences: 21700 Samsung 50S cells (25A/cell &rarr; ~100A pack), the 200A JK (dual B-/P-, one pair capped; 2.54mm JST-XH balance), and ~16&ndash;20&nbsp;Ah capacity.</span>
+</div>
+
 <!-- Key constraint summary cards -->
 <div class="constraint-cards">
   <div class="constraint-card danger">
@@ -740,6 +749,36 @@ table.spec td:nth-child(3) { color: var(--text-dim); font-size: 0.78rem; }
 <tr><td>Charge connector</td><td>XT60 (separate pigtail, Y-split with discharge)</td><td>Both connectors share Pack+ (N14) and BMS C- through a Y-split at the pack output. Thinner gauge OK on charge pigtail (2&ndash;5A charger current).</td></tr>
 <tr><td>Main fuse</td><td><em>None (intentional)</em></td><td>BMS OCP is the only overcurrent protection. Slower than a fuse and requires BMS awake. Tradeoff accepted for this build.</td></tr>
 </table>
+
+<div class="callout warn" id="battery-field-diag">
+  <strong>Field Diagnostic (2026-06-06) &mdash; Group 3 under-load voltage sag</strong>
+  Live pack: 14S4P 21700 Samsung 50S on the 200A JK (the table above describes the original 18650 + JK design pack). Symptom: under sustained draw on the Z9 (&le;30A battery &asymp; 7.5A/cell &mdash; well under the pack's ~100A rating), <strong>series group&nbsp;3 dips well below its neighbors in the JK app and snaps back to match them at rest.</strong> Real per-group sag at that low a load is itself a defect signal, not normal droop.
+  <br><br>
+  <strong>Most likely cause &mdash; high internal resistance at group&nbsp;3 or one of its two adjacent series joints (not a cell-balance problem):</strong>
+  <ul style="margin:0.4rem 0 0.4rem 1.1rem;">
+    <li><strong>Resistive series joint</strong> &mdash; a cold, gray, lifted, or vibration-cracked/necked spot weld on the 2&ndash;3 or 3&ndash;4 nickel interconnect. Resistance in series drops V = I&times;R under load and vanishes at rest. A bad <em>series</em> joint shows up in whichever group's balance-sense window spans it &mdash; so the fault may be an adjacent link, not inside group&nbsp;3 itself.</li>
+    <li><strong>Poorly-bonded or unbonded parallel cell</strong> &mdash; one of the four cells welded badly (high-R tab) or not at all, so the parallel portion's resistance rises (up to &asymp;33% for a fully-open cell &rarr; 3P), yet still reads normal at rest because paralleled cells equalize. A partial bond is more common than a clean open and has the same signature.</li>
+    <li><strong>Degraded cell-to-nickel interface</strong> &mdash; oxidation/corrosion that passed initial QC then worsened with ride hours.</li>
+  </ul>
+  <strong>Why the balancer won't help:</strong> the JK's 0.4A active balance equalizes <em>resting</em> cell voltage only. Group&nbsp;3 is balanced at rest, so the BMS sees nothing to fix &mdash; and 0.4A cannot offset a several-amp under-load drop regardless.
+  <br><br>
+  <strong>Why it matters:</strong> the high-resistance group hits LVC/UVP first under sustained load &rarr; premature cutoff, and a resistive joint dissipates I&sup2;R as a localized hot spot &mdash; a real fire/degradation concern on a sealed pack. Chase it down before more ride hours.
+  <br><br>
+  <strong>Diagnostic &rarr; fix sequence:</strong>
+  <ol style="margin:0.4rem 0 0 1.1rem;">
+    <li><strong>Rule out a measurement artifact first</strong> &mdash; wiggle/re-seat the group-3 balance leads and connector, then confirm the sag with a DMM <em>directly across the physical group terminals</em> under load. A flaky high-R sense tap carries ~0 current (so it can't cause real load-sag) but throws false/erratic app readings &mdash; the cheapest, most common smart-BMS fault; eliminate it before any rework.</li>
+    <li><strong>Quantify</strong> &mdash; log group&nbsp;3's instantaneous voltage vs. its neighbors during a known high-draw pull. Bigger delta at a given current = more excess resistance. Compare groups at <em>similar temperature</em> (cold cells read higher IR).</li>
+    <li><strong>Thermal localize</strong> &mdash; right after a sustained pull, IR-thermometer the group-3 interconnects (2&ndash;3 and 3&ndash;4) and cells vs. neighbors. A hot <em>joint</em> points to the series weld; hot <em>cells</em> point to a poorly-bonded parallel cell forcing the others to carry more current.</li>
+    <li><strong>Measure the joint</strong> &mdash; milliohm meter across the suspect series link vs. a healthy group, or DMM the voltage drop across the link under a known load (V/I = R). Quantifies the bad weld.</li>
+    <li><strong>Re-weld</strong> &mdash; re-flow/add spot welds on any suspect nickel; confirm all four parallel cells are bonded. Re-measure to confirm the sag delta drops.</li>
+    <li><strong>Interim, until fixed</strong> &mdash; lower the controller's Max Battery Current ceiling and keep a conservative per-cell UVP; avoid sustained max draw. Group&nbsp;3 sags deepest and hits cutoff / over-discharge first.</li>
+  </ol>
+  <div class="callout danger" style="margin:0.6rem 0 0 0;">
+    <strong>High-voltage rework &mdash; mandatory</strong>
+    Steps 3&ndash;5 (and probing in 1) are on a live ~52V (14S) series stack. Before probing or spot-welding: discharge the pack toward storage voltage, disconnect the BMS and main discharge + charge leads, use insulated tools, observe the one-hand rule, and keep probes from bridging adjacent groups. A slipped probe or a weld near a high-R node on an energized pack is a dead-short / arc-flash hazard.
+  </div>
+  <strong>Do not</strong> chase this with more charge/balance cycles &mdash; it is a mechanical/resistance fault, not a state-of-charge imbalance.
+</div>
 
 <!-- Battery assembly photo gallery -->
 <h3>Battery Assembly Photos</h3>
