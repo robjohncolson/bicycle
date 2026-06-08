@@ -125,6 +125,20 @@
   .stat .k{font-family:var(--mono);font-size:9.5px;color:var(--faint);letter-spacing:.1em;text-transform:uppercase;margin-top:5px}
   .verdict{margin-top:16px;font-family:var(--mono);font-size:12px;text-align:center;padding:10px;border-radius:6px;border:1px solid var(--line);letter-spacing:.04em}
   .verdict.good{color:var(--good);border-color:var(--good)} .verdict.warn{color:var(--warn);border-color:var(--warn)} .verdict.bad{color:var(--bad);border-color:var(--bad)} .verdict.idle{color:var(--faint)}
+  /* ---- TC-1 reference ---- */
+  .tcref{margin-top:16px;border:1px solid var(--line);border-radius:8px;background:var(--bg3);overflow:hidden}
+  .tcref>summary{cursor:pointer;list-style:none;padding:10px 13px;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--amber);display:flex;align-items:center;gap:8px}
+  .tcref>summary::-webkit-details-marker{display:none}
+  .tcref>summary::before{content:"▸";color:var(--faint);transition:transform .15s}
+  .tcref[open]>summary::before{transform:rotate(90deg)}
+  .tcref-body{padding:0 13px 13px;font-family:var(--body);font-size:12.5px;line-height:1.55;color:var(--ink)}
+  .tcref-body p{margin:0 0 8px}
+  .tcref-body b{color:var(--amber)} .tcref-body .steel{color:var(--steel)}
+  .tcref-tbl{width:100%;border-collapse:collapse;margin:10px 0;font-family:var(--mono);font-size:11.5px}
+  .tcref-tbl th,.tcref-tbl td{border:1px solid var(--line);padding:4px 5px;text-align:center;color:var(--ink)}
+  .tcref-tbl th{color:var(--faint);font-weight:400;text-transform:uppercase;font-size:9.5px;letter-spacing:.05em;text-align:right;padding-right:8px}
+  .tcref-tbl td.target{background:rgba(255,157,51,.16);color:var(--amber);font-weight:700}
+  .tcref-note{font-family:var(--mono);font-size:10px;color:var(--faint);line-height:1.6;margin-top:2px}
   .tcfg{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:16px;flex-wrap:wrap}
   .tcfg input{background:var(--bg3);border:1px solid var(--line);color:var(--ink);font-family:var(--mono);font-size:12px;border-radius:4px;padding:5px 8px;width:70px}
   .tcfg input:focus{outline:none;border-color:var(--amber)}
@@ -202,7 +216,7 @@
         <dt>Target tension</dt><dd><input id="m_target" placeholder="e.g. 110 kgf"></dd>
       </dl>
       <div class="specnote">
-        Symmetric track hub → no dish, single 286mm length, equal tension both sides.
+        Symmetric track hub → no dish, single 286mm length, equal tension both sides. Both flanges are structural: the unused flip-flop (cog) side still gets full, equal tension — never run a side slack (the &ldquo;drive side gets more&rdquo; rule is a dish artifact, and there&rsquo;s no dish here).
         4-cross is the standard cross at 36H — comfortable bracing, but spokes still leave the flange near-tangential, so seat each elbow flush before tensioning.
       </div>
     </section>
@@ -235,7 +249,7 @@
       <div class="ptitle"><span class="num">04</span> Tension Log <span class="tail"></span></div>
       <div class="tcfg">
         <span>Outlier flag at ±</span><input id="m_tol" type="number" min="1" max="100"><span>% of mean</span>
-        <span style="color:var(--faint)">· enter TM-1 readings or kgf — spread is unit-free</span>
+        <span style="color:var(--faint)">· enter TC-1 needle readings or kgf — spread is unit-free</span>
       </div>
       <div class="tcols">
         <div class="tcol R"><h4><span class="gdot" style="background:var(--amber)"></span>Right flange</h4><div id="tR"></div></div>
@@ -248,6 +262,17 @@
         <div class="stat"><div class="v" id="s_range">–</div><div class="k">Min–Max</div></div>
       </div>
       <div class="verdict idle" id="verdict">Log readings to see spread</div>
+      <details class="tcref" open>
+        <summary>ZTTO TC-1 → tension · target &amp; conversion (2.0 mm)</summary>
+        <div class="tcref-body">
+          <p><b>Target 105–110 kgf → needle 21–21.5</b>, every spoke. Symmetric track hub = no dish → tension <span class="steel">both flanges equally</span>; <b>never leave a side slack</b> — both sides hold the rim centred and give the wheel its sideways strength. Ceiling <b>120 kgf (needle ≈22.3)</b> on this classic rim — don&rsquo;t exceed.</p>
+          <table class="tcref-tbl">
+            <tr><th>TC-1 needle</th><td>18</td><td>19</td><td>20</td><td class="target">21</td><td>22</td><td>23</td><td>24</td></tr>
+            <tr><th>tension kgf</th><td>77</td><td>85</td><td>94</td><td class="target">105</td><td>117</td><td>131</td><td>148</td></tr>
+          </table>
+          <p class="tcref-note">ZTTO TC-1, Steel-Round 2.0 mm column · Sapim Strong = 2.0 mm body, gauge the narrow part. Near target ~1 needle ≈ 11–12 kgf — balance by needle: aim every spoke within ±1 of the average.</p>
+        </div>
+      </details>
     </section>
 
   </div>
@@ -332,7 +357,7 @@ const STAGE_DEFS = [
 
 function defaultState(){
   return {
-    meta:{hub:'dual track hub · symmetric (no dish)', target:'115 kgf', tol:20},
+    meta:{hub:'dual track hub · symmetric (no dish)', target:'105 kgf · TC-1 ≈21', tol:20},
     spokes:Array.from({length:NSPOKES},(_,i)=>({laced:false})),
     stages:Object.fromEntries(STAGE_DEFS.map(s=>[s.id,{done:false,ts:null}])),
     tR:Array(18).fill(''),
