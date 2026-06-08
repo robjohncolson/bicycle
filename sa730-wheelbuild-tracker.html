@@ -171,6 +171,7 @@
       <div class="lbl">build complete</div>
     </div>
     <div class="tools">
+      <button class="tbtn" id="syncBtn" title="Share this build across devices — type the same sync name on each">Sync</button>
       <button class="tbtn" id="exportBtn">Export</button>
       <button class="tbtn" id="importBtn">Import</button>
       <button class="tbtn danger" id="resetBtn">Reset</button>
@@ -273,8 +274,35 @@
 
 <div class="footer">
   <b>Single-file bench log.</b> Progress saves to this browser automatically · use <b>Export</b> to back up your build to a file.<br>
-  No network needed once loaded. Tension spread = sample SD / mean. Good wheel target: CV under ~10%, every spoke within tolerance of the mean.
+  Works fully offline; optional <b>Sync</b> mirrors your build across devices when you set a sync name. Tension spread = sample SD / mean. Good wheel target: CV under ~10%, every spoke within tolerance of the mean.
 </div>
+
+<!-- ParamSync: cross-device sync via Supabase. Vendored copy of
+     school/curriculum_render/js/param_sync.js — keep them in sync if either changes.
+     Best-effort + offline-safe: if the cloud is unreachable, every call no-ops and
+     this tracker keeps working entirely from localStorage. -->
+<script>
+(function (global) {
+  'use strict';
+  var DEFAULT_URL  = 'https://bzqbhtrurzzavhqbgqrs.supabase.co';
+  var DEFAULT_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ6cWJodHJ1cnp6YXZocWJncXJzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkxOTc1NDMsImV4cCI6MjA3NDc3MzU0M30.xDHsAxOlv0uprE9epz-M_Emn6q3mRegtTpFt0sl9uBo';
+  var CDN = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+  var cfg = { url: global.SUPABASE_URL || DEFAULT_URL, anonKey: global.SUPABASE_ANON_KEY || DEFAULT_ANON, table: 'user_settings' };
+  var _client = null, _ready = null;
+  function loadScript(src){ return new Promise(function(res,rej){ var s=document.createElement('script'); s.src=src; s.async=true; s.onload=res; s.onerror=function(){rej(new Error('load '+src));}; document.head.appendChild(s); }); }
+  function ready(){ if(_ready) return _ready; _ready=(async function(){ try{ if(!global.supabase||!global.supabase.createClient){ await loadScript(CDN); } if(global.supabase&&global.supabase.createClient){ _client=global.supabase.createClient(cfg.url,cfg.anonKey); } }catch(e){ console.debug('[ParamSync] cloud unavailable:',e&&e.message); _client=null; } return _client; })(); return _ready; }
+  function lsGet(k){ try{ return global.localStorage.getItem(k); }catch(e){ return null; } }
+  function lsSet(k,v){ try{ global.localStorage.setItem(k,v); }catch(e){} }
+  function getSyncName(){ return global.currentUsername || lsGet('consensusUsername') || lsGet('param_sync_name') || null; }
+  function setSyncName(name){ name=(name==null?'':String(name)).trim(); if(name) lsSet('param_sync_name',name); return getSyncName(); }
+  async function save(appId,obj){ var name=getSyncName(); if(!appId||!name) return false; var c=await ready(); if(!c) return false; try{ var r=await c.from(cfg.table).upsert({username:name,app_id:appId,data:(obj==null?{}:obj),updated_at:new Date().toISOString()},{onConflict:'username,app_id'}); if(r.error) throw r.error; return true; }catch(e){ console.debug('[ParamSync] save failed:',e&&e.message); return false; } }
+  async function loadRow(appId){ var name=getSyncName(); if(!appId||!name) return null; var c=await ready(); if(!c) return null; try{ var r=await c.from(cfg.table).select('data, updated_at').eq('username',name).eq('app_id',appId).maybeSingle(); if(r.error) throw r.error; return r.data||null; }catch(e){ console.debug('[ParamSync] load failed:',e&&e.message); return null; } }
+  async function load(appId){ var row=await loadRow(appId); return row?row.data:null; }
+  async function remove(appId){ var name=getSyncName(); if(!appId||!name) return false; var c=await ready(); if(!c) return false; try{ var r=await c.from(cfg.table).delete().eq('username',name).eq('app_id',appId); if(r.error) throw r.error; return true; }catch(e){ console.debug('[ParamSync] delete failed:',e&&e.message); return false; } }
+  function configure(o){ if(!o) return cfg; if(o.url)cfg.url=o.url; if(o.anonKey)cfg.anonKey=o.anonKey; if(o.table)cfg.table=o.table; _client=null; _ready=null; return cfg; }
+  global.ParamSync = { configure:configure, ready:ready, getSyncName:getSyncName, setSyncName:setSyncName, save:save, load:load, loadRow:loadRow, remove:remove };
+})(typeof window!=='undefined'?window:this);
+</script>
 
 <script>
 const KEY = 'araya_sa730_build_v2';
@@ -354,7 +382,19 @@ function migrate(s){
       : []
   };
 }
-function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
+const APP_ID = 'sa730';
+const TS_KEY = KEY + '__ts';                      // epoch ms of this device's last local save
+function localTs(){ return Number(localStorage.getItem(TS_KEY)||0); }
+let _pushTimer = null;
+function cloudPushDebounced(){                     // coalesce bursts of edits into one cloud write
+  if(!window.ParamSync || !ParamSync.getSyncName()) return;
+  clearTimeout(_pushTimer);
+  _pushTimer = setTimeout(()=>{ ParamSync.save(APP_ID, state); }, 1500);
+}
+function save(skipCloud){
+  try{ localStorage.setItem(KEY, JSON.stringify(state)); localStorage.setItem(TS_KEY, String(Date.now())); }catch(e){}
+  if(!skipCloud) cloudPushDebounced();             // best-effort mirror; no-op when offline / not synced
+}
 
 /* ---------- WHEEL ---------- */
 const CX=200, CY=200, RIM=168, HUB=52, OFFSET=52; // degrees of tangential sweep (visual 4x)
@@ -563,6 +603,37 @@ function fmtNum(n){ return Math.abs(n)>=100 ? Math.round(n).toString() : (Math.r
 function clampNum(v,lo,hi,def){ const n=parseFloat(v); if(isNaN(n))return def; return Math.min(hi,Math.max(lo,n)); }
 function esc(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
+/* ---------- CLOUD SYNC (cross-device, optional) ---------- */
+function updateSyncBtn(){
+  const b=document.getElementById('syncBtn'); if(!b) return;
+  const n = window.ParamSync && ParamSync.getSyncName();
+  if(n){ b.textContent='⟳ '+(n.length>10?n.slice(0,9)+'…':n); b.title='Synced as "'+n+'" — click to change name or pull latest'; b.style.color='var(--steel)'; b.style.borderColor='var(--steel-dim)'; }
+  else { b.textContent='Sync'; b.style.color=''; b.style.borderColor=''; }
+}
+async function cloudPullOnLoad(){                   // on startup, reconcile with the cloud (last-write-wins)
+  if(!window.ParamSync || !ParamSync.getSyncName()) return;
+  const row = await ParamSync.loadRow(APP_ID);
+  if(row && row.data){
+    if((Date.parse(row.updated_at)||0) > localTs()){ state=migrate(row.data); save(true); renderAll(); }  // cloud newer → adopt
+    else { ParamSync.save(APP_ID, state); }                                                               // local newer → push
+  } else { ParamSync.save(APP_ID, state); }                                                               // first sync for this name → seed cloud
+}
+async function onSyncClick(){
+  if(!window.ParamSync) return;
+  const cur = ParamSync.getSyncName() || '';
+  const name = prompt('Sync name — type the SAME name on each device to share this build across them:', cur);
+  if(name===null) return;
+  const trimmed = name.trim(); if(!trimmed) return;
+  ParamSync.setSyncName(trimmed); updateSyncBtn();
+  const row = await ParamSync.loadRow(APP_ID);
+  if(row && row.data){
+    const adopt = confirm('Found a saved build for "'+trimmed+'".\n\nOK = load it here (replaces this device’s current build).\nCancel = keep this device’s build and upload it under that name.');
+    if(adopt){ state=migrate(row.data); save(true); renderAll(); }
+    else { ParamSync.save(APP_ID, state); }
+  } else { ParamSync.save(APP_ID, state); }
+  updateSyncBtn();
+}
+
 /* ---------- INIT ---------- */
 function renderAll(){
   bindMeta(); renderWheel(); renderStages(); renderTensionValues(); computeStats(); renderNotes(); renderMeters();
@@ -570,6 +641,8 @@ function renderAll(){
 buildWheel(); buildTension();
 syncLaceStage();
 renderAll();
+updateSyncBtn();
+cloudPullOnLoad();
 
 document.getElementById('noteAdd').addEventListener('click',addNote);
 document.getElementById('noteInput').addEventListener('keydown',e=>{ if(e.key==='Enter'&&(e.metaKey||e.ctrlKey)) addNote(); });
@@ -577,6 +650,7 @@ document.getElementById('exportBtn').addEventListener('click',exportJSON);
 document.getElementById('importBtn').addEventListener('click',()=>document.getElementById('importFile').click());
 document.getElementById('importFile').addEventListener('change',e=>{ if(e.target.files[0]) importJSON(e.target.files[0]); });
 document.getElementById('resetBtn').addEventListener('click',resetAll);
+document.getElementById('syncBtn').addEventListener('click',onSyncClick);
 </script>
 </body>
 </html>
