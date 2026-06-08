@@ -146,6 +146,23 @@ header .sub {
   transition: all 0.15s;
 }
 .btn-reset:hover { color: var(--danger); border-color: var(--danger); }
+.btn-sync {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 0.25rem 0.6rem;
+  margin-right: 0.4rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-sync:hover { color: var(--text); border-color: var(--border-light); }
+.btn-sync.on { color: var(--elec); border-color: var(--elec-dim); }
 
 /* ─── CONSTRAINT CARDS ─── */
 .constraint-cards {
@@ -574,6 +591,7 @@ table.spec td:nth-child(3) { color: var(--text-dim); font-size: 0.78rem; }
       <div class="progress-fill" id="progress-fill"></div>
     </div>
     <div class="progress-actions">
+      <button class="btn-sync" type="button" id="sync-all" title="Share progress across devices — type the same sync name on each">Sync</button>
       <button class="btn-reset" type="button" id="reset-all">Reset all</button>
     </div>
   </div>
@@ -1342,6 +1360,33 @@ table.spec td:nth-child(3) { color: var(--text-dim); font-size: 0.78rem; }
 
 </div>
 
+<!-- ParamSync: cross-device sync via Supabase. Vendored copy of
+     school/curriculum_render/js/param_sync.js — keep them in sync if either changes.
+     Best-effort + offline-safe: if the cloud is unreachable, every call no-ops and
+     this checklist keeps working entirely from localStorage. -->
+<script>
+(function (global) {
+  'use strict';
+  var DEFAULT_URL  = 'https://bzqbhtrurzzavhqbgqrs.supabase.co';
+  var DEFAULT_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ6cWJodHJ1cnp6YXZocWJncXJzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkxOTc1NDMsImV4cCI6MjA3NDc3MzU0M30.xDHsAxOlv0uprE9epz-M_Emn6q3mRegtTpFt0sl9uBo';
+  var CDN = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+  var cfg = { url: global.SUPABASE_URL || DEFAULT_URL, anonKey: global.SUPABASE_ANON_KEY || DEFAULT_ANON, table: 'user_settings' };
+  var _client = null, _ready = null;
+  function loadScript(src){ return new Promise(function(res,rej){ var s=document.createElement('script'); s.src=src; s.async=true; s.onload=res; s.onerror=function(){rej(new Error('load '+src));}; document.head.appendChild(s); }); }
+  function ready(){ if(_ready) return _ready; _ready=(async function(){ try{ if(!global.supabase||!global.supabase.createClient){ await loadScript(CDN); } if(global.supabase&&global.supabase.createClient){ _client=global.supabase.createClient(cfg.url,cfg.anonKey); } }catch(e){ console.debug('[ParamSync] cloud unavailable:',e&&e.message); _client=null; } return _client; })(); return _ready; }
+  function lsGet(k){ try{ return global.localStorage.getItem(k); }catch(e){ return null; } }
+  function lsSet(k,v){ try{ global.localStorage.setItem(k,v); }catch(e){} }
+  function getSyncName(){ return global.currentUsername || lsGet('consensusUsername') || lsGet('param_sync_name') || null; }
+  function setSyncName(name){ name=(name==null?'':String(name)).trim(); if(name) lsSet('param_sync_name',name); return getSyncName(); }
+  async function save(appId,obj){ var name=getSyncName(); if(!appId||!name) return false; var c=await ready(); if(!c) return false; try{ var r=await c.from(cfg.table).upsert({username:name,app_id:appId,data:(obj==null?{}:obj),updated_at:new Date().toISOString()},{onConflict:'username,app_id'}); if(r.error) throw r.error; return true; }catch(e){ console.debug('[ParamSync] save failed:',e&&e.message); return false; } }
+  async function loadRow(appId){ var name=getSyncName(); if(!appId||!name) return null; var c=await ready(); if(!c) return null; try{ var r=await c.from(cfg.table).select('data, updated_at').eq('username',name).eq('app_id',appId).maybeSingle(); if(r.error) throw r.error; return r.data||null; }catch(e){ console.debug('[ParamSync] load failed:',e&&e.message); return null; } }
+  async function load(appId){ var row=await loadRow(appId); return row?row.data:null; }
+  async function remove(appId){ var name=getSyncName(); if(!appId||!name) return false; var c=await ready(); if(!c) return false; try{ var r=await c.from(cfg.table).delete().eq('username',name).eq('app_id',appId); if(r.error) throw r.error; return true; }catch(e){ console.debug('[ParamSync] delete failed:',e&&e.message); return false; } }
+  function configure(o){ if(!o) return cfg; if(o.url)cfg.url=o.url; if(o.anonKey)cfg.anonKey=o.anonKey; if(o.table)cfg.table=o.table; _client=null; _ready=null; return cfg; }
+  global.ParamSync = { configure:configure, ready:ready, getSyncName:getSyncName, setSyncName:setSyncName, save:save, load:load, loadRow:loadRow, remove:remove };
+})(typeof window!=='undefined'?window:this);
+</script>
+
 <script>
 // Checkbox persistence with localStorage (uses same key prefix as original)
 const allCheckboxes = [...document.querySelectorAll('input[type="checkbox"]')];
@@ -1356,12 +1401,36 @@ function updateProgress() {
   progressFill.style.width = total ? ((done / total) * 100) + '%' : '0%';
 }
 
+const APP_ID = 'kilo_build';
+const TS_KEY = 'kilo__ts';                            // epoch ms of this device's last change
+function localTs(){ return Number(localStorage.getItem(TS_KEY) || 0); }
+function stampLocal(){ try { localStorage.setItem(TS_KEY, String(Date.now())); } catch(e){} }
+function snapshot(){ const o = {}; allCheckboxes.forEach(cb => { o[cb.id] = cb.checked; }); return o; }
+function restore(blob){                               // additive — only writes existing kilo_<id> keys
+  if (!blob || typeof blob !== 'object') return;
+  allCheckboxes.forEach(cb => {
+    if (Object.prototype.hasOwnProperty.call(blob, cb.id)) {
+      cb.checked = !!blob[cb.id];
+      localStorage.setItem('kilo_' + cb.id, cb.checked);
+    }
+  });
+  updateProgress();
+}
+let _pushTimer = null;
+function cloudPushDebounced(){                        // coalesce rapid toggles into one cloud write
+  if (!window.ParamSync || !ParamSync.getSyncName()) return;
+  clearTimeout(_pushTimer);
+  _pushTimer = setTimeout(() => { ParamSync.save(APP_ID, snapshot()); }, 1500);
+}
+function touchAndPush(){ stampLocal(); cloudPushDebounced(); }
+
 allCheckboxes.forEach(cb => {
   const key = 'kilo_' + cb.id;
   cb.checked = localStorage.getItem(key) === 'true';
   cb.addEventListener('change', () => {
     localStorage.setItem(key, cb.checked);
     updateProgress();
+    touchAndPush();                                   // best-effort cloud mirror; no-op when offline / not synced
   });
 });
 
@@ -1372,9 +1441,44 @@ resetBtn.addEventListener('click', () => {
     cb.checked = false;
   });
   updateProgress();
+  touchAndPush();                                     // propagate the reset to the cloud too
 });
 
+/* ---- cross-device sync (optional) ---- */
+function updateSyncBtn(){
+  const b = document.getElementById('sync-all'); if (!b) return;
+  const n = window.ParamSync && ParamSync.getSyncName();
+  if (n) { b.textContent = '⟳ ' + (n.length > 10 ? n.slice(0,9) + '…' : n); b.title = 'Synced as "' + n + '" — click to change name or pull latest'; b.classList.add('on'); }
+  else { b.textContent = 'Sync'; b.title = 'Share progress across devices — type the same sync name on each'; b.classList.remove('on'); }
+}
+async function cloudPullOnLoad(){                      // startup reconcile, last-write-wins
+  if (!window.ParamSync || !ParamSync.getSyncName()) return;
+  const row = await ParamSync.loadRow(APP_ID);
+  if (row && row.data) {
+    if ((Date.parse(row.updated_at) || 0) > localTs()) { restore(row.data); stampLocal(); }  // cloud newer → adopt
+    else { ParamSync.save(APP_ID, snapshot()); }                                              // local newer → push
+  } else { ParamSync.save(APP_ID, snapshot()); }                                              // first sync for this name → seed
+}
+async function onSyncClick(){
+  if (!window.ParamSync) return;
+  const cur = ParamSync.getSyncName() || '';
+  const name = prompt('Sync name — type the SAME name on each device to share your build progress:', cur);
+  if (name === null) return;
+  const t = name.trim(); if (!t) return;
+  ParamSync.setSyncName(t); updateSyncBtn();
+  const row = await ParamSync.loadRow(APP_ID);
+  if (row && row.data) {
+    const adopt = confirm('Found saved progress for "' + t + '".\n\nOK = load it here (replaces this device’s checkboxes).\nCancel = keep this device’s progress and upload it under that name.');
+    if (adopt) { restore(row.data); stampLocal(); }
+    else { ParamSync.save(APP_ID, snapshot()); }
+  } else { ParamSync.save(APP_ID, snapshot()); }
+  updateSyncBtn();
+}
+document.getElementById('sync-all').addEventListener('click', onSyncClick);
+
 updateProgress();
+updateSyncBtn();
+cloudPullOnLoad();
 </script>
 </body>
 </html>
