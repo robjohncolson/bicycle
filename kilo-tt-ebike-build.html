@@ -738,6 +738,7 @@ table.spec td:nth-child(3) { color: var(--text-dim); font-size: 0.78rem; }
 <table class="spec">
 <tr><th>Component</th><th>Specification</th><th>Fit Notes</th></tr>
 <tr><td>Controller</td><td>Grin Baserunner V6 Z9</td><td>FOC, 60V max, 55A peak phase, Z910 motor plug</td></tr>
+<tr><td>Controller current limits</td><td>30A cont / 55A peak phase; 30A default battery current</td><td>Z910 motor cable rating (manual &sect;2.2) &mdash; the Baserunner Z9, not the BMS, is the system bottleneck</td></tr>
 <tr><td>Firmware req.</td><td>&ge; 6.025</td><td><span class="badge crit">must verify/update &mdash; 6.023 has display bugs</span></td></tr>
 <tr><td>Software req.</td><td>Phaserunner Suite &ge; 2.0</td><td>Required for Superharness operation</td></tr>
 <tr><td>Controller mount</td><td>Seat tube (round-tube mount)</td><td>Short phase wire run to BBSHD at BB</td></tr>
@@ -756,7 +757,7 @@ table.spec td:nth-child(3) { color: var(--text-dim); font-size: 0.78rem; }
 <tr><td>Pack config</td><td>14s4p 18650 Sony/Murata VTC6</td><td>~12 Ah / 624 Wh. 58.8V full charge, ~52V nominal. Cell rating: 30A cont / 60A peak each &rarr; 120A / 240A pack-level headroom (not the bottleneck).</td></tr>
 <tr><td>Estimated range</td><td>~20&ndash;40 miles</td><td>Flat + pedal-assist at top end; hilly / full-throttle at bottom end. Throttle-only use skews lower.</td></tr>
 <tr><td>BMS</td><td>JK-BD4A17S4P (Jikong Smart BMS)</td><td>Full protection + 0.4A active balance + Bluetooth</td></tr>
-<tr><td>BMS cont. discharge</td><td>40A</td><td>System bottleneck &mdash; set controller limits below this</td></tr>
+<tr><td>BMS cont. discharge</td><td>40A</td><td>Not the system bottleneck &mdash; the Baserunner Z9 (30A cont) limits first, with 10A of BMS headroom above it</td></tr>
 <tr><td>BMS peak discharge</td><td>60A</td><td>Short-duration only</td></tr>
 <tr><td>BMS charge current</td><td>10&ndash;40A adjustable</td><td>Set to match your charger output (regen N/A &mdash; BBSHD clutch)</td></tr>
 <tr><td>BMS switching</td><td>Low-side, common-port (B- / C-)</td><td>Pack+ goes direct; BMS switches negative leg</td></tr>
@@ -1224,10 +1225,10 @@ table.spec td:nth-child(3) { color: var(--text-dim); font-size: 0.78rem; }
 <div class="checklist-section">
   <div class="checklist-header"><span class="step-badge comm">16</span> Anti-Lug Tuning &amp; Thermal Config</div>
   <div class="check-items">
-    <div class="check-item"><input type="checkbox" id="s16a"><label for="s16a">Set battery current limit well below JK BMS 40A continuous (start ~15&ndash;20A)</label></div>
+    <div class="check-item"><input type="checkbox" id="s16a"><label for="s16a">Set battery current limit at or below Baserunner Z9 factory default 30A (start ~15&ndash;20A and ramp up)</label></div>
     <div class="check-item"><input type="checkbox" id="s16b"><label for="s16b">Set Regen Current = 0A for commissioning (bench-verified 2026-04-23: regen <em>is</em> electrically active when motor spins under power, trips bench supply). Optional on-bike: re-enable at ~5A with Max Regen Voltage 57.6V for gentle descent braking.</label></div>
     <div class="check-item"><input type="checkbox" id="s16c"><label for="s16c">Configure thermistor type in Phaserunner Suite temp tab (Z910 aux &rarr; BBSHD purple wire)</label></div>
-    <div class="check-item"><input type="checkbox" id="s16d"><label for="s16d"><strong>Anti-lug tuning:</strong> 42/20 is tall gearing &mdash; at low RPM the controller pushes high phase current. Set a soft throttle ramp (not instant full power) and conservative phase current limit.</label></div>
+    <div class="check-item"><input type="checkbox" id="s16d"><label for="s16d"><strong>Anti-lug tuning:</strong> 42/20 is tall gearing &mdash; at low RPM the controller pushes high phase current, and with the battery side now the tighter limit (30A), it's the Z9's 55A phase peak that gets exercised under lug. Set a soft throttle ramp (not instant full power) and conservative phase current limit.</label></div>
     <div class="check-item"><input type="checkbox" id="s16e"><label for="s16e">Monitor controller temp, motor temp, and BMS app during progressive load testing</label></div>
     <div class="check-item"><input type="checkbox" id="s16f"><label for="s16f">Gradually increase battery current limit while monitoring thermals</label></div>
     <div class="check-item"><input type="checkbox" id="s16g"><label for="s16g">On hills: help the motor off the line with pedal input &mdash; don't rely on throttle-only from a dead stop in 42/20</label></div>

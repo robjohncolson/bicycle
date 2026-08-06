@@ -149,7 +149,7 @@ This document serves as the master reference guide for integrating a Bafang BBSH
 | Specification | Value / Limit |
 | :--- | :--- |
 | **Max Voltage** | Baserunner: 60V Max (Ideal for 14s/52V packs). JKBMS: 100V Max. |
-| **Max Battery Current** | Baserunner: 55A Peak. JKBMS: 40A Continuous, 80A Peak. |
+| **Max Battery Current** | Baserunner: 30A factory default (manual §6.4) — system bottleneck. JKBMS: 40A Continuous, 80A Peak. |
 | **Max Phase Current** | Baserunner: 55A Peak, ~30A Continuous. |
 | **Wire Gauges Required** | JKBMS: 7 AWG (for B-/P- as shown in diagram). BBSHD/Baserunner specifics NOT IN MANUAL - verify independently. |
 | **Connector Types** | Baserunner: HiGo Z910 (Motor), Z812 (WP8), Cusmade 1109 (Main9), Z609 (PAS). JKBMS: HY2.0-15P (Balance), HY2.0-4P (Temp). |
