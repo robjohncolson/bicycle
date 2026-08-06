@@ -68,7 +68,16 @@ Plus **Features 2 bit 11** (param 174) set to 1 → "Throttle mapping on speed f
 2. **Firmware update.** User updated Baserunner firmware (specific version not noted — check Suite for current sw rev).
 3. **Second attempt (post-firmware-update):** loaded the same modified z9tune.xml, wrote to controller, read back into z9tune2.xml. **All Power Map values stuck.** Curve, speed setpoints, and bit 11 all confirmed in the read-back.
 
-**z9tune2.xml is now the authoritative export.** z9tune.xml is the pre-Power-Map baseline (kept for reference).
+**z9tune2.xml is now the authoritative export.** z9tune.xml is the hand-edited *injection* file from step 1 — **not** a pre-Power-Map baseline.
+
+> **Correction (2026-08-07, from `tools/tune-diff.py`):** diffing the two exports
+> shows only two differing addresses — 256 Software Revision (6025 → 16027) and
+> 502 Display Walk Command. Params 157–172 and 174 are **identical in both files**:
+> z9tune.xml already carries the same 8-point Power Map curve and bit 11 = 1,
+> because it is the file that was edited *to* inject them. **No flat-curve export
+> exists anywhere in this repo**, so there is currently no file to load if the
+> Power Map needs backing out — that would mean re-editing the curve by hand or
+> pulling a fresh export off a reset controller.
 
 ### Next-session priorities
 
@@ -94,8 +103,11 @@ Plus **Features 2 bit 11** (param 174) set to 1 → "Throttle mapping on speed f
 ### Reference
 
 - **Phaserunner exports:**
-  - `z9tune.xml` — last known-flat-curve config (pre-Power-Map). Use as fallback if Power Map causes weird behavior.
-  - `z9tune2.xml` — current authoritative config with Power Map active.
+  - `z9tune.xml` — the hand-edited injection file. **Already contains the Power Map**
+    (params 157–172, bit 11) — verified by `tools/tune-diff.py`. It is NOT a
+    flat-curve fallback, and no flat-curve export exists in this repo.
+  - `z9tune2.xml` — current authoritative config, read back off the controller.
+  - Diff them with `python3 tools/tune-diff.py z9tune.xml z9tune2.xml`.
 - **Software rev:** updated this session. Whatever the Suite reports now is post-update.
 - **Throttle Control Mode:** still 2 = Torque Mode With Speed Limiting.
 
