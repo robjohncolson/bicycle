@@ -1,5 +1,11 @@
 # Continuation Prompt — Kilo TT E-Bike Build
 
+## Update (2026-09-13) — SECOND BIKE: Bridgestone Kamakiri + CYC X1 Pro Gen 4 (see `kamakiri-build.md`)
+
+Karate Monkey → Krampus XL → Big Dummy plans were all scrapped in one day. The second bike is now the 24" (ISO 540) Bridgestone Kamakiri mamachari as a low-CG cruiser mule: CYC X1 Pro Gen 4 32T/53T, full-twist throttle, existing 14T 1/8" freewheel (matches the Kilo's 42/20 development), 1/8" KMC e101 chain, 14S4P 21700 50S pack on a 100 A Daly with the X12 capped at 60-70 A. **The Kilo keeps the 18650 VTC6 pack on its 60 A BMS** (the 200 A JK broke). Gate before ordering the CYC: seized drive-side fixed cup out (LH thread), shell faces clean, magnet test. Photos: `dinex.jpg` (rear drum brake), `rearcog_kamakiri.jpg` (14T freewheel, solid axle, horizontal dropouts).
+
+---
+
 ## Update (2026-06-06) — 21700 + 200A JK COMMISSIONED & ON THE KILO TT; group-3 under-load sag (high-IR joint)
 
 **Status change — supersedes every "21700 shelved / on hold / deferred" line in the updates below.** The 14S4P 21700 Samsung 50S production pack is built (balance harness installed) and commissioned on the spare 200A JK smart BMS, and it is now **installed on the Kilo TT, replacing the 18650 + Daly practice pack.** The pack runs well overall.
