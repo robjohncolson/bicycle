@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Krampus XL × CYC X1 Pro Gen 4 — Slow-Build Purchase Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0e0f11;--surface:#1a1b1f;--surface2:#222329;--surface3:#2a2b32;
+  --border:#333440;--text:#c8c9d0;--text-dim:#7a7b88;--text-bright:#eaebf0;--white:#fff;
+  --mech:#c9a227;--mech-bg:rgba(201,162,39,.06);
+  --elec:#2d8cf0;--elec-bg:rgba(45,140,240,.06);
+  --comm:#22b573;--comm-bg:rgba(34,181,115,.06);
+  --danger:#e04848;--danger-bg:rgba(224,72,72,.08);
+  --warn:#d4a030;--warn-bg:rgba(212,160,48,.08);
+  --info:#5a9fd4;--info-bg:rgba(90,159,212,.08);
+  --ok:#4aaa6a;--ok-bg:rgba(74,170,106,.08);
+  --mono:'JetBrains Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
+.page{max-width:980px;margin:0 auto;padding:2rem 1.25rem 5rem}
+header{padding:2.5rem 0 1.5rem;border-bottom:1px solid var(--border);margin-bottom:2rem}
+h1{font-family:var(--mono);font-size:1.4rem;font-weight:800;letter-spacing:-.03em;color:var(--white);margin-bottom:.3rem}
+.sub{font-family:var(--mono);font-size:.76rem;color:var(--text-dim)}
+h2{font-family:var(--mono);font-size:1.05rem;font-weight:700;color:var(--white);margin:2.6rem 0 .9rem;padding-top:1.2rem;border-top:1px solid var(--border);letter-spacing:-.01em}
+h2 .tag{font-size:.62rem;font-weight:600;padding:.15rem .5rem;border-radius:3px;margin-left:.6rem;vertical-align:middle;text-transform:uppercase;letter-spacing:.06em}
+.tag.anchor{background:var(--mech-bg);color:var(--mech);border:1px solid var(--mech)}
+.tag.gate{background:var(--danger-bg);color:var(--danger);border:1px solid var(--danger)}
+.tag.free{background:var(--ok-bg);color:var(--ok);border:1px solid var(--ok)}
+.tag.elec{background:var(--elec-bg);color:var(--elec);border:1px solid var(--elec)}
+h3{font-family:var(--mono);font-size:.85rem;font-weight:600;color:var(--text-bright);margin:1.4rem 0 .5rem}
+p{margin-bottom:.8rem}
+ul,ol{margin:.2rem 0 .9rem 1.4rem}
+li{margin-bottom:.3rem}
+code{font-family:var(--mono);font-size:.82em;background:var(--surface2);padding:.1em .35em;border-radius:3px;color:var(--text-bright)}
+pre{font-family:var(--mono);font-size:.74rem;line-height:1.45;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:1rem;overflow-x:auto;margin:.8rem 0 1rem;color:var(--text-bright)}
+table{width:100%;border-collapse:collapse;font-size:.84rem;margin:.6rem 0 1.2rem}
+th,td{text-align:left;padding:.45rem .6rem;border-bottom:1px solid var(--border);vertical-align:top}
+th{font-family:var(--mono);font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-dim);font-weight:600}
+td.num{font-family:var(--mono);white-space:nowrap;text-align:right}
+.tbl-wrap{overflow-x:auto}
+.callout{border-left:3px solid var(--info);background:var(--info-bg);padding:.8rem 1rem;border-radius:0 6px 6px 0;margin:1rem 0;font-size:.9rem}
+.callout.danger{border-color:var(--danger);background:var(--danger-bg)}
+.callout.warn{border-color:var(--warn);background:var(--warn-bg)}
+.callout.ok{border-color:var(--ok);background:var(--ok-bg)}
+.callout b{color:var(--text-bright)}
+.check{display:flex;gap:.7rem;align-items:flex-start;padding:.45rem .6rem;border-radius:4px;margin-bottom:.15rem}
+.check:hover{background:var(--surface)}
+.check input{margin-top:.3rem;width:16px;height:16px;accent-color:var(--comm);flex-shrink:0}
+.check label{cursor:pointer;font-size:.9rem}
+.check.done label{color:var(--text-dim);text-decoration:line-through}
+.phase{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.2rem 1.3rem;margin:1rem 0}
+.gate-box{border:1px solid var(--danger);background:var(--danger-bg);border-radius:8px;padding:1rem 1.2rem;margin:1rem 0}
+.gate-box h3{margin-top:0;color:var(--danger)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media(max-width:700px){.grid2{grid-template-columns:1fr}}
+.progress{margin-top:1rem;padding:.8rem 1rem;background:var(--surface);border:1px solid var(--border);border-radius:6px;font-family:var(--mono);font-size:.76rem}
+.rail{height:8px;border-radius:4px;background:var(--surface3);overflow:hidden;margin-top:.5rem}
+.fill{height:100%;width:0;background:linear-gradient(90deg,var(--ok),var(--elec));transition:width .3s}
+.btn{font-family:var(--mono);font-size:.65rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-dim);background:none;border:1px solid var(--border);padding:.3rem .6rem;border-radius:4px;cursor:pointer;margin-top:.5rem}
+.btn:hover{color:var(--text-bright);border-color:var(--text-dim)}
+.toc{font-family:var(--mono);font-size:.78rem;columns:2;column-gap:2rem;margin:1rem 0 0}
+.toc a{color:var(--info);text-decoration:none;display:block;margin-bottom:.25rem}
+@media(max-width:600px){.toc{columns:1}}
+.status{font-family:var(--mono);font-size:.68rem;padding:.1rem .4rem;border-radius:3px;white-space:nowrap}
+.s-lock{background:var(--ok-bg);color:var(--ok)}
+.s-prov{background:var(--warn-bg);color:var(--warn)}
+.s-open{background:var(--danger-bg);color:var(--danger)}
+.s-held{background:var(--surface3);color:var(--text-dim)}
+small{color:var(--text-dim)}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header>
+  <h1>Krampus XL × CYC X1 Pro Gen 4 — Slow-Build Purchase Guide</h1>
+  <div class="sub">300 lb system · rigid 29+ commuter · 20s4p Molicel P50B in the triangle · buy in dependency order, nothing returned</div>
+  <div class="progress">
+    <div style="display:flex;justify-content:space-between"><span style="color:var(--text-dim);text-transform:uppercase;letter-spacing:.05em;font-size:.66rem">Overall progress</span><span id="count" style="color:var(--text-bright);font-weight:600">0 / 0</span></div>
+    <div class="rail"><div class="fill" id="fill"></div></div>
+    <button class="btn" id="reset">Reset all checkboxes</button>
+  </div>
+  <nav class="toc">
+    <a href="#how">0 · How this guide works</a>
+    <a href="#spec">1 · Decisions already made</a>
+    <a href="#p1">2 · Phase 1 — long-lead anchors</a>
+    <a href="#gateA">3 · Gate A — frame in hand</a>
+    <a href="#p2">4 · Phase 2 — hubs, then spokes</a>
+    <a href="#p3">5 · Phase 3 — drivetrain after the motor</a>
+    <a href="#p4">6 · Phase 4 — brakes and cockpit (free)</a>
+    <a href="#tri">7 · Main-triangle geometry for the tray</a>
+    <a href="#p5">8 · Phase 5 — battery, in order</a>
+    <a href="#p6">9 · Phase 6 — assembly and commissioning</a>
+    <a href="#register">10 · Not-yet-locked register</a>
+    <a href="#cost">11 · Cost tracker</a>
+    <a href="#tree">12 · "Can I buy this today?"</a>
+  </nav>
+</header>
+
+<!-- ───────────────────────── 0 ───────────────────────── -->
+<h2 id="how">0 · How this guide works</h2>
+<p>Every purchase sits behind either <b>no gate</b> (safe to buy any time), an <b>anchor</b> (long lead time, order first), or a <b>gate</b> (a physical measurement or dry-fit that must happen before money is spent). The order is arranged so that the parts most likely to be wrong are bought last, after the parts they depend on are on the bench.</p>
+<div class="callout">
+<b>The four things that are not locked</b> and will stay unlocked until hardware is measured: exact spoke lengths, main fuse type and rating, tire pressures, and chainline / 32T clearance after the motor is installed. Everything else in the BOM is mature enough to order in its phase.
+</div>
+<p>Checkboxes save in this browser only (key prefix <code>krampus_</code>). This page is the working BOM for the Krampus; the Kilo TT build bible is unchanged.</p>
+
+<!-- ───────────────────────── 1 ───────────────────────── -->
+<h2 id="spec">1 · Decisions already made</h2>
+<div class="tbl-wrap"><table>
+<tr><th>Subsystem</th><th>Choice</th><th>Why</th></tr>
+<tr><td>Frame</td><td>Surly Krampus, <b>XL</b>, Salmon Skin Silver, rigid fork</td><td>29 × 3.0 clearance, 435 mm stays, 65 mm BB drop, 73 mm BSA, Gnot-Boost 12×148, IS 51 mm both ends (203 max). XL front triangle has room for the pack. Rider 190 cm sits in the 188–198 cm band.</td></tr>
+<tr><td>Fork</td><td>Stock rigid, decide suspension next year</td><td>Krampus tops out at 550 × 51 mm (29+ 120 mm). 3.0" tubeless tires on a 39 mm rim do most of the work. The 140 mm Lyrik idea is off this frame.</td></tr>
+<tr><td>Motor</td><td>CYC X1 Pro Gen 4, <b>32T / 53T</b>, 160 mm cranks, thumb throttle, brake sensors, SW102 display, 68/73/83 BB</td><td>32T/53T is CYC's highest-torque reduction. 32/30 bottom gear gives ~2× the thrust a 20% grade needs at 280 Nm. 160 mm cranks buy pedal clearance on a 65 mm-drop frame.</td></tr>
+<tr><td>Rear drive</td><td>CYC Heavy-Duty 5-speed 15/17/20/24/30 steel cassette, MicroShift Advent RD-M6195 short cage, Advent Trail Trigger Pro E-Bike shifter, KMC e9 EPT chain</td><td>Steel cogs a 280 Nm motor can't file off. 2:1 range is enough for a throttle bike.</td></tr>
+<tr><td>Wheels</td><td>Jones HD/e 36h 12×148 rear (steel HG driver, steel axle) · DT Swiss 350 Hybrid 15×110 36h front · Velocity Dually 29" 36h (ERD 604, 39 mm int) · DT Alpine III · DT Pro Lock brass · 3-cross</td><td>Every part rated for driven, heavy loads. 36h plus rims are rare; Dually is the one.</td></tr>
+<tr><td>Tires</td><td>Surly Dirt Wizard 29 × 3.0 TLR 60 tpi, Orange Seal</td><td>Tough, made for the Krampus. Revisit a faster-rolling 29+ after a few months of commuting.</td></tr>
+<tr><td>Brakes</td><td>Magura MT5 Next ×2, MDR-P 203 ×2, QM5 (front IS→203) + QM9 (rear IS→203)</td><td>4-piston mineral oil, two-piece rotors built for e-bike heat. Verify adapter part numbers against Magura's IS chart before paying.</td></tr>
+<tr><td>Cockpit</td><td>Surly Terminal 735 × 40 mm rise × 34° sweep · Ergon GA2 Fat · Thomson Elite X4 50 mm 0° · Thomson Elite 30.9 × 410 · WTB Volt Medium chromoly · OneUp Composite (orange)</td><td>Upright, swept, short stem. "Sit in it" rather than on it.</td></tr>
+<tr><td>Battery</td><td>20s4p Molicel P50B (80 cells), Daly 20S 72 V 150 A common-port with fan (no Bluetooth), DIY tray in a frame bag, pulled daily to charge</td><td>72 V nominal / 84 V full / 20 Ah / ~1.44 kWh / 240 A cell capability / ~5.5 kg of cells. Uses the welder, nickel, and insulation you already own. Held until the motor is mocked in the frame.</td></tr>
+</table></div>
+<div class="callout warn"><b>Legality reminder.</b> This is a 5–6 kW machine. Nothing about frame choice changes how a stop goes; speed and behavior do.</div>
+
+<!-- ───────────────────────── 2 ───────────────────────── -->
+<h2 id="p1">2 · Phase 1 — long-lead anchors <span class="tag anchor">order first</span></h2>
+<div class="phase">
+<p>These three carts have the longest lead times and gate everything else. Nothing here depends on a measurement.</p>
+<div class="check"><input type="checkbox" id="p1a"><label for="p1a"><b>Surly Krampus XL frameset</b>, Salmon Skin Silver — surlybikes.com, $1,099. Includes 33.1 mm clamp and both thru-axles. <b>Headset is not listed as included</b>; do not buy one until the box is open (Gate A).</label></div>
+<div class="check"><input type="checkbox" id="p1b"><label for="p1b"><b>Velocity Dually 29" 36h ×2</b> + Velotape 24 mm kit — Velocity USA, $411. 2-week lead. Rims first so the wheels can be built while the motor is in transit.</label></div>
+<div class="check"><input type="checkbox" id="p1c"><label for="p1c"><b>CYC X1 Pro Gen 4 kit</b> — cycmotor.com, $1,268. 3–4 week lead after payment. Order notes must say: <code>32T/53T · 68/73/83 BSA · 160 mm cranks · thumb throttle · brake sensors · SW102 must be the 36–72 V version</code>. Dealer stock of 52 V-only SW102s has been mixed.</label></div>
+<div class="check"><input type="checkbox" id="p1d"><label for="p1d">After ordering the CYC kit, download and print CYC's <b>scale clearance template</b> for the Gen 4 at 100% so it's ready when the frame arrives.</label></div>
+</div>
+
+<!-- ───────────────────────── 3 ───────────────────────── -->
+<h2 id="gateA">3 · Gate A — frame in hand <span class="tag gate">measure before buying</span></h2>
+<div class="gate-box">
+<h3>Open the box, then measure. Nothing in Phases 2–5 is ordered until this list is done.</h3>
+<div class="check"><input type="checkbox" id="gA1"><label for="gA1">Inventory the box: clamp, 12×148 axle, 15×110 axle. <b>Is a headset included?</b> If not, buy Cane Creek 40 <code>ZS44/28.6 + EC44/30</code> (straight 1-1/8" steerer, 30 mm crown race — <b>not</b> the EC44/40 tapered lower). Also a star nut + top cap kit if the fork isn't pre-fitted.</label></div>
+<div class="check"><input type="checkbox" id="gA2"><label for="gA2">Confirm rear dropouts are IS 51 mm and the fork is IS 51 mm (the Krampus spec says both; the QM5/QM9 adapter choice depends on it).</label></div>
+<div class="check"><input type="checkbox" id="gA3"><label for="gA3">Measure BB shell width (should be 73.0 mm) and check the faces are clean. CYC's clamp needs a faced shell; note any paint on the faces.</label></div>
+<div class="check"><input type="checkbox" id="gA4"><label for="gA4">Hold the CYC template at the BB. Mark where the 32T ring lands against the drive-side chainstay yoke. Surly's paper max is 30T; a 32T on the X1 spider is commonly run but has not been measured on <i>this</i> frame. If it's marginal, the fallback is a 30T 104 BCD ring, not a different frame.</label></div>
+<div class="check"><input type="checkbox" id="gA5"><label for="gA5">Tray measurements (see §7): top-tube vertical diameter mid-span, down-tube vertical diameter mid-span, seat-tube OD, clear inside width between the crank arms / tubes where the box will sit, and the down-tube length from BB weld to head-tube weld.</label></div>
+<div class="check"><input type="checkbox" id="gA6"><label for="gA6">Photograph the front triangle square-on from the drive side with a ruler in frame. This is your scale reference for the tray drawing.</label></div>
+</div>
+
+<!-- ───────────────────────── 4 ───────────────────────── -->
+<h2 id="p2">4 · Phase 2 — hubs, then spokes <span class="tag gate">spokes wait for hubs</span></h2>
+<div class="phase">
+<p>Hubs are safe to buy once the frame is confirmed 12×148 / 15×110. Spokes are not safe to buy until the hubs are on the bench.</p>
+<div class="check"><input type="checkbox" id="p2a"><label for="p2a"><b>Jones HD/e rear hub</b> 36h 12×148 — Jones Bikes, $250. Read the cart line: <b>Shimano HG steel freehub + steel axle</b>. XD or alloy is an expensive mistake.</label></div>
+<div class="check"><input type="checkbox" id="p2b"><label for="p2b"><b>DT Swiss 350 Hybrid</b> 15×110 36h 6-bolt front — $139.</label></div>
+<div class="check"><input type="checkbox" id="p2c"><label for="p2c"><b>Tires</b> Surly Dirt Wizard 29 × 3.0 TLR ×2 + Orange Seal 32 oz — Jenson, $221. No dependency; buy with hubs.</label></div>
+<div class="gate-box">
+<h3>Gate B — spoke lengths</h3>
+<p>Carted lengths (rear DS 286, front-disc + rear NDS 288, front right 290, all 3-cross) are <span class="status s-prov">PROVISIONAL</span>. They came from approximate hub dimensions. On a 36h 3-cross wheel, 2 mm is the difference between full thread engagement and a spoke that bottoms.</p>
+<div class="check"><input type="checkbox" id="gB1"><label for="gB1">With both hubs in hand, measure or pull from manufacturer drawings: flange PCD left/right, center-to-flange left/right, spoke-hole diameter. Jones publishes the HD/e numbers; verify them with calipers anyway.</label></div>
+<div class="check"><input type="checkbox" id="gB2"><label for="gB2">Confirm the Dually's ERD on the actual rims (published 604 mm). Two nipples + a spoke across the rim, or a rim-tape-less ERD gauge.</label></div>
+<div class="check"><input type="checkbox" id="gB3"><label for="gB3">Run all four sides through the DT Swiss calculator with the measured numbers. Round DT Alpine III lengths <b>down</b> to the nearest stocked 2 mm size when the result is within 0.5 mm of a boundary (Pro Lock brass nipples take a slightly short spoke better than a long one).</label></div>
+<div class="check"><input type="checkbox" id="gB4"><label for="gB4">Only then: DT Alpine III black ×80 + 4 spares per length, DT Pro Head Pro Lock brass 2.0 × 12 mm ×80 + spares — Universal Cycles, ~$215.</label></div>
+</div>
+<div class="check"><input type="checkbox" id="p2d"><label for="p2d">Build both wheels. Rear drive-side to the Dually's max tension. Log tensions in the wheel-build tracker; re-check after the first 50 km of riding.</label></div>
+</div>
+
+<!-- ───────────────────────── 5 ───────────────────────── -->
+<h2 id="p3">5 · Phase 3 — drivetrain after the motor <span class="tag gate">motor on the bench first</span></h2>
+<div class="phase">
+<p>The cassette, derailleur, and shifter don't depend on measurements and can be bought with Phase 2. The <i>chain</i> and the final chainring decision wait for the motor.</p>
+<div class="check"><input type="checkbox" id="p3a"><label for="p3a">CYC Heavy-Duty 5-speed cassette 15–30 — Johnny Nerd Out, $179.</label></div>
+<div class="check"><input type="checkbox" id="p3b"><label for="p3b">MicroShift Advent RD-M6195 super-short cage, clutch — $43. Advent Trail Trigger Pro E-Bike single-click shifter — $32.</label></div>
+<div class="gate-box">
+<h3>Gate C — motor installed in the frame (no wheels needed)</h3>
+<div class="check"><input type="checkbox" id="gC1"><label for="gC1">Install the CYC on the shell. Check the 32T ring against the yoke with the crank turning and with ~2 mm of chain-flex allowance. Marginal → 30T 104 BCD ring ($20).</label></div>
+<div class="check"><input type="checkbox" id="gC2"><label for="gC2"><b>Chainline.</b> Fit the cassette on the Jones freehub with its spacers, mount the rear wheel, and sight the 32T against the <b>middle cog (20T)</b>. On a 148 rear the cassette sits far outboard; the 5 cogs only occupy ~20 mm of the HG body, so where the spacers go decides the chainline. Move spacers behind or ahead of the cassette until 32T → 20T is straight. If the ring can't get there, a different offset spider or BB-side spacer is the fix, decided now, not after the chain is cut.</label></div>
+<div class="check"><input type="checkbox" id="gC3"><label for="gC3">Confirm the SW102 that arrived is the 36–72 V unit before it ever sees 84 V.</label></div>
+<div class="check"><input type="checkbox" id="gC4"><label for="gC4">Right-hand dry-fit on the Terminal bar: thumb throttle + Advent shifter + MT5 lever + brake sensor. If it's crowded, move the shifter inboard of the throttle. Do this before cutting brake hose.</label></div>
+<div class="check"><input type="checkbox" id="gC5"><label for="gC5">Then: KMC e9 EPT 136L chain ($45). Size it in 32/30 with the derailleur at max wrap; the short cage has little slack to give.</label></div>
+</div>
+</div>
+
+<!-- ───────────────────────── 6 ───────────────────────── -->
+<h2 id="p4">6 · Phase 4 — brakes and cockpit <span class="tag free">no gate after Gate A</span></h2>
+<div class="grid2">
+<div class="phase">
+<h3>Brakes</h3>
+<div class="check"><input type="checkbox" id="p4a"><label for="p4a">Magura MT5 Next ×2 — Jenson, $270. Flippable L/R so lever choice is free.</label></div>
+<div class="check"><input type="checkbox" id="p4b"><label for="p4b">Magura MDR-P 203 mm 6-bolt ×2 (2701938) — Magura USA, $184.</label></div>
+<div class="check"><input type="checkbox" id="p4c"><label for="p4c">QM5 front IS→203 ($5) + QM9 rear IS→203 ($18). Cross-check against Magura's adapter chart for IS 51 mm → 203 mm; the part numbers here came from a cart, not the chart.</label></div>
+<div class="check"><input type="checkbox" id="p4d"><label for="p4d">Magura bleed kit (Royal Blood + syringes) and one spare set of 8.P pads. Not yet sourced.</label></div>
+</div>
+<div class="phase">
+<h3>Cockpit and contact points</h3>
+<div class="check"><input type="checkbox" id="p4e"><label for="p4e">Surly Terminal bar 735 × 40 × 34°, 31.8 — Universal, $80 (last one; buy early if stock is the risk).</label></div>
+<div class="check"><input type="checkbox" id="p4f"><label for="p4f">Ergon GA2 Fat grips — $35.</label></div>
+<div class="check"><input type="checkbox" id="p4g"><label for="p4g">Thomson Elite X4 31.8 / 50 mm / 0° — $122. Thomson Elite 30.9 × 410, 0 offset — $122.</label></div>
+<div class="check"><input type="checkbox" id="p4h"><label for="p4h">WTB Volt Medium chromoly — $95. OneUp Composite pedals, orange — $50.</label></div>
+<div class="check"><input type="checkbox" id="p4i"><label for="p4i">Headset and star nut kit — <b>only if Gate A showed they're not in the box</b>.</label></div>
+</div>
+</div>
+
+<!-- ───────────────────────── 7 ───────────────────────── -->
+<h2 id="tri">7 · Main-triangle geometry for the battery tray <span class="tag elec">design reference</span></h2>
+<p>Reconstructed from Surly's published XL Krampus geometry. Bottom-bracket center is the origin, +X forward, +Y up, all in mm. These are <b>tube centerlines</b>; the usable cavity is smaller by the tube radii plus clearance.</p>
+<div class="tbl-wrap"><table>
+<tr><th>Point</th><th>X</th><th>Y</th><th>Derived from</th></tr>
+<tr><td>Bottom bracket center</td><td class="num">0.0</td><td class="num">0.0</td><td>origin</td></tr>
+<tr><td>Seat tube top</td><td class="num">−152.3</td><td class="num">498.2</td><td>521 mm seat tube at 73°</td></tr>
+<tr><td>Head tube top-center</td><td class="num">470.0</td><td class="num">621.0</td><td>reach 470, stack 621</td></tr>
+<tr><td>Head tube bottom-center</td><td class="num">513.0</td><td class="num">509.0</td><td>120 mm head tube at 69°</td></tr>
+</table></div>
+<pre>
+                       Head tube top (470, 621)
+                            ●
+                          / |
+  Seat tube top         /   |  120 mm @ 69°
+  (-152, 498) ●       /     |
+               \    /       ● Head tube bottom (513, 509)
+                \ /        /
+                 \        /     top tube centerline ≈ 634 mm, rises 11.2°
+                  \      /      down tube centerline ≈ 723 mm, 44.8° above horizontal
+                   \    /       seat tube 521 mm @ 73°
+                    \  /        gross centerline area ≈ 204,000 mm²
+                     \/
+                     ● BB (0, 0)
+</pre>
+<p>Sanity check: extend the 73° seat-tube line up to stack height and its X is about −190, so 470 − (−190) ≈ 660 mm, which matches the published effective top tube. The geometry is internally consistent.</p>
+
+<h3>Keep-out and usable cavity</h3>
+<ul>
+<li>Until the tubes are measured (Gate A), design against a <b>25–30 mm keep-out band</b> from each centerline. That covers tube radius, bag wall, isolation foam, and installation clearance.</li>
+<li>Grow the keep-out substantially at the BB junction and the head-tube junction: gussets and weld beads eat space there, and the CYC motor's controller housing sits right at the BB.</li>
+<li>Expect the seat-tube OD to be around 35 mm given the 33.1 mm clamp spec. Measure it anyway.</li>
+<li>Bottle bosses on the down tube and seat tube are your tray anchor points if you don't want to strap. One standard + one three-pack on this frame.</li>
+</ul>
+
+<h3>Cell arrangement</h3>
+<p>Lay the 21700s <b>sideways across the bike</b>, 70 mm length left-to-right. In side view each cell is then a ~21 mm circle and the pack can follow the triangle in a staggered (honeycomb) array with a row pitch of about <code>21 × sin 60° ≈ 18.2 mm</code> before holders. Allow ~22 mm pitch with holders and fish paper.</p>
+<pre>
+  Example 80-cell honeycomb footprint (rows 8–14, staggered), cells sideways:
+
+           O O O O O O O O           8
+          O O O O O O O O O          9
+         O O O O O O O O O O        10
+        O O O O O O O O O O O       11
+       O O O O O O O O O O O O      12
+      O O O O O O O O O O O O O     13   ← 8+9+10+11+12+13 = 63; add a 14-row = 77;
+     O O O O O O O O O O O O O O    14      trim/extend rows to reach exactly 80
+
+  Approx. envelope at 22 mm pitch: ~310 mm wide × ~135 mm tall × ~75 mm deep (70 mm cell + nickel)
+  A plain 20 × 4 rectangle would be ~440 × 88 × 75 mm. Both fit an XL triangle easily.
+</pre>
+<ul>
+<li>Cells low and forward along the down tube; BMS on the <b>outer face of the tray in free air</b>, not buried in the cell block. The Daly's fan is only useful in daylight; inside the bag it's a lint pump.</li>
+<li>Series path snakes through 20 groups of 4. Plan the nickel so every series link is a doubled 0.2 × 30 mm strip or a nickel-copper sandwich; 120 A peak battery current is not a single-strip job.</li>
+<li>Bag is weather protection only. Rigid tray carries the load, with a removable BMS panel for service.</li>
+</ul>
+<div class="callout"><b>Next design step after Gate A:</b> with the five measurements (two tube diameters, seat-tube OD, inside width, down-tube length), draw the cavity at 1:1, place all 80 cells, BMS, fuse, XT90-S, and wire channels, and cut a cardboard tray. Only when the cardboard tray sits in the frame with the motor installed do the cells get ordered.</div>
+
+<!-- ───────────────────────── 8 ───────────────────────── -->
+<h2 id="p5">8 · Phase 5 — battery, in order <span class="tag gate">tray before cells</span></h2>
+<div class="phase">
+<div class="callout danger"><b>84 V full charge.</b> This pack is above the 60 V threshold where a hand-to-hand path is a real shock hazard, and 4P of P50B can deliver fault current into the hundreds of amps. Every rule from the Kilo TT bible applies with less margin: one-hand rule, DMM before every mate, insulated tools, and no live work on the series stack.</div>
+<div class="check"><input type="checkbox" id="p5a"><label for="p5a"><b>Gate D:</b> cardboard tray fits in the frame with the CYC motor installed and the cranks turning. Bag chosen or made to suit.</label></div>
+<div class="check"><input type="checkbox" id="p5b"><label for="p5b"><b>BMS first, cells second.</b> Daly 20S Li-ion 72 V 150 A common-port, fan, no Bluetooth — Amazon, $92. Get it in hand so the tray's BMS panel is drawn around the real footprint and the fan's intake.</label></div>
+<div class="check"><input type="checkbox" id="p5c"><label for="p5c"><b>Main fuse, decided now.</b> The carted "MIDI 150 A" is <span class="status s-open">NOT LOCKED</span> and probably wrong on voltage: MIDI/AMI fuses are rated 32 V (some 58 V) DC and most ANL fuses 32 V; at 84 V they may not clear an arc. Use a fuse with a DC rating well above 84 V, e.g. a <b>Class T (JLLN) 125–150 A, 160 VDC</b> in a Blue Sea Class T holder. Pick the amperage after fixing wire gauge, run length, connector, and the X12 current limit you'll actually set; 125 A is the likely answer if the controller stays at 120 A.</label></div>
+<div class="check"><input type="checkbox" id="p5d"><label for="p5d">Wiring: 8 AWG silicone, XT90-S pair (anti-spark; the X12's input caps will pit anything else at 84 V), XT60 charge port, 20S balance harness with the Daly's connector, fish paper, Kapton, 250 mm PVC shrink, neutral-cure silicone.</label></div>
+<div class="check"><input type="checkbox" id="p5e"><label for="p5e"><b>84 V (20S) Li-ion charger</b>, 5 A, XT60 output. The 58.8 V charger from the Kilo build does not work here. Daly common-port BMS wakes with the charger; keep the charger-first habit.</label></div>
+<div class="check"><input type="checkbox" id="p5f"><label for="p5f"><b>Molicel P50B ×80 + 4 spares</b> — 18650batterystore, ~$650 shipped. Last purchase in the build. Weld in 4P groups on the tray, then series. Confirm every parallel cell is bonded before the series links go on.</label></div>
+<div class="check"><input type="checkbox" id="p5g"><label for="p5g">Commission pre-wrap: all 20 group voltages within 10 mV, BMS sees 20S, OVP/UVP/OCP set, then a <b>per-group under-load check</b> with a resistive load. The Kilo's group-3 sag was a weld, not a balance issue; catch it before the wrap.</label></div>
+</div>
+
+<!-- ───────────────────────── 9 ───────────────────────── -->
+<h2 id="p6">9 · Phase 6 — assembly and commissioning</h2>
+<div class="phase">
+<ol>
+<li>Headset, fork, stem, bar. Leave 20–30 mm of spacers above the stem until the fit is settled.</li>
+<li>Wheels on, tires seated tubeless, sealant in. Starting pressures at ~300 lb system: <span class="status s-prov">PROVISIONAL</span> rear 28 psi, front 22 psi. Come down 2 psi at a time until compliance arrives without rim strikes, squirm, or burping. The rear carries most of the load and will want more than the front.</li>
+<li>Brakes: adapters, 203 rotors, calipers, hoses cut after the cockpit dry-fit, bleed, bed-in on the stand.</li>
+<li>Motor (already fitted at Gate C), cassette with spacers set for chainline, derailleur, chain, shifter cable.</li>
+<li>Display, throttle, brake sensors, harness routed clear of the rotors and the crank.</li>
+<li>Tray + pack in, XT90-S mated with the fuse in circuit. First power-on with the rear wheel off the ground: app connect, throttle response, brake cutoff verified before any ride.</li>
+<li>First rides at reduced battery current in the CYC app, then step up. Re-tension wheels after 50 km.</li>
+</ol>
+</div>
+
+<!-- ───────────────────────── 10 ───────────────────────── -->
+<h2 id="register">10 · Not-yet-locked register</h2>
+<div class="tbl-wrap"><table>
+<tr><th>Item</th><th>Status</th><th>What locks it</th></tr>
+<tr><td>Spoke lengths 286/288/290</td><td><span class="status s-prov">PROVISIONAL</span></td><td>Measured hub flanges + confirmed ERD through the DT calculator (Gate B)</td></tr>
+<tr><td>Main fuse type and rating</td><td><span class="status s-open">OPEN</span></td><td>Fuse DC voltage rating ≥ ~125 V (Class T), amperage after wire/connector/controller limit are fixed (Phase 5)</td></tr>
+<tr><td>Tire pressures</td><td><span class="status s-prov">PROVISIONAL</span></td><td>Ride testing from 28/22 psi downward</td></tr>
+<tr><td>32T chainring clearance</td><td><span class="status s-open">OPEN</span></td><td>Template at Gate A, motor in frame at Gate C. Fallback 30T 104 BCD</td></tr>
+<tr><td>Chainline 32T → 20T</td><td><span class="status s-open">OPEN</span></td><td>Cassette spacer placement at Gate C</td></tr>
+<tr><td>Headset included?</td><td><span class="status s-open">OPEN</span></td><td>Frame box inventory at Gate A</td></tr>
+<tr><td>Jones freehub / axle spec</td><td><span class="status s-open">OPEN</span></td><td>Cart line reads "HG steel driver, steel axle" before checkout</td></tr>
+<tr><td>SW102 voltage</td><td><span class="status s-open">OPEN</span></td><td>Order note + inspection on arrival</td></tr>
+<tr><td>Magura QM5 / QM9 part numbers</td><td><span class="status s-prov">PROVISIONAL</span></td><td>Magura IS-51 → 203 adapter chart</td></tr>
+<tr><td>Cells (P50B ×80)</td><td><span class="status s-held">HELD</span></td><td>Cardboard tray fits with motor installed (Gate D)</td></tr>
+<tr><td>Suspension fork</td><td><span class="status s-held">HELD</span></td><td>Next year, after riding rigid. Max 120 mm 29+ (550 × 51)</td></tr>
+<tr><td>Faster 29+ tire</td><td><span class="status s-held">HELD</span></td><td>A few months of commuting on Dirt Wizards</td></tr>
+</table></div>
+
+<!-- ───────────────────────── 11 ───────────────────────── -->
+<h2 id="cost">11 · Cost tracker</h2>
+<div class="tbl-wrap"><table>
+<tr><th>Cart</th><th>Contents</th><th>Phase</th><th>Price</th></tr>
+<tr><td>Surly</td><td>Krampus XL frameset</td><td>1</td><td class="num">$1,099.00</td></tr>
+<tr><td>CYC</td><td>X1 Pro Gen 4 kit 32T/53T</td><td>1</td><td class="num">$1,268.00</td></tr>
+<tr><td>Velocity</td><td>Dually 29 36h ×2, tape kit</td><td>1</td><td class="num">$411.00</td></tr>
+<tr><td>Jones</td><td>HD/e rear hub 36h</td><td>2</td><td class="num">$250.00</td></tr>
+<tr><td>Amazon</td><td>DT 350 Hybrid front, Advent shifter, KMC e9, Daly BMS</td><td>2 / 3 / 5</td><td class="num">$308.29</td></tr>
+<tr><td>Jenson</td><td>Dirt Wizards ×2, sealant, MT5 Next ×2</td><td>2 / 4</td><td class="num">$490.83</td></tr>
+<tr><td>Universal</td><td>Alpine III spokes, Pro Lock nipples, Terminal bar, GA2, RD-M6195</td><td>2 (gated) / 4</td><td class="num">$372.34</td></tr>
+<tr><td>Johnny Nerd Out</td><td>CYC HD 5-speed cassette</td><td>3</td><td class="num">$179.00</td></tr>
+<tr><td>Magura</td><td>MDR-P 203 ×2, QM5, QM9</td><td>4</td><td class="num">$207.00</td></tr>
+<tr><td>Performance</td><td>Thomson stem, Thomson post, WTB Volt</td><td>4</td><td class="num">$338.85</td></tr>
+<tr><td>OneUp</td><td>Composite pedals</td><td>4</td><td class="num">$49.99</td></tr>
+<tr><td colspan="3"><b>Carted, before tax/shipping</b></td><td class="num"><b>$4,974.30</b></td></tr>
+<tr><td>—</td><td>Star nut kit (if needed)</td><td>4</td><td class="num">~$12</td></tr>
+<tr><td>—</td><td>Headset (if not in box)</td><td>4</td><td class="num">~$60</td></tr>
+<tr><td>—</td><td>Molicel P50B ×84</td><td>5 (held)</td><td class="num">~$650</td></tr>
+<tr><td>—</td><td>84 V charger</td><td>5</td><td class="num">~$100</td></tr>
+<tr><td>—</td><td>Class T fuse + holder, 8 AWG, XT90-S, XT60, balance harness, shrink, insulation</td><td>5</td><td class="num">~$120</td></tr>
+<tr><td>—</td><td>Tray material (3D print), bag if not on hand</td><td>5</td><td class="num">~$50–200</td></tr>
+<tr><td>—</td><td>Bleed kit, spare pads, spare tubes ×2, valve core tool</td><td>4 / 6</td><td class="num">~$110</td></tr>
+<tr><td>—</td><td>Tail light now; Supernova M99 Mini Pro + 12 V buck later</td><td>6</td><td class="num">$20 now</td></tr>
+<tr><td colspan="3"><b>Projected complete</b></td><td class="num"><b>~$6,100–6,300</b></td></tr>
+</table></div>
+
+<!-- ───────────────────────── 12 ───────────────────────── -->
+<h2 id="tree">12 · "Can I buy this today?"</h2>
+<pre>
+Is it the frameset, the rims, or the CYC kit?
+  └─ YES → buy now (Phase 1). Put the SW102 voltage in the CYC order note.
+  └─ NO ↓
+Has the frame arrived and Gate A been done?
+  └─ NO  → wait. (Exception: Terminal bar if stock is the risk.)
+  └─ YES ↓
+Is it hubs, tires, cassette, derailleur, shifter, brakes, rotors, cockpit, saddle, pedals?
+  └─ YES → buy now (Phases 2–4). Headset/star nut only if not in the box.
+  └─ NO ↓
+Is it spokes or nipples?
+  └─ Hubs on the bench and lengths recomputed?  NO → wait.  YES → buy.
+Is it the chain?
+  └─ Motor installed, 32T cleared, chainline set?  NO → wait.  YES → buy.
+Is it the BMS, fuse, wiring, charger?
+  └─ Cardboard tray fits with the motor in?  NO → wait.  YES → buy (BMS first).
+Is it the cells?
+  └─ BMS in hand, tray drawn around it, fuse chosen?  NO → wait.  YES → last purchase.
+</pre>
+
+<footer style="margin-top:3rem;padding-top:1rem;border-top:1px solid var(--border);font-family:var(--mono);font-size:.7rem;color:var(--text-dim)">
+Krampus XL purchase guide · 2026-09-12 · companion to kilo-tt-ebike-build.html · geometry from Surly's published XL Krampus table
+</footer>
+</div>
+
+<script>
+(function(){
+  var PREFIX='krampus_';
+  var boxes=Array.prototype.slice.call(document.querySelectorAll('.check input[type=checkbox]'));
+  function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+  function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+  function lsDel(k){try{localStorage.removeItem(k);}catch(e){}}
+  function paint(cb){cb.parentNode.classList.toggle('done',cb.checked);}
+  function update(){
+    var n=boxes.filter(function(b){return b.checked;}).length;
+    document.getElementById('count').textContent=n+' / '+boxes.length;
+    document.getElementById('fill').style.width=(boxes.length?100*n/boxes.length:0)+'%';
+  }
+  boxes.forEach(function(cb){
+    cb.checked=lsGet(PREFIX+cb.id)==='1';
+    paint(cb);
+    cb.addEventListener('change',function(){
+      if(cb.checked)lsSet(PREFIX+cb.id,'1');else lsDel(PREFIX+cb.id);
+      paint(cb);update();
+    });
+  });
+  document.getElementById('reset').addEventListener('click',function(){
+    boxes.forEach(function(cb){cb.checked=false;lsDel(PREFIX+cb.id);paint(cb);});
+    update();
+  });
+  update();
+})();
+</script>
+</body>
+</html>

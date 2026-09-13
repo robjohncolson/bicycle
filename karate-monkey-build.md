@@ -1,3 +1,5 @@
+> **Superseded 2026-09-12.** The frame decision moved from Karate Monkey to **Surly Krampus XL** (rigid fork, 29 × 3.0, 120 mm max suspension correction), the pack from 20S6P to **20s4p Molicel P50B** on a Daly 150 A BMS, and the wheels to Jones HD/e + DT 350 Hybrid on Velocity Dually 29. The working BOM and dependency-ordered purchase guide is now **`krampus-purchase-guide.html`**. This file is kept for the corrected gearing/thrust math and the tool list, which still apply.
+
 # Karate Monkey / CYC X1 Pro Gen 4 Build — Bill of Materials
 
 **Status:** planning (2026-09-12). Six-month build window, no rush.
