@@ -37,6 +37,9 @@ This is NOT a software project. It's a knowledge repository for:
 - **`deep-research-report.md`** — research on BBSHD + Baserunner integration, clutch/regen behavior, thermal considerations
 - **`ebike-component-spec.md`** — component-by-component spec sheet with model numbers and sourcing notes
 - **`CONTINUATION_PROMPT.md`** — session handoff document. Read this at the start of a new session to understand current build state, open decisions, and immediate next actions.
+- **`karate-monkey-cyc-build.md`** — second bike (2026-09-16): KM XL complete (Fool’s Gold rigid) × CYC 32T/53T. Kilo stays BBSHD. Canonical for the Monkey.
+- **`straggler-cyc-build.md`** — paused 2026-09-16 (drop-bar 40T / 135 QR path). Kept.
+- **`kilo-cyc-build.md`** / **`kamakiri-build.md`** / **`karate-monkey-build.md`** — superseded or paused; history / old BOM.
 
 ### Supporting Materials
 

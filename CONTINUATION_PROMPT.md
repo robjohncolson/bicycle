@@ -1,8 +1,42 @@
 # Continuation Prompt — Kilo TT E-Bike Build
 
-## Update (2026-09-13) — SECOND BIKE: Bridgestone Kamakiri + CYC X1 Pro Gen 4 (see `kamakiri-build.md`)
+## Update (2026-09-16) — SECOND BIKE IS KARATE MONKEY XL COMPLETE + CYC 32T/53T
 
-Karate Monkey → Krampus XL → Big Dummy plans were all scrapped in one day. The second bike is now the 24" (ISO 540) Bridgestone Kamakiri mamachari as a low-CG cruiser mule: CYC X1 Pro Gen 4 32T/53T, full-twist throttle, existing 14T 1/8" freewheel (matches the Kilo's 42/20 development), 1/8" KMC e101 chain, 14S4P 21700 50S pack on a 100 A Daly with the X12 capped at 60-70 A. **The Kilo keeps the 18650 VTC6 pack on its 60 A BMS** (the 200 A JK broke). Gate before ordering the CYC: seized drive-side fixed cup out (LH thread), shell faces clean, magnet test. Photos: `dinex.jpg` (rear drum brake), `rearcog_kamakiri.jpg` (14T freewheel, solid axle, horizontal dropouts).
+See `karate-monkey-cyc-build.md`. Kilo TT still stays on the BBSHD set. Straggler 62 × 40T (`straggler-cyc-build.md`) is paused.
+
+**Buy:** AMG Cyclery Surly KM complete, **Fool’s Gold XL, rigid**, ~$1,849 (not the $2,599 FS / dropper, not the Krampus 29×3). Keep Rustler bars, i40 + Dirt Wizard 3.0, 12-speed, M275s. Sit on the 660 mm TT; 30-day return, you pay freight.
+
+**CYC (Johnny Nerd Out):** **73 mm + 32T/53T**, thumb, sensors, 160/165 mm cranks, SW102 36–72 V. **Not 40T/72T** — KM 1× Boost max is 32T; 72T motor sprocket is ~184 mm and likely hits the yoke. Template in hand before the motor ships.
+
+**Gearing:** stock **11–51**, live in **13T (~50/20 on 27.5×3)** and **15T (~42/20)**. Ignore 11T under power and 18T+. No CYC 5-speed until the Novatec 32h rear dies. Then: Hope Pro 5 **36h 12×148 HG steel** + CYC 15–30 + **27.5"** 36h i40-class rim (not 700c Andra, not 135 QR).
+
+**104 BCD** bike ring can go 32→38/40 later on the **same 53T**. Full 40T/72T still needs yoke space that probably isn’t there.
+
+Droppers: rider history is sag at 300 lb — skip TranzX. Group-3 sag on the 21700 still open before 70 A.
+
+---
+
+## Update (2026-09-15) — KILO STAYS; NEW BIKE IS STRAGGLER 62 × CYC 40T
+
+**Paused 2026-09-16** in favor of the Karate Monkey complete above. File kept.
+
+See `straggler-cyc-build.md`. The Kilo TT is left alone (BBSHD + Baserunner Power Map + Superharness + SW102 + 18650). CYC does **not** go on the Kilo. Kamakiri transplant is paused (`kamakiri-build.md`). `kilo-cyc-build.md` (32T/16T on the Kilo) is superseded.
+
+New bike: **Surly Straggler 700c 62 cm** (old, 135 QR, IS 160 mm) + **CYC X1 Pro Gen 4 40T/72T** (not 32T) + **160 mm cranks** (165 if no 160) + thumb throttle + SW102 36–72 V + magnetic brake sensors + **14S 21700 / 100 A Daly, 70 A cap**. Gearing: CYC HD cassette **15–17–20–24–30** on **Hope Pro 5 36h 6-bolt, 135 QR, HG steel**; home cog **17T** (closest to 50/20; no 16T on the cassette). Shifter: downtube or bar-end **friction**, not the Advent flat-bar trigger. Do not buy the full CYC HD kit (148 mm hub). Rims: **Ryde Andra 321 Disc 36h both** (Andra 30 Disc 36h fallback). Track 1/8″ cogs stay on the Kilo — stock CYC ring is 9–12s narrow-wide.
+
+PAS ~24 mph @ 120 rpm; throttle wall ~44 mph no-load / ~40–43 on the road. Same hill as the Kilo 42/20 throttle-blip still goes, with more reserve. Midnight Special / Fargo Ti M / Steamroller / Nature Boy / 32T all considered and dropped.
+
+Group-3 sag on the 21700 is still open before 70 A.
+
+Order (Johnny Nerd Out): kit 68/73 + **40T**, sensors, thumb, 160/165 cranks, SW102 36–72 V; plus cassette-only.
+
+---
+
+## Update (2026-09-14) — TWO-BIKE PLAN SETTLED: CYC Gen 4 on the Kilo, BBSHD set to the Kamakiri
+
+**Superseded 2026-09-15** by the Straggler plan above. Kept for the record.
+
+See `kilo-cyc-build.md` and `kamakiri-build.md`. The Kilo TT gets a CYC X1 Pro Gen 4 (32T/53T + the 16T fixed cog on hand: torque-assist to ~19 mph, thumb throttle on a 22.2 mm stub to the ~30 mph RPM ceiling, 2x today's launch torque) on the 14S4P 21700 pack / 100 A Daly with the X12 capped at 70 A. The BBSHD + Baserunner (Power Map tune) + Superharness + SW102 + 18650 pack / 60 A BMS move as a set to the 24" Bridgestone Kamakiri (68 mm BSA, seized fixed cup still to remove). Karate Monkey / Krampus / Big Dummy / Photon / 72 V all considered and dropped. Photos: `dinex.jpg`, `rearcog_kamakiri.jpg`.
 
 ---
 
