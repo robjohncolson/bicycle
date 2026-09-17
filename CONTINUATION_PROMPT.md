@@ -1,12 +1,36 @@
 # Continuation Prompt — Kilo TT E-Bike Build
 
+## Update (2026-09-17) — CYC X1 PRO GEN 4 ORDERED (HONG KONG)
+
+See `karate-monkey-cyc-build.md`. Fool’s Gold XL complete still on order from AMG. **CYC kit ordered from CYC MOTOR (Hong Kong), not Johnny Nerd Out.** 73 mm + **32T/53T**, **full-twist**, **SW102**, **no brake sensors**, no cassette. Cranks 160 if the cart had them, else 165. Made-to-order **5–7 weeks**. 2-year factory warranty.
+
+JNO was cheaper / faster ship, but SW102 was out of stock (would force DS103). JNO’s “DS103 required for 72 V” is a 20S rule — this bike stays **14S / 52 V**. 5-speed skipped: CYC HD is HG, stock hub is Microspline.
+
+Motorcycle-style: throttle is the go-pedal. Half-twist dropped (claw the inner sleeve). Thumb dropped (same thumb as Deore). No ebrake, same as the Kilo. Keep ISO (right = rear). Wrist flat/below; soft torque ramp; PAS off or 0.
+
+32T bike ring is what the KM already runs. Leftover check when the complete lands: ~140 mm **cover** vs yoke (a few mm bigger than a naked 32T). If it kisses, pull the cover. Not a 40T/72T problem.
+
+Next: sit on the 660 mm TT; paper-template 32T/53T at the BB; wait for HK ship.
+
+---
+
+## Update (2026-09-16, later) — KM XL ORDERED; ORDER CYC 32T/53T NEXT
+
+**Done 2026-09-17** (kit from CYC HK, not JNO; full-twist, no sensors). Left as the prior next-action.
+
+Fool’s Gold XL complete is on order from AMG. Next: Johnny Nerd Out **73 mm + 32T/53T**, thumb, sensors, 160/165 cranks, SW102 36–72 V. No 40T, no cassette kit. See `karate-monkey-cyc-build.md`.
+
+---
+
 ## Update (2026-09-16) — SECOND BIKE IS KARATE MONKEY XL COMPLETE + CYC 32T/53T
+
+**Order details superseded 2026-09-17** (CYC from Hong Kong: full-twist, SW102, no sensors). Frame choice stands.
 
 See `karate-monkey-cyc-build.md`. Kilo TT still stays on the BBSHD set. Straggler 62 × 40T (`straggler-cyc-build.md`) is paused.
 
 **Buy:** AMG Cyclery Surly KM complete, **Fool’s Gold XL, rigid**, ~$1,849 (not the $2,599 FS / dropper, not the Krampus 29×3). Keep Rustler bars, i40 + Dirt Wizard 3.0, 12-speed, M275s. Sit on the 660 mm TT; 30-day return, you pay freight.
 
-**CYC (Johnny Nerd Out):** **73 mm + 32T/53T**, thumb, sensors, 160/165 mm cranks, SW102 36–72 V. **Not 40T/72T** — KM 1× Boost max is 32T; 72T motor sprocket is ~184 mm and likely hits the yoke. Template in hand before the motor ships.
+**CYC (was Johnny Nerd Out; ordered HK 2026-09-17):** **73 mm + 32T/53T**. **Not 40T/72T** — KM 1× Boost max is 32T; 72T motor sprocket is ~184 mm and likely hits the yoke. Template in hand when the complete arrives.
 
 **Gearing:** stock **11–51**, live in **13T (~50/20 on 27.5×3)** and **15T (~42/20)**. Ignore 11T under power and 18T+. No CYC 5-speed until the Novatec 32h rear dies. Then: Hope Pro 5 **36h 12×148 HG steel** + CYC 15–30 + **27.5"** 36h i40-class rim (not 700c Andra, not 135 QR).
 

@@ -1,6 +1,6 @@
 # Surly Straggler 62 × CYC X1 Pro Gen 4 — Drop-bar road bike
 
-**Status:** paused 2026-09-16. Current second bike is **Karate Monkey XL + CYC 32T** — see `karate-monkey-cyc-build.md`. Kilo TT stays as-is.
+**Status:** paused 2026-09-16. Current second bike is **Karate Monkey XL + CYC 32T** (complete + kit both ordered 2026-09-16/17) — see `karate-monkey-cyc-build.md`. Kilo TT stays as-is.
 **Brief (historical):** new bike. Track/messenger pedal feel (50/20), torque-sensing PAS, drop bars, mechanical discs.
 
 This file is the drop-bar / 40T / 135 QR / Andra 321 path. Kept; not the order. `kilo-cyc-build.md` and the Kamakiri transplant remain superseded/paused. Kilo bible remains `kilo-tt-ebike-build.html`.
