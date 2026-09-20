@@ -119,3 +119,9 @@ Same 14S 21700, 70 A cap, XT90-S, DMM before mate, one-hand rule. Diagnose group
 ## AMG Cyclery
 
 Real Seaside shop (Alex/Alisa Gonzales, ~July 2024; mechanics from Workhorse Monterey; Jarod Bourdeau). Radavist + Monterey County Weekly coverage. Almost no online review volume — not a ghost store, not a 800-review mail-order house. Unknown is **shipping a complete**, not existence. Ask packing; budget return freight if XL is wrong.
+
+**Shipping email (2026-09-19):** built, adjusted, test-ridden, repacked; 5–7 business days. **No pedals. No sealant** → assume tubes installed; pump up (Rennkompressor is enough) and ride. Tubeless later: Orange Seal Endurance ~4 oz/tire, tubeless valves, valve-core tool; seating from scratch may need core-out or a booster tank.
+
+## Pedals (decided 2026-09-19)
+
+**Deity TMAC**, **pink** (~$180, Deity direct). Color logic: hot magenta is near-complementary to Fool's Gold (red was dropped — warm-on-warm), and it's the easiest pedal to find by eye against road/trail — magenta barely occurs in the riding environment. Repeat the accent once (valve caps) so it reads deliberate. 110×105, 2.5 mm concave, 14 pins/side, Cr-Mo spindle, multi micro sealed bearings + DU bushing. **Steel axle only — Ti-axle pedals carry ~185–220 lb limits.** Picked over OneUp composite (price-only pick) and Catalyst Evo ($249, mid-foot comfort platform — not needed for a school commute; shorter track record). Wear item at 300 lb is the DU bushing; rebuild kit when play shows.

@@ -1,5 +1,27 @@
 # Continuation Prompt — Kilo TT E-Bike Build
 
+## Update (2026-09-19) — KILO: P03 HILL CUTOUT (latched); BASERUNNER COMM PIGTAIL TORN OUT
+
+**New fault.** Climbing the hill home, motor cut out and the SW102 showed **"P03"**. First time. Display stayed lit (so not a BMS trip / power-connector dropout); needed a power-cycle to clear — unlike the 2026-05-05 I²t cutouts, which auto-recovered with no code. In the KT/KM5s code set 03 = **motor Hall signal abnormal** (from memory — Grin's fault→display mapping not confirmed). Working theory: intermittent Hall 5V/GND/signal contact under load + vibration. Not yet ruled out: a Hall going flaky hot, or a different controller fault surfacing as 03 (tune still runs 55 A phase / 55.2 A battery on a Z9).
+
+**Comm pigtail tore out of the Baserunner body.** No Phaserunner Suite connection → no Dashboard Hall view, no fault readout, **no retuning**. Controller is potted; this is a Grin repair/replace, not a field fix. Bike still rides on the stored tune. `z9tune2.xml` is the authoritative export to load onto a repaired/replacement unit (Power Map needs the post-6.025 firmware to stick — see 2026-05-05 evening).
+
+**Rider's read (2026-09-19):** same hill, same tune for months → this is a *new physical degradation*, not a settings problem. A Powerpole pair has already fused once on this bike, so heat-damaged Powerpole contacts / crimps (phase side, and the joints inside the BBSHD cover) are the prime suspect. Settings are off the table until comms are restored anyway.
+
+**Doc deviation — not yet written back to the HTML / CLAUDE.md:** the battery discharge connector is now **XT90-S (anti-spark, with resistor)**, not Anderson Powerpoles. **It still pops audibly on every connect** → either it's being pushed straight through without pausing at the resistor stage, or the precharge resistor has burned open (common XT90-S failure). Test: insert halfway, hold ~1 s, then seat; if it still pops, the resistor is dead — replace the green (female) half. Not a P03 suspect, but arcing pits the contacts over time. Remaining Powerpoles are the three phase leads. `kilo-tt-ebike-build.html` and `CLAUDE.md` "Non-Standard Build Decisions" still say Powerpoles on discharge.
+
+### Next actions
+
+0. **Heat check:** straight after the hill, feel / IR-thermometer every connector (3 phase Powerpoles, XT90, joints under the motor cover). Hotter than the wire beside it = the bad one. Cut out any cooked Powerpole — fresh contact with a ratcheting crimp + solder, or replace with a soldered splice / 5.5 mm bullets / MT60.
+1. **Read the Baserunner LED flash code before power-cycling** if it recurs (1-6 Hall, 1-2 / 2-2 phase overcurrent, 2-4 throttle). Only diagnostic left without comms.
+2. External first: re-seat the Hall connector, check for backed-out pins, chafe/tension at the BB, phase Powerpoles fully latched and not heat-discolored.
+3. Then the BBSHD controller-side cover (where the adapter meets the motor's Hall plug) — **battery disconnected, caps bled, DMM-verify 0 V first**; re-seal the cable entry after. Motor core stays closed unless everything external is clean and the fault tracks heat.
+4. Email Grin about the torn pigtail (repair vs. replacement); include photos.
+
+**Karate Monkey (AMG email 2026-09-19):** ships built + test-ridden, **no pedals, no sealant** → assume tubes installed. Pump up and ride; tubeless conversion later (Orange Seal, tubeless valves, valve-core tool; bead seating from scratch may need core-out or a booster tank). Pedals: 9/16", source separately or via AMG.
+
+---
+
 ## Update (2026-09-17) — CYC X1 PRO GEN 4 ORDERED (HONG KONG)
 
 See `karate-monkey-cyc-build.md`. Fool’s Gold XL complete still on order from AMG. **CYC kit ordered from CYC MOTOR (Hong Kong), not Johnny Nerd Out.** 73 mm + **32T/53T**, **full-twist**, **SW102**, **no brake sensors**, no cassette. Cranks 160 if the cart had them, else 165. Made-to-order **5–7 weeks**. 2-year factory warranty.

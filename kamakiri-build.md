@@ -36,6 +36,13 @@ No retuning: the Baserunner tune, LVC, ramps, and Power Map were developed on th
 3. Photos still wanted: whole bike drive side (cradle location), front brake and fork crown.
 4. Motor mounted → chainline measured → chain cut.
 
+### Fixed-cup puller (hardware-store bolt tool)
+
+- **5/8"-11 × 2" hex bolt** (Grade 5/8; M16 × 50 equiv), matching **nut**, **~6 × 5/8" SAE flat washers** (≈1-5/16" OD; extras stack outside as spacers so the nut lands on thread), **2 split lock washers** against the cup faces for bite. Inside washer must pass the ~1.32" shell ID and sit flat on the cup — test-fit, grind if needed.
+- Tools on hand: 1/2" breaker bar + 3/8" ratchet. Buy **15/16" deep socket, 3/8" drive** (inside nut — slim enough for the shell, deep clears the bolt tail) and **15/16" 6-point socket, 1/2" drive** (outside head). No 1/2"→3/8" reducer on the breaker bar — weak link under a cheater pipe.
+- **Bolt head on the drive side, nut inside.** (1) Ratchet + deep socket through the non-drive side holds the inside nut. (2) Breaker bar on the outside head, clockwise, clamp hard. (3) Drop the ratchet and keep pulling the head **clockwise** — LH cup thread loosens clockwise, and clockwise on the head also tightens the clamp, so slip only makes it grip harder. Don't drive it from the inside end: that direction unscrews the clamp.
+- Penetrating oil overnight; heat the shell, not the cup; cheater pipe; brace the frame.
+
 ## Wear and safety habits
 
 - Bolt check before each of the first five rides, then weekly: rear axle nuts, Dinex reaction-arm clamp (threadlocker), BBSHD lockring, stem, seat clamp, rack/basket, pack cradle. Paint-pen witness marks.
