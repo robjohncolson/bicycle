@@ -1,6 +1,6 @@
 # Bridgestone Kamakiri × BBSHD — Low-CG Cruiser (transplant build)
 
-**Status:** paused 2026-09-15. The Kilo TT is staying on the BBSHD set; CYC is on a Karate Monkey (`karate-monkey-cyc-build.md`). This bike does not receive the Kilo’s electrical set until that decision is revisited.
+**Status:** ACTIVE again 2026-09-27. Fixed cup is out. **The incoming CYC X1 Pro Gen 4 (32T/53T, HK order) is trialled on this bike first**, before it goes anywhere near the new Karate Monkey XL (`karate-monkey-cyc-build.md`). The Kilo keeps the BBSHD set. The BBSHD-transplant tables below are kept as the fallback plan; for the CYC trial, resolve first: ring/chain width vs. the 14T 1/8" freewheel (3/32" chain + matching freewheel likely), gearing on a 24" wheel (18T freewheel preferred over 14T for the brakes), throttle-only harness with the shipped full-twist + SW102, pack cradle low on the down tube.
 **Goal (unchanged):** a low, upright, calm cruiser to contrast the Kilo. Test mule for the layout; if it proves out, the lesson moves to a rider-rated 20" cargo frame (Globe Haul ST shape).
 
 ## The bike
@@ -11,7 +11,7 @@
 | Wheels | 24 × 1 3/8, Kenda K-40 37-540, 55 psi max. ISO 540 is rare; Schwalbe Marathon 37-540 at max pressure is the upgrade. Rear tire load ~100 kg at 300 lb is at the edge of a 37 mm tire's rating |
 | Rear hub | Solid bolt-on axle, horizontal dropouts, **14T 1/8" screw-on freewheel (stays)**, Bridgestone **Dinex enclosed drum brake** on the left (cable, reaction arm clamped to chainstay). Survives a mid-drive; rear wheel does not need to come off except for tires |
 | Front | Caliper brake, basket. Upgrade: long-reach dual-pivot + Kool-Stop salmon pads; later a Sturmey Archer XL-FDD drum front wheel |
-| BB | 68 mm BSA, cup-and-cone. Drive-side fixed cup seized (LH thread: clockwise to loosen from the drive side). Must be out, faces clean, before the BBSHD goes in |
+| BB | 68 mm BSA, cup-and-cone. Drive-side fixed cup was seized (LH thread: clockwise to loosen from the drive side); **removed 2026-09-27** with the bolt clamp below. Shell faces/threads still to clean before the BBSHD goes in |
 | Fit | Frame sized for ~155-175 cm; rider is 190 cm. Max seatpost extension and raised bars; respect insertion lines |
 
 ## Drive — the Kilo's set, moved whole
@@ -31,7 +31,7 @@ No retuning: the Baserunner tune, LVC, ramps, and Power Map were developed on th
 
 ## Gates before work
 
-1. Fixed cup out → shell faces clean.
+1. ~~Fixed cup out~~ (done 2026-09-27) → shell faces clean.
 2. Magnet test on the down tube.
 3. Photos still wanted: whole bike drive side (cradle location), front brake and fork crown.
 4. Motor mounted → chainline measured → chain cut.
@@ -40,8 +40,11 @@ No retuning: the Baserunner tune, LVC, ramps, and Power Map were developed on th
 
 - **5/8"-11 × 2" hex bolt** (Grade 5/8; M16 × 50 equiv), matching **nut**, **~6 × 5/8" SAE flat washers** (≈1-5/16" OD; extras stack outside as spacers so the nut lands on thread), **2 split lock washers** against the cup faces for bite. Inside washer must pass the ~1.32" shell ID and sit flat on the cup — test-fit, grind if needed.
 - Tools on hand: 1/2" breaker bar + 3/8" ratchet. Buy **15/16" deep socket, 3/8" drive** (inside nut — slim enough for the shell, deep clears the bolt tail) and **15/16" 6-point socket, 1/2" drive** (outside head). No 1/2"→3/8" reducer on the breaker bar — weak link under a cheater pipe.
-- **Bolt head on the drive side, nut inside.** (1) Ratchet + deep socket through the non-drive side holds the inside nut. (2) Breaker bar on the outside head, clockwise, clamp hard. (3) Drop the ratchet and keep pulling the head **clockwise** — LH cup thread loosens clockwise, and clockwise on the head also tightens the clamp, so slip only makes it grip harder. Don't drive it from the inside end: that direction unscrews the clamp.
-- Penetrating oil overnight; heat the shell, not the cup; cheater pipe; brace the frame.
+- **As planned: bolt head on the drive side, nut inside.** (1) Ratchet + deep socket through the non-drive side holds the inside nut. (2) Breaker bar on the outside head, clockwise, clamp hard. (3) Drop the ratchet and keep pulling the head **clockwise** — LH cup thread loosens clockwise, and clockwise on the head also tightens the clamp, so slip only makes it grip harder.
+- **As actually done (2026-09-27, worked):** bolt was too short to exit the shell, so the rig ran the other way — **head inside the shell, nut outside on the drive-side cup face**. Same logic: ratchet + socket from the non-drive side holds the inside head only while clamping; then 6-point socket + 1/2" breaker bar on the **outside nut, clockwise**. Clockwise on the outside nut tightens the clamp and loosens the cup at once, so once clamped nothing needs to be on the non-drive side. Do not rock counterclockwise without holding the head — that unwinds the clamp.
+- **The rule that mattered: drive whichever piece is outside the shell; only ever *hold* the piece inside.** Driving the inside nut with a socket rounded a face (the socket cocks in the ~1.32" bore). A crescent wrench rounds nuts and is a holder at best.
+- Freed cup still needed tapping out from the non-drive side (hammer + flat-blade screwdriver on the cup's inner edge).
+- Kroil soaks (days), heat gun, and the cheater pipe were not what freed it; leverage on the correct end was. Keep them as backups: penetrating oil overnight; heat the shell, not the cup; hammer blows on the breaker bar handle; cheater pipe last; brace the frame. Phosphoric acid on the exposed cup ring is pointless — the bind is in the threads and a water-based acid won't wick into an oiled joint.
 
 ## Wear and safety habits
 
