@@ -1,5 +1,46 @@
 # Continuation Prompt — Kilo TT E-Bike Build
 
+## Update (2026-09-27) — 18650 PACK HEATER: PARTS CONFIRMED, INSTALL BY TUE 2026-09-29 AM
+
+**Target pack: the 14S4P 18650 VTC6 on the dumb Daly 60 A** (the pack on the Kilo now, still unwrapped — pads bond straight to the cell walls). The 2026-09-26 heater plan applies unchanged; the 21700/Daly-100A pack gets the same treatment later.
+
+**Parts in hand (Amazon):**
+| Part | ASIN | Spec | Use |
+|---|---|---|---|
+| DERNORD silicone pads, 4 pcs | B0C73D8GLC | 12 V 20 W, 50 × 150 mm each | Use **2** (40 W). Two spares stay in the drawer — do not add a third. |
+| HiLetgo W1209 w/ case, 2 pcs | B07VDRGK9F | 12 V DC, -50…110 °C NTC, 10 A NO relay | Thermostat + pack thermometer. One spare. |
+| Yancincny buck w/ fuse | B0FSDSVJC1 | 24–72 V in → 12 V 5 A (60 W), waterproof | 58.8 V full charge is inside the input range. 40 W pads + W1209 ≈ 3.5 A = 70 % of rating. |
+
+**Check on the physical parts before wiring** (listing text was not readable): the buck's built-in fuse rating and which side it sits on (if it is ≥5 A on the input, add a 2 A on the 52 V side anyway); whether the pads have adhesive backing (if not: thin Kapton + thermal-adhesive or a strip of 3M VHB at the edges, never epoxy); pad lead length.
+
+**Still to source / dig out of the bin (Monday morning):** normally-closed bimetal cutoff 55–65 °C (KSD9700-class, ≥5 A) or a 72 °C thermal fuse; 2 A fuse + inline holder for the 52 V leg; Powerpole housings/contacts for a third leg on the pack Y-split (or a Powerpole splitter); ~1 m 18 AWG silicone wire; heat-shrink; Kapton tape; 5 mm EVA sheet (on hand).
+
+**Wiring (all after the Daly P- FETs, nothing on cells or the balance plug):**
+```
+Pack Y-split (Powerpoles) ──► 2 A fuse ──► buck IN (52 V side; keep this end up/sealed)
+buck OUT +12 V ──► W1209 +12 V
+buck OUT +12 V ──► W1209 relay K0
+W1209 relay K1 ──► NC bimetal cutoff (taped to pad 1) ──► pad 1 + pad 2 in PARALLEL ──► buck OUT GND
+buck OUT GND ──► W1209 GND
+NTC probe ──► mid-pack cell wall (group 6–8), under the foam, on the side OPPOSITE pad 1, Kapton'd
+```
+Pads in parallel (series would give 6 V each = 10 W total). Relay switches the +12 V line only. The "switch" on the heater branch is unplugging the buck's Powerpole leg — a 60 V DC-rated toggle is not in the bin, and a 12 V automotive rocker on the 52 V side is not acceptable. Unplug it any time the bike sits more than a day (buck idle draw + W1209 ≈ 20–30 mA).
+
+**W1209 setup** (hold SET ≥5 s for the menu, short-press SET to edit the setpoint): P0 = **H** (heat; ships as C = cool, which would run the pads when *warm*), P1 hysteresis = **3**, P2 upper limit 30, P3 lower limit 0, P4 offset 0 (correct against the DMM thermocouple if off by >1 °C), P5 delay 0, **P6 = 45** (relay off above 45 °C regardless of setpoint — second software guard). Setpoint **15 °C**. Display shows probe temp = read it before every winter charge (floor 5 °C).
+
+**Pad placement on the 18650 linear pack (~4 cells wide × 14 long):** one pad per broad face, centred on the pack length, long axis along the cells, flush against cell bodies. Keep ≥10 mm from strip edges, balance leads, N0/N14 heavy leads and the Daly. Pads go on first, then the EVA wrap, then the pack goes in the VLITEX bag on the top tube; buck + W1209 case ride outside the EVA but inside the bag, cable-tied so no board edge touches nickel or the 52 V pigtail.
+
+**Monday order of work (~3 h):**
+1. Bench the buck alone on the pack Powerpoles: DMM 12.0 ± 0.5 V out, nothing warm.
+2. Add W1209, set the menu above, verify relay clicks when the probe is warmed in the hand (H mode confirmed).
+3. Wire the two pads through the cutoff, power, clamp-meter ~3.3–3.5 A, pads warm evenly in 60 s. Hair-dryer the bimetal: pads must drop out, then resume as it cools.
+4. Bond pads + probe to the pack, EVA wrap, bag it, route the 52 V leg to the Y-split. One hand, DMM polarity check at the buck input before the final Powerpole mate.
+5. Tuesday pre-ride: on the charger, heater running (pre-heat at home) → note display temp at departure and again at arrival. Still >~10 °C after the commute = working.
+
+**Bible write-back still owed:** heater subsection (this + 2026-09-26), EVA/fire-bag packaging, tinning method.
+
+---
+
 ## Update (2026-09-27) — KAMAKIRI: SEIZED FIXED CUP IS OUT
 
 **Drive-side fixed cup removed** from the 68 mm BSA shell with the hardware-store bolt clamp. Days of Kroil soaks and steady pulling did nothing; the fix was putting the breaker bar on the right end of the rig. What did **not** matter in the end: more Kroil, heat gun, cheater pipe (none used on the winning attempt).
