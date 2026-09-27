@@ -7,13 +7,13 @@
 **Parts in hand (Amazon):**
 | Part | ASIN | Spec | Use |
 |---|---|---|---|
-| DERNORD silicone pads, 4 pcs | B0C73D8GLC | 12 V 20 W, 50 × 150 mm each | Use **2** (40 W). Two spares stay in the drawer — do not add a third. |
-| HiLetgo W1209 w/ case, 2 pcs | B07VDRGK9F | 12 V DC, -50…110 °C NTC, 10 A NO relay | Thermostat + pack thermometer. One spare. |
+| DERNORD silicone pads, 4 pcs | B0C73D8GLC | 12 V 20 W, 50 × 150 mm each | **2 per pack** (40 W). 18650 pack now, 21700 pack later — do not put a third on one pack. |
+| HiLetgo W1209 w/ case, 2 pcs | B07VDRGK9F | 12 V DC, -50…110 °C NTC, 10 A NO relay | **One per pack** (18650 now, 21700 later). No spare — the bimetal cutoff is the only independent backup. |
 | Yancincny buck w/ fuse | B0FSDSVJC1 | 24–72 V in → 12 V 5 A (60 W), waterproof | 58.8 V full charge is inside the input range. 40 W pads + W1209 ≈ 3.5 A = 70 % of rating. |
 
 **Check on the physical parts before wiring** (listing text was not readable): the buck's built-in fuse rating and which side it sits on (if it is ≥5 A on the input, add a 2 A on the 52 V side anyway); whether the pads have adhesive backing (if not: thin Kapton + thermal-adhesive or a strip of 3M VHB at the edges, never epoxy); pad lead length.
 
-**Still to source / dig out of the bin (Monday morning):** normally-closed bimetal cutoff 55–65 °C (KSD9700-class, ≥5 A) or a 72 °C thermal fuse; 2 A fuse + inline holder for the 52 V leg; Powerpole housings/contacts for a third leg on the pack Y-split (or a Powerpole splitter); ~1 m 18 AWG silicone wire; heat-shrink; Kapton tape; 5 mm EVA sheet (on hand).
+**Still to source / dig out of the bin (Monday morning):** normally-closed bimetal cutoff — **order MECCANIXITY KSD9700 60 °C NC 10 A metal 5-pack (Tue Sep 29 delivery); the SENRISE B07RSF27VS in the cart ships Oct 5–9, drop it**. Need two (one per pack). Tuesday's first ride goes without it: leave a 5 cm loop in the pad line, splice it in Tue evening, P6 = 45 is the only guard that day, unplug the buck when parked; 2 A fuse + inline holder for the 52 V leg; Powerpole housings/contacts for a third leg on the pack Y-split (or a Powerpole splitter); ~1 m 18 AWG silicone wire; heat-shrink; Kapton tape; 5 mm EVA sheet (on hand).
 
 **Wiring (all after the Daly P- FETs, nothing on cells or the balance plug):**
 ```
