@@ -125,3 +125,31 @@ Real Seaside shop (Alex/Alisa Gonzales, ~July 2024; mechanics from Workhorse Mon
 ## Pedals (decided 2026-09-19)
 
 **Deity TMAC**, **pink** (~$180, Deity direct). Color logic: hot magenta is near-complementary to Fool's Gold (red was dropped — warm-on-warm), and it's the easiest pedal to find by eye against road/trail — magenta barely occurs in the riding environment. Repeat the accent once (valve caps) so it reads deliberate. 110×105, 2.5 mm concave, 14 pins/side, Cr-Mo spindle, multi micro sealed bearings + DU bushing. **Steel axle only — Ti-axle pedals carry ~185–220 lb limits.** Picked over OneUp composite (price-only pick) and Catalyst Evo ($249, mid-foot comfort platform — not needed for a school commute; shorter track record). Wear item at 300 lb is the DU bushing; rebuild kit when play shows.
+
+## Battery pack (decided 2026-10-03, not built)
+
+**14S8P 21700, 112 cells, ~52 V** — 14S, not 72 V, so the pack swaps with the Kilo TT (redundancy over performance). Same connectors as the Kilo packs so either pack runs either bike. 8P, not 10P, to leave room in the bag for the BMS and wiring.
+
+**Bag:** Revelate Rifter XL. Cardboard template (tight fit in the bag), cm: A(0,0) top-rear, B(48,0) top-front, C(48,−9), D(9.3,−32.3), E(0,−32.3) bottom-rear; corners A, B, E square. Gusset 72 mm; divider is Velcro, removed.
+
+**Layout:** `km-rifter-14s8p-stencil.svg` (1:1, mm). Cells crosswise, honeycomb at 22 mm pitch: **14 columns × 8 rows**, each column one parallel group, series runs seat tube → head tube. Block is ~318 × 155 mm, tucked into the top-rear corner with ≥13 mm to every bag edge. Group 1 (seat-tube end) = Pack+, group 14 = Pack−, both terminals on the same face. Free space: front-top pocket (connectors) and the whole lower-rear zone (BMS standing on edge, leads, charge port).
+
+**Constraints:** finished thickness ≈ 72–73 mm against a 72 mm gusset — nothing on the faces (no BMS, heater pad or foam; thin FR4/polycarbonate face sheets only, wires flat and out the edges). ~8.5 kg finished, hanging from Velcro straps with no published weight rating — add load-bearing straps round the top tube. Cell model not yet chosen.
+
+⚠ ~58.8 V full, no-fuse convention carried from the Kilo: mask all but the working joint, DMM-verify polarity before any connector mates, charger-first to wake the BMS.
+
+**Confirmed 2026-10-03 (rider): 14S8P stands** (10P drawn as `km-rifter-14s10p-stencil-square.svg` and declined: +2 kg, fills the bag, one irregular group). Open items and working assumptions:
+
+- **Holders:** leaning 23 mm square-grid 8×9 21700 holders → L-shape layout, `km-rifter-14s8p-stencil-square.svg` (rear stack 8×9 uncut, front stack 8×5). Buy the 21.7 mm-hole version; measure for a lip over the cell ends before committing (72 mm gusset). Honeycomb stencil remains the no-holder alternative.
+- **Foam:** dense closed-cell (EVA yoga blocks, 76 mm) cut to fill everything under and beside the pack — it is what stops the pack sliding toward the BB, and it shares the load onto the down-tube straps. Fill the L's notch (BMS pocket inside) so the wrapped block is a plain rectangle.
+- **Lead routing:** zipper runs seat tube → head tube; use the bag's existing wire exit port, lead runs down the down tube to the motor (~50–60 cm, 8–10 AWG, + and − paired). Do not cut the bag bottom.
+- **BMS:** rider wants ~200 A hardware for headroom. Only with an **adjustable trip** (JK-style smart BMS, OCP set ~100 A for the CYC, lower when the pack is on the Kilo). A fixed-trip 200 A BMS leaves 10 AWG and the connectors unprotected below 200 A.
+- **Fuse (recommended, rider undecided):** ~125 A, ≥80 V DC rated, at Pack+. This pack is ~3× the Kilo's energy; the Kilo's no-fuse convention should not carry over by default.
+- **Connectors:** 45 A Powerpoles are undersized for 70 A — XT90-class on the pack, short adapter to Powerpole for the Kilo.
+- **Cold:** at ≤9 A per cell, cold-weather sag is small — no heater needed for riding. **Charging is the limit: never charge below 0 °C** (lithium plating); an 8.5 kg pack takes hours to warm indoors. Enable the smart BMS's low-temperature charge cutoff.
+
+**Range basis (2026-10-03):** commute is ~9 hilly miles each way, and the rider charges at school. One leg on the Monkey ≈ 270–450 Wh (30–50 Wh/mi, estimate — not yet measured). The existing **14S4P 21700 pack (~580–700 Wh usable in winter) covers a leg year-round**, so the Monkey starts on that pack with foam fill (pack along the down-tube edge, foam triangle above it) and the 14S8P build is optional, to be sized from a measured commute.
+
+**End goal revised (rider, 2026-10-03, later the same day): the final pack is 14S10P (140 cells), "when, not if"** — this supersedes the 8P confirmation above as the destination; 8P is no longer the target. Staging: ride on the existing 14S4P 21700 pack first (foam plan: `km-rifter-14s4p-foam-cuts.svg`), build the 10P later. Nothing bought yet.
+
+**10P is designed to fold** (`km-rifter-14s10p-stencil-square.svg`, fold line marked): a bag-sized rigid slab is unlikely to load through the zipper, so it is two sub-packs — **rear** (groups 6–14, 9 columns of 10, one uncut 9×10 holder per face, ~38 V) and **front** (groups 1–5: four 2×5 groups + the head-tube cluster, ~21 V) — joined at the 5–6 junction by two short sleeved 8 AWG silicone links landed on full-width copper-nickel buses, with the balance leads crossing alongside with slack. Permanently wired, no mid-pack connectors. The 1–2 junction inside the front sub-pack stays a rigid copper-nickel strip. ⚠ Closing the 5–6 link is the last assembly step and is live work at full pack voltage (58.8 V): mask everything else, insulated tools, DMM-check polarity across the gap first. ~10.5 kg finished — strap reinforcement and the fuse recommendation apply even more than at 8P.
