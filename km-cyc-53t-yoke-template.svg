@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- CYC X1 Pro Gen 4 32T/53T motor-sprocket yoke-clearance template. Print at 100% on US Letter (fits with margins). Verify the 100 mm scale bar with a ruler before cutting. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="200mm" height="200mm" viewBox="0 0 200 200">
+  <rect width="200" height="200" fill="white"/>
+  <g transform="translate(100,100)" fill="none" stroke-width="0.4">
+    <circle r="75" stroke="#c00" stroke-dasharray="2,1.5"/>
+    <circle r="70" stroke="#000"/>
+    <circle r="68" stroke="#000" stroke-dasharray="1,1"/>
+    <circle r="12" stroke="#000"/>
+    <line x1="-14" y1="0" x2="14" y2="0" stroke="#000"/>
+    <line x1="0" y1="-14" x2="0" y2="14" stroke="#000"/>
+  </g>
+  <g font-family="sans-serif" font-size="3.2" fill="#000">
+    <text x="100" y="18" text-anchor="middle">CYC X1 Pro Gen 4 — 53T motor sprocket vs yoke template (1:1)</text>
+    <text x="100" y="23" text-anchor="middle" font-size="2.6">centre on BB spindle, drive side, ~42–46 mm from frame centreline (just inboard of the stock 30T plane)</text>
+    <text x="100" y="33" text-anchor="middle" fill="#c00">red dashed = 150 mm (cover, estimated)</text>
+    <text x="100" y="37.5" text-anchor="middle">solid = 140 mm (CYC inner-ring figure)   dotted = 136 mm (forum-measured 53T)</text>
+    <text x="100" y="42" text-anchor="middle">want ≥ 3 mm from the solid line to the yoke plate / chainstay</text>
+  </g>
+  <g transform="translate(50,186)" stroke="#000" stroke-width="0.4">
+    <line x1="0" y1="0" x2="100" y2="0"/>
+    <line x1="0" y1="-3" x2="0" y2="3"/><line x1="50" y1="-2" x2="50" y2="2"/><line x1="100" y1="-3" x2="100" y2="3"/>
+    <text x="50" y="7" text-anchor="middle" font-family="sans-serif" font-size="3.2" stroke="none">100 mm scale check</text>
+  </g>
+</svg>
