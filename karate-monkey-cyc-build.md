@@ -57,6 +57,8 @@ Live in **13 and 15**. PAS on 13T ~**25 mph** @ 120 rpm. Throttle will outrun th
 
 **Later ring swaps:** the 32T is 104 BCD — any 104 BCD ring (38T/40T) can go on the **same 53T** later (taller gear, small gold sprocket). Full **40T/72T** still needs 184 mm at the yoke; if 32T was chosen because 72T doesn’t fit, 72T will not fit later either.
 
+**Street tires (ordered 2026-10-10):** 2 × Schwalbe Pick-Up 27.5 × 2.6 (65-584, Super Defense, Addix-E, E-50, 170 kg/tire), ETA 2026-10-20, replacing the Dirt Wizard 3.0s so the SKS Bluemels 75 (27.5 × 2.6 max) can go on. Tube-type — run tubes (27.5 × 2.4–2.8). Circumference drops ~3 % from the 3.0, so the gearing table above reads slightly high.
+
 **CYC 5-speed cassette:** skip. Stock Microspline 12-speed stays. The CYC HD 15–30 is **Shimano HG** — it will not slide onto the Novatec Microspline freehub. Buying the $179 cassette (or the $369 kit with an Alex 12×148 HG hub) is a **new rear wheel**. Roll off to shift; don’t dump 70 A on 11T or 51T. When the 12-speed sharks or a spoke goes, *then* the 5-speed.
 
 ## Keep vs fuse
